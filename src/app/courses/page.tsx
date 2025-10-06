@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { FeaturedCourses } from '@/components/home/featured-courses';
 
 const COURSES_PER_PAGE = 12;
 
@@ -51,6 +52,7 @@ export default function CoursesPage() {
   }, [searchTerm, selectedCategory]);
 
   return (
+    <>
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="text-center mb-12">
         <h1 className="font-headline text-4xl sm:text-5xl font-bold">Catálogo de Cursos</h1>
@@ -115,5 +117,9 @@ export default function CoursesPage() {
         </div>
       )}
     </div>
+    <div className="bg-card py-16 mt-16">
+        <FeaturedCourses title="Cursos em Alta" />
+    </div>
+    </>
   );
 }

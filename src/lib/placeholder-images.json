@@ -315,7 +315,7 @@
     {
       "id": "cert-irata",
       "description": "IRATA Certification Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1669217541257-f46f1d24712a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjZXJ0aWZpY2F0aW9uJTIwbG9nb3xlbnwwfHx8fDE3NTk3MTY4NDl8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1669217541257-f46f1d24712a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjZXJ0aWZpY2F0aW9uJTIwbG9nb3xlbnwwfHx8fDE3NTk3MTY4NDl8MA&ixlibrb-4.1.0&q=80&w=1080",
       "imageHint": "certification logo"
     },
     {
@@ -953,6 +953,12 @@
       "imageUrl": "https://images.unsplash.com/photo-1697382608786-bcf4c113b86e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxkaWdpdGFsJTIwcGFkbG9ja3xlbnwwfHx8fDE3NTk3Nzg2NTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "description": "Padlock on a digital screen",
       "imageHint": "digital padlock"
+    },
+    {
+      "id": "course-scaffolding-2",
+      "imageUrl": "https://picsum.photos/seed/scaffolding-2/600/400",
+      "description": "Another view of scaffolding on a building.",
+      "imageHint": "scaffolding construction"
     },
     {
       "id": "course-forklift-pettibone",

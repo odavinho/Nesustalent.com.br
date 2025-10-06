@@ -108,7 +108,7 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
       {relatedCourses.length > 0 && (
         <div className="bg-background py-16">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                 <h2 className="font-headline text-3xl font-bold text-center mb-10">Cursos Relacionados</h2>
+                 <h2 className="font-headline text-3xl font-bold text-center mb-10">Mais cursos para carreiras Profissional de {category?.name}</h2>
                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     {relatedCourses.map(relatedCourse => (
                         <CourseCard key={relatedCourse.id} course={relatedCourse} />

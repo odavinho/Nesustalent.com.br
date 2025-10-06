@@ -11,6 +11,7 @@ export const courseCategories: CourseCategory[] = [
     { id: 'seguranca-trabalho', name: 'Higiene & Segurança no Trabalho' },
     { id: 'marketing-comercial', name: 'Gestão Comercial & Marketing' },
     { id: 'ingles', name: 'Curso de Inglês' },
+    { id: 'certificacao', name: 'Cursos de Certificação'}
 ];
 
 export const courses: Course[] = [
@@ -510,7 +511,7 @@ export const courses: Course[] = [
   {
     id: 'YZ-719',
     name: 'SAP BASIS - Melhores Práticas de Administração',
-    category: 'informatica-it',
+    category: 'certificacao',
     imageId: 'course-sap-basis',
     duration: '40 horas',
     generalObjective: 'Capacitar administradores de sistemas SAP com as melhores práticas para a manutenção e otimização do ambiente.',
@@ -640,7 +641,7 @@ export const courses: Course[] = [
   {
     id: 'NH-96',
     name: 'Sistema de Gestão Ambiental - ISO14001',
-    category: 'seguranca-trabalho',
+    category: 'certificacao',
     imageId: 'course-iso14001',
     duration: '24 horas',
     generalObjective: 'Capacitar os participantes a implementar e auditar um Sistema de Gestão Ambiental (SGA) de acordo com a norma ISO 14001.',
@@ -1140,7 +1141,7 @@ export const courses: Course[] = [
   {
     id: 'FX-528',
     name: 'ISO 21500 - Norma sobre Gestão de Projectos',
-    category: 'rh-gestao',
+    category: 'certificacao',
     imageId: 'course-iso21500',
     duration: '20 horas',
     generalObjective: 'Proporcionar um entendimento da norma ISO 21500 e como ela pode ser usada para melhorar a gestão de projetos numa organização.',
@@ -1300,7 +1301,7 @@ export const courses: Course[] = [
   {
     id: 'JA-604',
     name: 'Auto Cad 3D',
-    category: 'informatica-it',
+    category: 'certificacao',
     imageId: 'course-autocad-3d',
     duration: '35 horas',
     generalObjective: 'Capacitar os utilizadores de AutoCAD a criar e manipular modelos tridimensionais.',
@@ -1310,7 +1311,7 @@ export const courses: Course[] = [
   {
     id: 'BX-274',
     name: 'Primavera',
-    category: 'informatica-it',
+    category: 'certificacao',
     imageId: 'course-primavera',
     duration: '40 horas',
     generalObjective: 'Dominar o software Primavera P6 para a gestão de projetos complexos, especialmente na área da construção e engenharia.',
@@ -1330,7 +1331,7 @@ export const courses: Course[] = [
   {
     id: 'WR-82',
     name: 'SAP HCM - Configuração de Processamento Salarial',
-    category: 'informatica-it',
+    category: 'certificacao',
     imageId: 'course-sap-hcm',
     duration: '40 horas',
     generalObjective: 'Capacitar consultores e utilizadores avançados a configurar o módulo de processamento salarial (Payroll) do SAP HCM.',
@@ -1370,7 +1371,7 @@ export const courses: Course[] = [
   {
     id: 'YF-360',
     name: 'SAP BASIS - Melhores Práticas de Administração',
-    category: 'informatica-it',
+    category: 'certificacao',
     imageId: 'course-sap-basis-2',
     duration: '40 horas',
     generalObjective: 'Capacitar administradores de sistemas SAP com as melhores práticas para a manutenção e otimização do ambiente.',
@@ -1450,7 +1451,7 @@ export const courses: Course[] = [
   {
     id: 'TF-83',
     name: 'Primavera',
-    category: 'informatica-it',
+    category: 'certificacao',
     imageId: 'course-primavera-2',
     duration: '40 horas',
     generalObjective: 'Dominar o software Primavera P6 para a gestão de projetos complexos, especialmente na área da construção e engenharia.',
@@ -1460,7 +1461,7 @@ export const courses: Course[] = [
   {
     id: 'IW-791',
     name: 'SAP-Aplicação IPL (módulo 1)',
-    category: 'informatica-it',
+    category: 'certificacao',
     imageId: 'course-sap-ipl-1',
     duration: '30 horas',
     generalObjective: 'Introduzir os utilizadores ao ambiente SAP e aos processos fundamentais do módulo IPL.',
@@ -1470,7 +1471,7 @@ export const courses: Course[] = [
   {
     id: 'TQ-229',
     name: 'SAP-Aplicação IPL (módulo 2)',
-    category: 'informatica-it',
+    category: 'certificacao',
     imageId: 'course-sap-ipl-2',
     duration: '30 horas',
     generalObjective: 'Aprofundar os conhecimentos no módulo IPL do SAP, abordando processos e configurações avançadas.',
@@ -1508,10 +1509,10 @@ export const courses: Course[] = [
     modules: [{ title: 'Módulo 1: Gestão da Segurança', topics: ['Políticas e análise de risco'] }, { title: 'Módulo 2: Segurança Técnica', topics: ['Segurança de redes e sistemas operativos'] }]
   },
   {
-    id: 'BH-705',
+    id: 'BH-705-2',
     name: 'Montagem e Inspeção de Andaimes',
     category: 'industrial',
-    imageId: 'course-scaffolding',
+    imageId: 'course-scaffolding-2',
     duration: '24 horas',
     generalObjective: 'Capacitar profissionais para a montagem, desmontagem e inspeção segura de andaimes, em conformidade com as normas de segurança no trabalho.',
     whatYouWillLearn: ['Identificar os tipos de andaimes e seus componentes.', 'Realizar a montagem e desmontagem de forma segura.', 'Inspecionar andaimes para garantir a sua estabilidade e segurança.', 'Conhecer e aplicar as normas regulamentadoras.'],
@@ -1529,7 +1530,7 @@ export const courses: Course[] = [
   },
   {
     id: 'QE-471',
-    name: 'Instrumentação Indsutrial',
+    name: 'Instrumentação Industrial',
     category: 'industrial',
     imageId: 'course-industrial-instrumentation',
     duration: '35 horas',
@@ -1720,7 +1721,7 @@ export const courses: Course[] = [
   {
     id: 'CF-669',
     name: 'Segurança de Máquinas – ISO 13857',
-    category: 'seguranca-trabalho',
+    category: 'certificacao',
     imageId: 'course-machine-safety-iso',
     duration: '24 horas',
     generalObjective: 'Interpretar e aplicar os requisitos da norma ISO 13857 para garantir a segurança no projeto e utilização de máquinas.',
