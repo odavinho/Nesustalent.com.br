@@ -4,7 +4,8 @@ import { useState, useMemo } from 'react';
 import { courses, courseCategories } from '@/lib/courses';
 import { CourseCard } from '@/components/courses/course-card';
 import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Search, ArrowLeft, ArrowRight } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -13,9 +14,12 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+const COURSES_PER_PAGE = 12;
+
 export default function CoursesPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
 
   const filteredCourses = useMemo(() => {
     return courses.filter(course => {
@@ -23,6 +27,27 @@ export default function CoursesPage() {
       const matchesSearch = course.name.toLowerCase().includes(searchTerm.toLowerCase()) || course.id.toLowerCase().includes(searchTerm.toLowerCase());
       return matchesCategory && matchesSearch;
     });
+  }, [searchTerm, selectedCategory]);
+
+  const totalPages = Math.ceil(filteredCourses.length / COURSES_PER_PAGE);
+
+  const paginatedCourses = useMemo(() => {
+      const startIndex = (currentPage - 1) * COURSES_PER_PAGE;
+      const endIndex = startIndex + COURSES_PER_PAGE;
+      return filteredCourses.slice(startIndex, endIndex);
+  }, [filteredCourses, currentPage]);
+
+  const handlePreviousPage = () => {
+    setCurrentPage(prev => Math.max(prev - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage(prev => Math.min(prev + 1, totalPages));
+  };
+
+  // Reset to page 1 when filters change
+  useMemo(() => {
+    setCurrentPage(1);
   }, [searchTerm, selectedCategory]);
 
   return (
@@ -62,12 +87,27 @@ export default function CoursesPage() {
         </div>
       </div>
 
-      {filteredCourses.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {filteredCourses.map(course => (
-            <CourseCard key={course.id} course={course} />
-          ))}
-        </div>
+      {paginatedCourses.length > 0 ? (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            {paginatedCourses.map(course => (
+              <CourseCard key={course.id} course={course} />
+            ))}
+          </div>
+          {totalPages > 1 && (
+             <div className="flex items-center justify-center gap-4 mt-12">
+                <Button onClick={handlePreviousPage} disabled={currentPage === 1} variant="outline">
+                    <ArrowLeft className="mr-2 h-4 w-4" /> Anterior
+                </Button>
+                <span className="text-sm font-medium">
+                    Página {currentPage} de {totalPages}
+                </span>
+                <Button onClick={handleNextPage} disabled={currentPage === totalPages} variant="outline">
+                    Próximo <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+            </div>
+          )}
+        </>
       ) : (
         <div className="text-center py-16">
           <p className="text-xl font-semibold">Nenhum curso encontrado.</p>
