@@ -76,7 +76,7 @@ export function Header() {
           ))}
           <div className="pt-4 border-t">
             <div className="flex items-center px-3 space-x-2">
-              <Button variant="ghost" className="w-full" asChild>
+               <Button variant="ghost" className="w-full" asChild>
                 <Link href="/login">Entrar</Link>
               </Button>
               <Button className="w-full bg-accent hover:bg-accent/90 text-accent-foreground" asChild>
