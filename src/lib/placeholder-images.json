@@ -1,3 +1,70 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "dev-pessoal",
+      "description": "A person giving a presentation in a modern office.",
+      "imageUrl": "https://images.unsplash.com/photo-1690191793789-1bc4e0d18a11?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwcmVzZW50YXRpb24lMjBvZmZpY2V8ZW58MHx8fHwxNzU5NjcyNDc5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "presentation office"
+    },
+    {
+      "id": "rh-gestao",
+      "description": "A group of professionals collaborating in a meeting.",
+      "imageUrl": "https://images.unsplash.com/photo-1681949103006-70066fb25dfe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx0ZWFtJTIwbWVldGluZ3xlbnwwfHx8fDE3NTk3NTM3MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "team meeting"
+    },
+    {
+      "id": "minerios-petroleo",
+      "description": "An oil rig at sunset.",
+      "imageUrl": "https://images.unsplash.com/photo-1562237548-3c36707230ce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxvaWwlMjByaWd8ZW58MHx8fHwxNzU5NzI3OTYzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "oil rig"
+    },
+    {
+      "id": "financas-admin",
+      "description": "A desk with financial charts, a calculator, and a laptop.",
+      "imageUrl": "https://images.unsplash.com/photo-1745509267945-b25cbb4d50ef?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmaW5hbmNlJTIwY2hhcnRzfGVufDB8fHx8MTc1OTY1NjE3OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "finance charts"
+    },
+    {
+      "id": "informatica-it",
+      "description": "A server room with glowing lights.",
+      "imageUrl": "https://images.unsplash.com/photo-1580106815433-a5b1d1d53d85?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzZXJ2ZXIlMjByb29tfGVufDB8fHx8MTc1OTY4ODM1M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "server room"
+    },
+    {
+      "id": "industrial",
+      "description": "A modern factory interior with machinery.",
+      "imageUrl": "https://images.unsplash.com/photo-1654703680722-f80754f1cae1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxmYWN0b3J5JTIwaW5kdXN0cmlhbHxlbnwwfHx8fDE3NTk3NjEzMzN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "factory industrial"
+    },
+    {
+      "id": "seguranca-trabalho",
+      "description": "A worker with a hard hat and safety vest.",
+      "imageUrl": "https://images.unsplash.com/photo-1681812508281-7589b75b2e46?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzYWZldHklMjB3b3JrZXJ8ZW58MHx8fHwxNzU5NzYxMzMzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "safety worker"
+    },
+    {
+      "id": "marketing-comercial",
+      "description": "A digital marketing campaign dashboard on a screen.",
+      "imageUrl": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxkaWdpdGFsJTIwbWFya2V0aW5nfGVufDB8fHx8MTc1OTcwMjM2Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "digital marketing"
+    },
+    {
+      "id": "ingles",
+      "description": "Flags of different English-speaking countries.",
+      "imageUrl": "https://images.unsplash.com/photo-1626117734570-9ae934d583f4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxsYW5ndWFnZSUyMGZsYWdzfGVufDB8fHx8MTc1OTc0OTEyNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "language flags"
+    },
+    {
+      "id": "recruitment-hero",
+      "description": "A professional handshake closing a deal.",
+      "imageUrl": "https://images.unsplash.com/photo-1521791136064-7986c2920216?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMGhhbmRzaGFrZXxlbnwwfHx8fDE3NTk3Mzg2ODB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "business handshake"
+    },
+    {
+      "id": "home-hero",
+      "description": "An inspiring image of a person looking towards a bright future.",
+      "imageUrl": "https://images.unsplash.com/photo-1758682602646-06eb9179a35c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c3VjY2VzcyUyMGZ1dHVyZXxlbnwwfHx8fDE3NTk3NjEzMzN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "success future"
+    }
+  ]
 }
