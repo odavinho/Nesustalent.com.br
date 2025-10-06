@@ -3,6 +3,10 @@ export interface Course {
     name: string;
     category: string;
     imageId: string;
+    duration: string;
+    generalObjective: string;
+    specificObjectives: string[];
+    modules: { title: string; topics: string[] }[];
   }
   
   export interface CourseCategory {

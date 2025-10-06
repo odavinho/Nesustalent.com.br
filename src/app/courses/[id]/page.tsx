@@ -4,9 +4,11 @@ import { notFound } from "next/navigation";
 import Image from 'next/image';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, BookOpen, Clock, Users } from "lucide-react";
+import { ArrowLeft, BookOpen, Clock, Users, CheckCircle, Target, Book, List } from "lucide-react";
 import Link from "next/link";
 import { CourseCard } from "@/components/courses/course-card";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+
 
 export default function CourseDetailPage({ params }: { params: { id: string } }) {
   const course = courses.find(c => c.id === params.id);
@@ -33,16 +35,46 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
             <h1 className="font-headline text-3xl md:text-4xl font-bold">{course.name}</h1>
             <p className="text-lg text-muted-foreground mt-2 font-mono">{course.id}</p>
             
-            <div className="mt-6 prose prose-lg max-w-none text-foreground/90">
-                <p>Este curso abrangente sobre <strong>{course.name}</strong> foi projetado para fornecer as habilidades e conhecimentos essenciais para se destacar nesta área. Seja você um iniciante ou um profissional experiente, nosso conteúdo irá desafiá-lo e inspirá-lo.</p>
-                <p>Aprenda com especialistas da indústria através de uma mistura de aulas teóricas, estudos de caso práticos e projetos do mundo real. Este curso pode ser feito online ou presencialmente, oferecendo flexibilidade para se adequar à sua agenda.</p>
-                <h3 className="font-headline">O que você vai aprender:</h3>
-                <ul>
-                    <li>Fundamentos essenciais de {course.name.toLowerCase()}.</li>
-                    <li>Técnicas avançadas e melhores práticas do setor.</li>
-                    <li>Como aplicar seus conhecimentos em cenários práticos.</li>
-                    <li>Estratégias para resolver problemas complexos e tomar decisões informadas.</li>
-                </ul>
+            <div className="mt-8 prose prose-lg max-w-none text-foreground/90">
+                <div className="p-6 border rounded-lg bg-background">
+                    <div className="flex items-start gap-4">
+                        <Target className="w-8 h-8 text-primary mt-1 flex-shrink-0" />
+                        <div>
+                            <h3 className="font-headline text-xl mt-0">Objetivo Geral</h3>
+                            <p className="text-base">{course.generalObjective}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mt-8">
+                    <h3 className="font-headline flex items-center gap-2"><CheckCircle className="w-6 h-6 text-primary" /> Objetivos Específicos</h3>
+                    <ul className="mt-4 space-y-2">
+                        {course.specificObjectives.map((objective, index) => (
+                            <li key={index} className="flex items-start gap-3">
+                                <CheckCircle className="w-5 h-5 text-green-500 mt-1 flex-shrink-0"/>
+                                <span>{objective}</span>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+
+                 <div className="mt-12">
+                    <h3 className="font-headline flex items-center gap-2"><List className="w-6 h-6 text-primary"/> Conteúdo Programático (Módulos)</h3>
+                    <Accordion type="single" collapsible className="w-full mt-4">
+                        {course.modules.map((module, index) => (
+                             <AccordionItem value={`item-${index}`} key={index}>
+                                <AccordionTrigger className="text-lg font-semibold hover:no-underline">{module.title}</AccordionTrigger>
+                                <AccordionContent>
+                                    <ul className="list-disc pl-5 space-y-2 text-base">
+                                        {module.topics.map((topic, topicIndex) => (
+                                            <li key={topicIndex}>{topic}</li>
+                                        ))}
+                                    </ul>
+                                </AccordionContent>
+                            </AccordionItem>
+                        ))}
+                    </Accordion>
+                </div>
             </div>
           </div>
           <div className="lg:col-span-1">
@@ -60,7 +92,7 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
                         </div>
                         <div className="flex items-center gap-3">
                             <Clock className="w-5 h-5 text-muted-foreground" />
-                            <span><strong>Duração:</strong> 8 semanas</span>
+                            <span><strong>Carga Horária:</strong> {course.duration}</span>
                         </div>
                         <div className="flex items-center gap-3">
                             <Users className="w-5 h-5 text-muted-foreground" />
