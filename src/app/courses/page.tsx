@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { courses, courseCategories } from '@/lib/courses';
 import { CourseCard } from '@/components/courses/course-card';
 import { Input } from '@/components/ui/input';
@@ -46,7 +46,7 @@ export default function CoursesPage() {
   };
 
   // Reset to page 1 when filters change
-  useMemo(() => {
+  useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, selectedCategory]);
 
