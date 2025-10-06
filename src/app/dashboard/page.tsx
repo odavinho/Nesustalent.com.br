@@ -34,7 +34,7 @@ export default function DashboardPage() {
                 </CardHeader>
                 <CardContent>
                     <Button asChild>
-                        <Link href="#">Adicionar Novo Curso</Link>
+                        <Link href="/dashboard/courses/new">Adicionar Novo Curso</Link>
                     </Button>
                 </CardContent>
             </Card>
@@ -48,7 +48,7 @@ export default function DashboardPage() {
                 </CardHeader>
                 <CardContent className="flex gap-4">
                      <Button asChild>
-                        <Link href="#">Adicionar Nova Vaga</Link>
+                        <Link href="/dashboard/vacancies/new">Adicionar Nova Vaga</Link>
                     </Button>
                      <Button asChild variant="outline">
                         <Link href="#">Gerir Candidaturas</Link>

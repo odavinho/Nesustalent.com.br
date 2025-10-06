@@ -1,0 +1,45 @@
+'use server';
+/**
+ * @fileOverview AI-powered vacancy content generation.
+ *
+ * - generateVacancyContent - A function that handles the vacancy content generation process.
+ * - GenerateVacancyContentInput - The input type for the generateVacancyContent function.
+ * - GenerateVacancyContentOutput - The return type for the generateVacancyContent function.
+ */
+
+import {ai} from '@/ai/genkit';
+import {z} from 'genkit';
+import { GenerateVacancyContentInputSchema, GenerateVacancyContentOutputSchema } from '@/lib/schemas';
+
+
+export type GenerateVacancyContentInput = z.infer<typeof GenerateVacancyContentInputSchema>;
+export type GenerateVacancyContentOutput = z.infer<typeof GenerateVacancyContentOutputSchema>;
+
+
+export async function generateVacancyContent(input: GenerateVacancyContentInput): Promise<GenerateVacancyContentOutput> {
+  return generateVacancyContentFlow(input);
+}
+
+const prompt = ai.definePrompt({
+  name: 'generateVacancyContentPrompt',
+  input: {schema: GenerateVacancyContentInputSchema},
+  output: {schema: GenerateVacancyContentOutputSchema},
+  prompt: `You are an expert recruiter. Based on the job title and category, generate a detailed job description in Portuguese. 
+The description should include a general summary, a list of key responsibilities, and a list of required qualifications and skills.
+
+Job Title: {{{title}}}
+Category: {{{category}}}
+`,
+});
+
+const generateVacancyContentFlow = ai.defineFlow(
+  {
+    name: 'generateVacancyContentFlow',
+    inputSchema: GenerateVacancyContentInputSchema,
+    outputSchema: GenerateVacancyContentOutputSchema,
+  },
+  async input => {
+    const {output} = await prompt(input);
+    return output!;
+  }
+);
