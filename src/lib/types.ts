@@ -5,7 +5,7 @@ export interface Course {
     imageId: string;
     duration: string;
     generalObjective: string;
-    specificObjectives: string[];
+    whatYouWillLearn: string[];
     modules: { title: string; topics: string[] }[];
   }
   

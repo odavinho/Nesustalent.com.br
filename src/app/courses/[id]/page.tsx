@@ -47,9 +47,9 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
                 </div>
 
                 <div className="mt-8">
-                    <h3 className="font-headline flex items-center gap-2"><CheckCircle className="w-6 h-6 text-primary" /> Objetivos Específicos</h3>
+                    <h3 className="font-headline flex items-center gap-2"><CheckCircle className="w-6 h-6 text-primary" /> O que vai aprender</h3>
                     <ul className="mt-4 space-y-2">
-                        {course.specificObjectives.map((objective, index) => (
+                        {course.whatYouWillLearn.map((objective, index) => (
                             <li key={index} className="flex items-start gap-3">
                                 <CheckCircle className="w-5 h-5 text-green-500 mt-1 flex-shrink-0"/>
                                 <span>{objective}</span>
