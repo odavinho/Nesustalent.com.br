@@ -116,7 +116,7 @@ export const courses: Course[] = [
       { title: 'Módulo 4: Visualização e Publicação', topics: ['Criação de relatórios e dashboards', 'Formatação e personalização de visuais', 'Publicação no Power BI Service e partilha'] }] 
   },
   { 
-    id: 'GC-003', 
+    id: 'GE-003', 
     name: 'Gestão Emocional', 
     category: 'dev-pessoal', 
     imageId: 'course-emotional', 
@@ -297,5 +297,185 @@ export const courses: Course[] = [
       { title: 'Módulo 3: Estruturas de Dados', topics: ['Listas e Tuplas', 'Dicionários e Sets', 'Manipulação de strings'] },
       { title: 'Módulo 4: Funções e Módulos', topics: ['Definição e chamada de funções', 'Escopo de variáveis', 'Importação de módulos e bibliotecas padrão'] }
     ]
+  },
+  {
+    id: 'GERH-007',
+    name: 'Gestão Estratégica de Recursos Humanos',
+    category: 'rh-gestao',
+    imageId: 'course-strategic-hr',
+    duration: '35 horas',
+    generalObjective: 'Alinhar a gestão de pessoas com os objetivos estratégicos da organização, transformando o RH num parceiro de negócio.',
+    whatYouWillLearn: ['Desenvolver planeamento estratégico de RH.', 'Implementar modelos de gestão por competências.', 'Gerir talentos e sucessão.', 'Analisar métricas de RH (HR Analytics).'],
+    modules: [{ title: 'Módulo 1: RH Estratégico', topics: ['O papel do RH estratégico', 'Diagnóstico organizacional'] }, { title: 'Módulo 2: Gestão por Competências', topics: ['Mapeamento de competências', 'Avaliação de desempenho']}]
+  },
+  {
+    id: 'PU-595',
+    name: 'Técnicas de Recrutamento e Selecção Pessoal',
+    category: 'rh-gestao',
+    imageId: 'course-recruitment',
+    duration: '25 horas',
+    generalObjective: 'Capacitar profissionais de RH com as mais modernas técnicas para atrair, entrevistar e selecionar os melhores talentos para a organização.',
+    whatYouWillLearn: ['Realizar o sourcing de candidatos em diferentes canais.', 'Conduzir entrevistas por competências.', 'Aplicar testes e dinâmicas de grupo.', 'Melhorar a experiência do candidato (Candidate Experience).'],
+    modules: [{ title: 'Módulo 1: Atração de Talentos', topics: ['Employer branding', 'Sourcing ativo e passivo'] }, { title: 'Módulo 2: O Processo de Seleção', topics: ['Entrevista comportamental (STAR)', 'Assessment centers'] }]
+  },
+  {
+    id: 'EP-432',
+    name: 'Secretariado Executivo de Alta Direção',
+    category: 'financas-admin',
+    imageId: 'course-executive-assistant',
+    duration: '30 horas',
+    generalObjective: 'Desenvolver as competências necessárias para um desempenho de excelência no apoio a executivos de topo, gerindo agendas, comunicação e eventos.',
+    whatYouWillLearn: ['Gerir agendas complexas e viagens.', 'Organizar reuniões e eventos corporativos.', 'Dominar a comunicação escrita e oral em contexto executivo.', 'Manter a confidencialidade e a discrição.'],
+    modules: [{ title: 'Módulo 1: Organização e Planeamento', topics: ['Gestão de tempo e prioridades', 'Planeamento de viagens'] }, { title: 'Módulo 2: Comunicação e Etiqueta', topics: ['Comunicação interpessoal', 'Etiqueta empresarial']}]
+  },
+  {
+    id: 'GW-14',
+    name: 'Gestão de Equipas & Liderança',
+    category: 'rh-gestao',
+    imageId: 'course-team-management',
+    duration: '28 horas',
+    generalObjective: 'Aprofundar as competências de liderança para a gestão eficaz de equipas, focando na delegação, motivação e desenvolvimento de pessoas.',
+    whatYouWillLearn: ['Delegar tarefas de forma eficaz.', 'Dar feedback construtivo e motivador.', 'Gerir o desempenho da equipa.', 'Promover um ambiente de colaboração.'],
+    modules: [{ title: 'Módulo 1: Liderança Situacional', topics: ['Diagnóstico da maturidade da equipa', 'Adaptação do estilo de liderança'] }, { title: 'Módulo 2: Ferramentas de Gestão', topics: ['Definição de metas OKR', 'Condução de one-on-ones'] }]
+  },
+  {
+    id: 'NG-302',
+    name: 'Finanças para não Financeiros',
+    category: 'financas-admin',
+    imageId: 'course-finance-non-finance',
+    duration: '20 horas',
+    generalObjective: 'Dotar profissionais de áreas não-financeiras com os conhecimentos essenciais para compreenderem a linguagem financeira e participarem em decisões de negócio.',
+    whatYouWillLearn: ['Ler e interpretar demonstrações financeiras.', 'Compreender os principais indicadores de performance (KPIs).', 'Participar na elaboração de orçamentos.', 'Analisar a viabilidade de pequenos projetos.'],
+    modules: [{ title: 'Módulo 1: Contabilidade Básica', topics: ['Ativo, Passivo, Capital Próprio', 'Receitas e Despesas'] }, { title: 'Módulo 2: Análise Financeira', topics: ['Rácios de rentabilidade', 'Análise do ponto de equilíbrio'] }]
+  },
+  {
+    id: 'FI-696',
+    name: 'Gestão Documental e Arquivo',
+    category: 'financas-admin',
+    imageId: 'course-document-management',
+    duration: '16 horas',
+    generalObjective: 'Capacitar os participantes a organizar, gerir e arquivar documentos (físicos e digitais) de forma eficiente e segura, em conformidade com a legislação.',
+    whatYouWillLearn: ['Criar e implementar um plano de classificação de documentos.', 'Dominar técnicas de arquivo físico e digital.', 'Compreender os requisitos legais de retenção de documentos.', 'Utilizar software de gestão documental (GED).'],
+    modules: [{ title: 'Módulo 1: Princípios de Arquivística', topics: ['Ciclo de vida dos documentos', 'Tabelas de temporalidade'] }, { title: 'Módulo 2: Arquivo Digital', topics: ['Digitalização e indexação', 'Segurança da informação'] }]
+  },
+  {
+    id: 'WT-424',
+    name: 'Operações Logísticas',
+    category: 'industrial',
+    imageId: 'course-logistics',
+    duration: '24 horas',
+    generalObjective: 'Fornecer uma visão integrada das operações logísticas, desde o aprovisionamento até à distribuição, com foco na eficiência e redução de custos.',
+    whatYouWillLearn: ['Compreender a cadeia de abastecimento (Supply Chain).', 'Gerir o transporte e a distribuição.', 'Otimizar a gestão de stocks.', 'Conhecer as tecnologias aplicadas à logística.'],
+    modules: [{ title: 'Módulo 1: Supply Chain Management', topics: ['Fluxos de materiais e informação', 'Logística Inbound e Outbound'] }, { title: 'Módulo 2: Gestão de Armazém', topics: ['Layout de armazém', 'Picking e packing'] }]
+  },
+  {
+    id: 'KR-550',
+    name: 'Gestão de Compras e Aprovisionamento',
+    category: 'industrial',
+    imageId: 'course-procurement',
+    duration: '22 horas',
+    generalObjective: 'Desenvolver competências para a gestão estratégica do processo de compras, desde a seleção de fornecedores até à negociação e gestão de contratos.',
+    whatYouWillLearn: ['Realizar a qualificação e avaliação de fornecedores.', 'Conduzir processos de negociação eficazes.', 'Gerir contratos e SLAs (Service Level Agreements).', 'Implementar estratégias de redução de custos (Strategic Sourcing).'],
+    modules: [{ title: 'Módulo 1: O Processo de Compras', topics: ['Requisição, cotação, ordem de compra', 'E-procurement'] }, { title: 'Módulo 2: Negociação em Compras', topics: ['Técnicas de negociação', 'Gestão de relacionamento com fornecedores'] }]
+  },
+  {
+    id: 'MB-161',
+    name: 'Microsoft Excel Aplicado às Compras',
+    category: 'financas-admin',
+    imageId: 'course-excel-purchasing',
+    duration: '20 horas',
+    generalObjective: 'Capacitar profissionais da área de compras a utilizar o Microsoft Excel como uma ferramenta poderosa para análise de dados, criação de dashboards e otimização de processos.',
+    whatYouWillLearn: ['Criar tabelas dinâmicas para analisar dados de compras.', 'Utilizar funções avançadas (PROCV, SOMASES) para criar relatórios.', 'Desenvolver dashboards de KPIs de compras.', 'Automatizar tarefas com macros simples.'],
+    modules: [{ title: 'Módulo 1: Análise de Dados', topics: ['Tabelas dinâmicas', 'Filtros avançados'] }, { title: 'Módulo 2: Dashboards', topics: ['Criação de gráficos', 'Formatação condicional'] }]
+  },
+  {
+    id: 'XZ-173',
+    name: 'Gestão de Recursos Minerais',
+    category: 'minerios-petroleo',
+    imageId: 'course-mineral-resources',
+    duration: '35 horas',
+    generalObjective: 'Fornecer uma visão abrangente sobre a gestão de projetos de exploração e explotação de recursos minerais, abordando aspetos técnicos, económicos e ambientais.',
+    whatYouWillLearn: ['Compreender o ciclo de vida de um projeto mineiro.', 'Analisar a viabilidade económica de jazigos minerais.', 'Conhecer as principais técnicas de extração.', 'Aplicar princípios de gestão ambiental e responsabilidade social.'],
+    modules: [{ title: 'Módulo 1: Exploração Mineral', topics: ['Geologia e prospeção', 'Avaliação de depósitos'] }, { title: 'Módulo 2: Explotação e Processamento', topics: ['Métodos de lavra', 'Britagem e moagem'] }]
+  },
+  {
+    id: 'XX-168',
+    name: 'Gestão de Reservatórios de Petróleo e Gás',
+    category: 'minerios-petroleo',
+    imageId: 'course-oil-reservoir',
+    duration: '40 horas',
+    generalObjective: 'Capacitar engenheiros e geocientistas com as competências para a caracterização e gestão otimizada de reservatórios de hidrocarbonetos.',
+    whatYouWillLearn: ['Caracterizar reservatórios através de dados geológicos e de engenharia.', 'Estimar volumes de óleo e gás in-place.', 'Analisar o comportamento de produção dos poços.', 'Planear estratégias de recuperação secundária e avançada.'],
+    modules: [{ title: 'Módulo 1: Caracterização de Reservatórios', topics: ['Petrofísica', 'Análise de fluidos PVT'] }, { title: 'Módulo 2: Engenharia de Reservatórios', topics: ['Balanço de materiais', 'Simulação de reservatórios'] }]
+  },
+  {
+    id: 'RD-117',
+    name: 'Planeamento Estratégico e Comercial',
+    category: 'marketing-comercial',
+    imageId: 'course-strategic-planning',
+    duration: '30 horas',
+    generalObjective: 'Desenvolver a capacidade de elaborar e implementar um plano estratégico e comercial alinhado com os objetivos da empresa, o mercado e a concorrência.',
+    whatYouWillLearn: ['Realizar a análise SWOT e PESTAL.', 'Definir a missão, visão e valores.', 'Estabelecer objetivos e metas SMART.', 'Desenvolver o plano de marketing e vendas.'],
+    modules: [{ title: 'Módulo 1: Análise Estratégica', topics: ['Análise interna e externa', 'Forças de Porter'] }, { title: 'Módulo 2: Formulação e Implementação', topics: ['Balanced Scorecard', 'Planos de ação'] }]
+  },
+  {
+    id: 'XL-702',
+    name: 'Análise Financeira',
+    category: 'financas-admin',
+    imageId: 'course-financial-analysis',
+    duration: '25 horas',
+    generalObjective: 'Aprofundar os conhecimentos em análise financeira, capacitando os participantes a avaliar a performance e a saúde financeira de uma empresa para a tomada de decisão.',
+    whatYouWillLearn: ['Analisar demonstrações financeiras em detalhe.', 'Calcular e interpretar rácios financeiros complexos.', 'Realizar a análise de sensibilidade e cenários.', 'Avaliar empresas (Valuation).'],
+    modules: [{ title: 'Módulo 1: Análise de Demonstrações', topics: ['Análise vertical e horizontal', 'Análise de fluxos de caixa'] }, { title: 'Módulo 2: Avaliação de Empresas', topics: ['Método dos fluxos de caixa descontados (DCF)', 'Múltiplos de mercado'] }]
+  },
+  {
+    id: 'YX-341',
+    name: 'Segurança da Informação',
+    category: 'informatica-it',
+    imageId: 'course-info-security',
+    duration: '40 horas',
+    generalObjective: 'Fornecer uma base sólida sobre os princípios, políticas e tecnologias de segurança da informação para proteger os ativos digitais de uma organização.',
+    whatYouWillLearn: ['Compreender os pilares da segurança da informação (CIA Triad).', 'Identificar ameaças e vulnerabilidades.', 'Implementar controlos de acesso.', 'Conhecer os fundamentos de criptografia e gestão de redes.'],
+    modules: [{ title: 'Módulo 1: Fundamentos de Segurança', topics: ['Ameaças, vulnerabilidades e riscos', 'Políticas de segurança'] }, { title: 'Módulo 2: Tecnologias de Segurança', topics: ['Firewalls e IDS/IPS', 'Criptografia e assinaturas digitais'] }]
+  },
+  {
+    id: 'BH-705',
+    name: 'Montagem e Inspeção de Andaimes',
+    category: 'industrial',
+    imageId: 'course-scaffolding',
+    duration: '24 horas',
+    generalObjective: 'Capacitar profissionais para a montagem, desmontagem e inspeção segura de andaimes, em conformidade com as normas de segurança no trabalho.',
+    whatYouWillLearn: ['Identificar os tipos de andaimes e seus componentes.', 'Realizar a montagem e desmontagem de forma segura.', 'Inspecionar andaimes para garantir a sua estabilidade e segurança.', 'Conhecer e aplicar as normas regulamentadoras.'],
+    modules: [{ title: 'Módulo 1: Tipologia e Componentes', topics: ['Andaimes tubulares, fachadeiros, etc.', 'Bases, montantes, travessas'] }, { title: 'Módulo 2: Montagem e Segurança', topics: ['Sequência de montagem', 'Sistemas de proteção contra quedas'] }]
+  },
+  {
+    id: 'GR-610',
+    name: 'Higiene e Segurança no Trabalho',
+    category: 'seguranca-trabalho',
+    imageId: 'course-workplace-safety',
+    duration: '35 horas',
+    generalObjective: 'Fornecer conhecimentos fundamentais sobre a prevenção de riscos profissionais, promovendo um ambiente de trabalho seguro e saudável.',
+    whatYouWillLearn: ['Identificar perigos e avaliar riscos no local de trabalho.', 'Compreender a legislação de segurança e saúde no trabalho.', 'Implementar medidas de prevenção e proteção.', 'Investigar acidentes de trabalho.'],
+    modules: [{ title: 'Módulo 1: Legislação e Conceitos', topics: ['Normas regulamentadoras', 'Conceitos de perigo, risco, acidente'] }, { title: 'Módulo 2: Gestão de Riscos', topics: ['Identificação de perigos', 'Avaliação de riscos (Matriz de Risco)'] }]
+  },
+  {
+    id: 'YR-504',
+    name: 'Gestão Comercial',
+    category: 'marketing-comercial',
+    imageId: 'course-commercial-management',
+    duration: '30 horas',
+    generalObjective: 'Desenvolver uma visão estratégica e integrada da área comercial, desde o planeamento de vendas até à gestão da equipa e relacionamento com clientes.',
+    whatYouWillLearn: ['Elaborar um plano de vendas e definir metas.', 'Gerir o funil de vendas (pipeline).', 'Liderar e motivar a equipa de vendas.', 'Utilizar CRM para gestão de clientes.'],
+    modules: [{ title: 'Módulo 1: Estratégia de Vendas', topics: ['Análise de mercado e concorrência', 'Definição de canais de venda'] }, { title: 'Módulo 2: Gestão da Equipa', topics: ['Recrutamento de vendedores', 'Sistemas de remuneração e incentivos'] }]
+  },
+  {
+    id: 'YA-332',
+    name: 'Inglês - Beginner',
+    category: 'ingles',
+    imageId: 'course-english-beginner',
+    duration: '50 horas',
+    generalObjective: 'Introduzir o aluno à língua inglesa, desenvolvendo competências básicas de compreensão e expressão oral e escrita para situações do dia-a-dia.',
+    whatYouWillLearn: ['Apresentar-se e falar sobre si.', 'Compreender e usar expressões familiares e quotidianas.', 'Interagir de forma simples.', 'Construir frases básicas sobre necessidades imediatas.'],
+    modules: [{ title: 'Módulo 1: Greetings and Introductions', topics: ['The verb "to be"', 'Alphabet and numbers'] }, { title: 'Módulo 2: My World', topics: ['Family and professions', 'Simple present tense'] }]
   }
 ];

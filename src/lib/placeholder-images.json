@@ -127,6 +127,132 @@
       "imageHint": "data dashboard"
     },
     {
+      "id": "course-oil-rig-safety",
+      "description": "Offshore oil rig at sunset.",
+      "imageUrl": "https://images.unsplash.com/photo-1587825023998-233c390a424a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxvaWwlMjByaWd8ZW58MHx8fHwxNzU5NzgzMTA5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "oil rig"
+    },
+    {
+      "id": "course-accounting-non-accountants",
+      "description": "Calculator and financial documents on a desk.",
+      "imageUrl": "https://images.unsplash.com/photo-1554224155-1696413565d3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxhY2NvdW50aW5nfGVufDB8fHx8MTc1OTc4MzEwOXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "accounting finance"
+    },
+    {
+      "id": "course-python-intro",
+      "description": "Python code on a dark screen.",
+      "imageUrl": "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxweXRob24lMjBjb2RlfGVufDB8fHx8MTc1OTc4MzEwOXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "python code"
+    },
+    {
+      "id": "course-strategic-hr",
+      "description": "A chessboard representing strategic decisions in HR.",
+      "imageUrl": "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzdHJhdGVneSUyMHRlYW18ZW58MHx8fHwxNzU5ODgwMzI0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "strategy team"
+    },
+    {
+      "id": "course-recruitment",
+      "description": "A magnifying glass over a group of people, symbolizing talent search.",
+      "imageUrl": "https://images.unsplash.com/photo-1562577309-2592ab84b1bc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxyZWNydWl0bWVudHxlbnwwfHx8fDE3NTk4ODAzMjR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "recruitment search"
+    },
+    {
+      "id": "course-executive-assistant",
+      "description": "A well-organized desk with a planner and laptop.",
+      "imageUrl": "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxvcmdhbml6ZWQlMjBkZXNrfGVufDB8fHx8MTc1OTg4MDMyNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "organized desk"
+    },
+    {
+      "id": "course-team-management",
+      "description": "A group of diverse hands holding onto a rope, symbolizing teamwork.",
+      "imageUrl": "https://images.unsplash.com/photo-1571172964276-95fa8cf23e25?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0ZWFtd29yayUyMGNvbGxhYm9yYXRpb258ZW58MHx8fHwxNzU5ODgwMzI0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "teamwork collaboration"
+    },
+    {
+      "id": "course-finance-non-finance",
+      "description": "A person learning about finance charts on a tablet.",
+      "imageUrl": "https://images.unsplash.com/photo-1543286386-713bdd548da4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmaW5hbmNlJTIwbGVhcm5pbmd8ZW58MHx8fHwxNzU5ODgwMzI0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "finance learning"
+    },
+    {
+      "id": "course-document-management",
+      "description": "Filing cabinets in a neat archive room.",
+      "imageUrl": "https://images.unsplash.com/photo-1586522998345-06c0989f5c22?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxhcmNoaXZlJTIwZmlsZXxlbnwwfHx8fDE3NTk4ODAzMjR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "archive files"
+    },
+    {
+      "id": "course-logistics",
+      "description": "A large warehouse with shelves stacked high with boxes.",
+      "imageUrl": "https://images.unsplash.com/photo-1578575437130-527eed3abbec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsb2dpc3RpY3MlMjB3YXJlaG91c2V8ZW58MHx8fHwxNzU5ODgwMzI0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "logistics warehouse"
+    },
+    {
+      "id": "course-procurement",
+      "description": "Two business people shaking hands over a contract.",
+      "imageUrl": "https://images.unsplash.com/photo-1520607162513-77705c6f0d4a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwcm9jdXJlbWVudCUyMGRlYWx8ZW58MHx8fHwxNzU5ODgwMzI0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "procurement deal"
+    },
+    {
+      "id": "course-excel-purchasing",
+      "description": "An Excel spreadsheet with purchasing data and charts.",
+      "imageUrl": "https://images.unsplash.com/photo-1632517035118-2970a049144d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxleGNlbCUyMGRhc2hib2FyZHxlbnwwfHx8fDE3NTk4ODAzMjR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "excel dashboard"
+    },
+    {
+      "id": "course-mineral-resources",
+      "description": "An open-pit mine with large machinery.",
+      "imageUrl": "https://images.unsplash.com/photo-1575086055191-1f480b271d53?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtaW5lcmFsJTIwbWluaW5nfGVufDB8fHx8MTc1OTg4MDMyNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "mineral mining"
+    },
+    {
+      "id": "course-oil-reservoir",
+      "description": "A 3D model of an underground oil reservoir.",
+      "imageUrl": "https://images.unsplash.com/photo-1563177990-2c74826d1413?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxnZW9sb2d5JTIwbW9kZWx8ZW58MHx8fHwxNzU5ODgwMzI0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "geology model"
+    },
+    {
+      "id": "course-strategic-planning",
+      "description": "A person writing a strategic plan on a whiteboard.",
+      "imageUrl": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzY2hlZHVsZSUyMHBsYW5uaW5nfGVufDB8fHx8MTc1OTg4MDMyNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "schedule planning"
+    },
+    {
+      "id": "course-financial-analysis",
+      "description": "Financial charts and graphs on multiple computer screens.",
+      "imageUrl": "https://images.unsplash.com/photo-1640622300473-977435c26c0a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmaW5hbmNpYWwlMjBhbmFseXNpc3xlbnwwfHx8fDE3NTk4ODAzMjR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "financial analysis"
+    },
+    {
+      "id": "course-info-security",
+      "description": "A digital lock icon overlaid on a network graphic, representing cybersecurity.",
+      "imageUrl": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjeWJlcnNlY3VyaXR5fGVufDB8fHx8MTc1OTg4MDMyNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cybersecurity"
+    },
+    {
+      "id": "course-scaffolding",
+      "description": "Construction workers assembling scaffolding on a building.",
+      "imageUrl": "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzY2FmZm9sZGluZyUyMGNvbnN0cnVjdGlvbnxlbnwwfHx8fDE3NTk4ODAzMjR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "scaffolding construction"
+    },
+    {
+      "id": "course-workplace-safety",
+      "description": "A worker wearing a hard hat and safety vest on a worksite.",
+      "imageUrl": "https://images.unsplash.com/photo-1529369627985-2d393a1d3869?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3b3JrcGxhY2UlMjBzYWZldHl8ZW58MHx8fHwxNzU5ODgwMzI0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "workplace safety"
+    },
+    {
+      "id": "course-commercial-management",
+      "description": "A sales team collaborating in a modern office.",
+      "imageUrl": "https://images.unsplash.com/photo-1517048676732-d65bc937f952?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzYWxlcyUyMHRlYW0lMjBtZWV0aW5nfGVufDB8fHx8MTc1OTg4MDMyNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "sales team"
+    },
+    {
+      "id": "course-english-beginner",
+      "description": "A split image of the US and UK flags, representing the English language.",
+      "imageUrl": "https://images.unsplash.com/photo-1555243896-c709b1a242e8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxlbmdsaXNoJTIwbGFuZ3VhZ2V8ZW58MHx8fHwxNzU5ODgwMzI0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "english language"
+    },
+    {
       "id": "partner-logo-1",
       "description": "Partner client logo 1",
       "imageUrl": "https://images.unsplash.com/photo-1620288627223-53302f4e8c74?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjb21wYW55JTIwbG9nb3xlbnwwfHx8fDE3NTk3MjQ2OTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
