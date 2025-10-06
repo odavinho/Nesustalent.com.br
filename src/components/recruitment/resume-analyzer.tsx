@@ -74,14 +74,14 @@ export function ResumeAnalyzer() {
   const resumeFileRef = form.register("resume");
 
   return (
-    <Card className="w-full">
+    <Card className="w-full bg-background/50">
       <CardHeader>
         <CardTitle className="font-headline text-2xl flex items-center gap-2">
           <Sparkles className="text-primary" />
           Analisador de Currículos por IA
         </CardTitle>
         <CardDescription>
-          Faça upload de um currículo e cole a descrição da vaga para obter uma análise instantânea.
+          Para empresas: cole a descrição da vaga e faça upload de um currículo para obter uma análise de compatibilidade instantânea.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -90,13 +90,13 @@ export function ResumeAnalyzer() {
             <FormField
               control={form.control}
               name="resume"
-              render={() => (
+              render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Currículo (PDF)</FormLabel>
+                  <FormLabel>Currículo do Candidato (PDF, DOCX)</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <FileUp className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                      <Input type="file" accept=".pdf" className="pl-10 h-12" {...resumeFileRef} />
+                      <Input type="file" accept=".pdf,.doc,.docx" className="pl-10 h-12" {...resumeFileRef} />
                     </div>
                   </FormControl>
                   <FormMessage />

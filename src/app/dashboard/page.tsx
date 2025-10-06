@@ -1,6 +1,8 @@
 import { CourseRecommendations } from "@/components/dashboard/course-recommendations";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookMarked, User } from "lucide-react";
+import { BookMarked, User, Briefcase, GraduationCap } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function DashboardPage() {
     // Mock data for enrolled courses
@@ -15,14 +17,45 @@ export default function DashboardPage() {
       <div className="flex items-center gap-4 mb-8">
         <User className="w-10 h-10 text-primary" />
         <div>
-          <h1 className="font-headline text-4xl font-bold">Meu Dashboard</h1>
-          <p className="text-muted-foreground">Bem-vindo de volta, Usuário!</p>
+          <h1 className="font-headline text-4xl font-bold">Meu Painel</h1>
+          <p className="text-muted-foreground">Bem-vindo de volta, Administrador!</p>
         </div>
       </div>
       
       <div className="grid lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
-            <CourseRecommendations />
+        <div className="lg:col-span-2 grid gap-8 auto-rows-min">
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                        <GraduationCap />
+                        Gestão de Cursos
+                    </CardTitle>
+                    <CardDescription>Adicione novos cursos à plataforma. Use a IA para gerar o conteúdo programático e a imagem.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Button asChild>
+                        <Link href="#">Adicionar Novo Curso</Link>
+                    </Button>
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                        <Briefcase />
+                        Gestão de Vagas
+                    </CardTitle>
+                    <CardDescription>Publique novas oportunidades de emprego e gerencie as candidaturas recebidas.</CardDescription>
+                </CardHeader>
+                <CardContent className="flex gap-4">
+                     <Button asChild>
+                        <Link href="#">Adicionar Nova Vaga</Link>
+                    </Button>
+                     <Button asChild variant="outline">
+                        <Link href="#">Gerir Candidaturas</Link>
+                    </Button>
+                </CardContent>
+            </Card>
+             <CourseRecommendations />
         </div>
 
         <div className="lg:col-span-1">
@@ -30,7 +63,7 @@ export default function DashboardPage() {
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                         <BookMarked />
-                        Meus Cursos
+                        Meus Cursos Atuais
                     </CardTitle>
                     <CardDescription>Seu progresso de aprendizado.</CardDescription>
                 </CardHeader>
