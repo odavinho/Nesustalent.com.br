@@ -165,14 +165,14 @@
     {
       "id": "course-team-management",
       "description": "A group of diverse hands holding onto a rope, symbolizing teamwork.",
-      "imageUrl": "https://images.unsplash.com/photo-1571172964276-95fa8cf23e25?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0ZWFtd29yayUyMGNvbGxhYm9yYXRpb258ZW58MHx8fHwxNzU5ODgwMzI0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1571172964276-95fa8cf23e25?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0ZWFtd29yayUyMGNvbGxhYm9yYXRpb258ZW58MHx8fHwxNzU5ODgwMzI0fDA&ixlibrb-4.1.0&q=80&w=1080",
       "imageHint": "teamwork collaboration"
     },
     {
       "id": "course-finance-non-finance",
       "description": "A person learning about finance charts on a tablet.",
-      "imageUrl": "https://images.unsplash.com/photo-1543286386-713bdd548da4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmaW5hbmNlJTIwbGVhcm5pbmd8ZW58MHx8fHwxNzU5ODgwMzI0fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "finance learning"
+      "imageUrl": "https://images.unsplash.com/photo-1543286386-713bdd548da4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxpbmZvcm1hdGlvbiUyMGNoYXJ0fGVufDB8fHx8MTc1OTk4Mjg4N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "information chart"
     },
     {
       "id": "course-document-management",
@@ -249,7 +249,7 @@
     {
       "id": "course-english-beginner",
       "description": "A split image of the US and UK flags, representing the English language.",
-      "imageUrl": "https://images.unsplash.com/photo-1555243896-c709b1a242e8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxlbmdsaXNoJTIwbGFuZ3VhZ2V8ZW58MHx8fHwxNzU5ODgwMzI0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1555243896-c709b1a242e8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxlbmdsaXNoJTIwbGFuZ3VhZ2V8ZW58MHx8fHwxNzU5ODgwMzI0fDA&ixlibrb-4.1.0&q=80&w=1080",
       "imageHint": "english language"
     },
     {
@@ -303,7 +303,7 @@
     {
       "id": "cert-iso-45001",
       "description": "ISO 45001 Certification Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1568137225575-9f082ee9bb67?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjZXJ0aWZpY2F0aW9uJTIwbG9nb3xlbnwwfHx8fDE3NTk3MTY4NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1568137225575-9f082ee9bb67?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjZXJ0aWZpY2F0aW9uJTIwbG9nb3xlbnwwfHx8fDE3NTk3MTY4NDl8MA&ixlibrb-4.1.0&q=80&w=1080",
       "imageHint": "certification logo"
     },
     {
@@ -315,26 +315,902 @@
     {
       "id": "cert-irata",
       "description": "IRATA Certification Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1669217541257-f46f1d24712a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjZXJ0aWZpY2F0aW9uJTIwbG9nb3xlbnwwfHx8fDE3NTk3MTY4NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1669217541257-f46f1d24712a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjZXJ0aWZpY2F0aW9uJTIwbG9nb3xlbnwwfHx8fDE3NTk3MTY4NDl8MA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "certification logo"
     },
     {
       "id": "cert-liberian",
       "description": "Liberian Registry Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1738464024478-2a60ac914513?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjZXJ0aWZpY2F0aW9uJTIwbG9nb3xlbnwwfHx8fDE3NTk3MTY4NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1738464024478-2a60ac914513?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjZXJ0aWZpY2F0aW9uJTIwbG9nb3xlbnwwfHx8fDE3NTk3MTY4NDl8MA&ixlibrb-4.1.0&q=80&w=1080",
       "imageHint": "certification logo"
     },
     {
       "id": "cert-inefop",
       "description": "INEFOP Certification Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1568137225575-9f082ee9bb67?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjZXJ0aWZpY2F0aW9uJTIwbG9nb3xlbnwwfHx8fDE3NTk3MTY4NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1568137225575-9f082ee9bb67?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjZXJ0aWZpY2F0aW9uJTIwbG9nb3xlbnwwfHx8fDE3NTk3MTY4NDl8MA&ixlibrb-4.1.0&q=80&w=1080",
       "imageHint": "certification logo"
     },
     {
       "id": "cert-mec",
       "description": "MEC Certification Logo",
-      "imageUrl": "https://images.unsplash.com/photo-1669217541257-f46f1d24712a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjZXJ0aWZpY2F0aW9uJTIwbG9nb3xlbnwwfHx8fDE3NTk3MTY4NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1669217541257-f46f1d24712a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjZXJ0aWZpY2F0aW9uJTIwbG9nb3xlbnwwfHx8fDE3NTk3MTY4NDl8MA&ixlibrb-4.1.0&q=80&w=1080",
       "imageHint": "certification logo"
+    },
+    {
+      "id": "course-effectiveness-dev",
+      "imageUrl": "https://picsum.photos/seed/effectiveness-dev/600/400",
+      "description": "Person organizing tasks",
+      "imageHint": "organization tasks"
+    },
+    {
+      "id": "course-strategic-hr-2",
+      "imageUrl": "https://picsum.photos/seed/strategic-hr-2/600/400",
+      "description": "HR strategy meeting",
+      "imageHint": "HR meeting"
+    },
+    {
+      "id": "course-treasury-management",
+      "imageUrl": "https://images.unsplash.com/photo-1504607798333-52a30db54a5d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxmaW5hbmNlJTIwY2hhcnRzfGVufDB8fHx8MTc1OTc3NTgxMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Financial charts and graphs",
+      "imageHint": "finance charts"
+    },
+    {
+      "id": "course-sap-basis",
+      "imageUrl": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzZXJ2ZXIlMjByb29tfGVufDB8fHx8MTc1OTY4ODM1M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Server room with computer systems",
+      "imageHint": "server room"
+    },
+    {
+      "id": "course-powerpoint",
+      "imageUrl": "https://picsum.photos/seed/powerpoint/600/400",
+      "description": "Presentation slide with charts",
+      "imageHint": "presentation slide"
+    },
+    {
+      "id": "course-advanced-management",
+      "imageUrl": "https://picsum.photos/seed/advanced-management/600/400",
+      "description": "Manager leading a team",
+      "imageHint": "manager team"
+    },
+    {
+      "id": "course-recruitment-techniques-2",
+      "imageUrl": "https://picsum.photos/seed/recruitment-techniques-2/600/400",
+      "description": "Person reviewing resumes",
+      "imageHint": "reviewing resumes"
+    },
+    {
+      "id": "course-logistics-budget",
+      "imageUrl": "https://picsum.photos/seed/logistics-budget/600/400",
+      "description": "Warehouse with boxes and a calculator",
+      "imageHint": "warehouse calculator"
+    },
+    {
+      "id": "course-stock-management",
+      "imageUrl": "https://images.unsplash.com/photo-1716016435588-f5db7da707d5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3YXJlaG91c2UlMjBzdG9ja3xlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Person counting stock in a warehouse",
+      "imageHint": "warehouse stock"
+    },
+    {
+      "id": "course-operations-management",
+      "imageUrl": "https://picsum.photos/seed/operations-management/600/400",
+      "description": "Factory production line",
+      "imageHint": "factory line"
+    },
+    {
+      "id": "course-warehouse-management",
+      "imageUrl": "https://images.unsplash.com/photo-1652878856788-6dc9e56c9235?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjB3YXJlaG91c2V8ZW58MHx8fHwxNzU5NzMwMjA5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Large modern warehouse interior",
+      "imageHint": "modern warehouse"
+    },
+    {
+      "id": "course-supply-chain",
+      "imageUrl": "https://images.unsplash.com/photo-1545987796-200677ee1011?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxnbG9iYWwlMjBuZXR3b3JrfGVufDB8fHx8MTc1OTcwNzcwM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Global network graphic",
+      "imageHint": "global network"
+    },
+    {
+      "id": "course-supplier-management",
+      "imageUrl": "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxidXNpbmVzcyUyMGhhbmRzaGFrZXxlbnwwfHx8fDE3NTk3Mzg2ODB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Handshake between business partners",
+      "imageHint": "business handshake"
+    },
+    {
+      "id": "course-strategic-sourcing",
+      "imageUrl": "https://picsum.photos/seed/strategic-sourcing/600/400",
+      "description": "Chess board with business figures",
+      "imageHint": "strategy business"
+    },
+    {
+      "id": "course-transport-management",
+      "imageUrl": "https://images.unsplash.com/photo-1670509295484-df0c2512fec4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx0cnVja3MlMjBoaWdod2F5fGVufDB8fHx8MTc1OTcxMDYyMHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Fleet of trucks on a highway",
+      "imageHint": "trucks highway"
+    },
+    {
+      "id": "course-minerals-environment",
+      "imageUrl": "https://picsum.photos/seed/minerals-environment/600/400",
+      "description": "Reclaimed mining area with new vegetation",
+      "imageHint": "reclaimed mine"
+    },
+    {
+      "id": "course-iso14001",
+      "imageUrl": "https://picsum.photos/seed/iso14001/600/400",
+      "description": "Green leaf with a globe",
+      "imageHint": "green globe"
+    },
+    {
+      "id": "course-geology-non-geologists",
+      "imageUrl": "https://picsum.photos/seed/geology-non-geologists/600/400",
+      "description": "Rock formations in a canyon",
+      "imageHint": "rock canyon"
+    },
+    {
+      "id": "course-geophysics-1",
+      "imageUrl": "https://picsum.photos/seed/geophysics-1/600/400",
+      "description": "Seismic wave visualization",
+      "imageHint": "seismic wave"
+    },
+    {
+      "id": "course-geophysics-2",
+      "imageUrl": "https://images.unsplash.com/photo-1739470413006-9960643673aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c2Vpc21pYyUyMGRhdGF8ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Computer screen with processed seismic data",
+      "imageHint": "seismic data"
+    },
+    {
+      "id": "course-geophysics-3",
+      "imageUrl": "https://picsum.photos/seed/geophysics-3/600/400",
+      "description": "3D model of underground strata",
+      "imageHint": "underground model"
+    },
+    {
+      "id": "course-drilling",
+      "imageUrl": "https://picsum.photos/seed/drilling/600/400",
+      "description": "Onshore drilling rig",
+      "imageHint": "drilling rig"
+    },
+    {
+      "id": "course-production-planning",
+      "imageUrl": "https://picsum.photos/seed/production-planning/600/400",
+      "description": "Person working on a production schedule",
+      "imageHint": "production schedule"
+    },
+    {
+      "id": "course-seismic-data",
+      "imageUrl": "https://picsum.photos/seed/seismic-data/600/400",
+      "description": "Colorful seismic data display",
+      "imageHint": "seismic display"
+    },
+    {
+      "id": "course-risk-management-mining",
+      "imageUrl": "https://picsum.photos/seed/risk-management-mining/600/400",
+      "description": "Hard hat and safety plan for a mine",
+      "imageHint": "mine safety"
+    },
+    {
+      "id": "course-formation-evaluation",
+      "imageUrl": "https://picsum.photos/seed/formation-evaluation/600/400",
+      "description": "Well log chart with different curves",
+      "imageHint": "well log"
+    },
+    {
+      "id": "course-reservoir-characterization",
+      "imageUrl": "https://picsum.photos/seed/reservoir-characterization/600/400",
+      "description": "3D geological model of a reservoir",
+      "imageHint": "geological model"
+    },
+    {
+      "id": "course-angola-oil-tax",
+      "imageUrl": "https://images.unsplash.com/photo-1750574991407-eb7ac5e56167?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxBbmdvbGElMjBvaWx8ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Angolan flag with an oil rig",
+      "imageHint": "Angola oil"
+    },
+    {
+      "id": "course-reservoir-geophysics",
+      "imageUrl": "https://picsum.photos/seed/reservoir-geophysics/600/400",
+      "description": "Geophysical data overlaying a reservoir model",
+      "imageHint": "geophysics model"
+    },
+    {
+      "id": "course-field-geology",
+      "imageUrl": "https://picsum.photos/seed/field-geology/600/400",
+      "description": "Geologist examining a rock outcrop",
+      "imageHint": "geologist rock"
+    },
+    {
+      "id": "course-geochemistry",
+      "imageUrl": "https://images.unsplash.com/photo-1694230155228-cdde50083573?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjaGVtaXN0cnklMjBsYWJ8ZW58MHx8fHwxNzU5NzQxMDU4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Laboratory with chemical analysis equipment",
+      "imageHint": "chemistry lab"
+    },
+    {
+      "id": "course-irmm",
+      "imageUrl": "https://picsum.photos/seed/irmm/600/400",
+      "description": "Team of engineers and geologists collaborating",
+      "imageHint": "engineers collaborating"
+    },
+    {
+      "id": "course-seismic-interpretation",
+      "imageUrl": "https://picsum.photos/seed/seismic-interpretation/600/400",
+      "description": "Person pointing at a seismic section on a screen",
+      "imageHint": "seismic screen"
+    },
+    {
+      "id": "course-angolan-basins",
+      "imageUrl": "https://picsum.photos/seed/angolan-basins/600/400",
+      "description": "Geological map of West Africa",
+      "imageHint": "geological map"
+    },
+    {
+      "id": "course-oil-contracts",
+      "imageUrl": "https://picsum.photos/seed/oil-contracts/600/400",
+      "description": "Signing a contract with an oil barrel background",
+      "imageHint": "contract oil"
+    },
+    {
+      "id": "course-wellsite-geology",
+      "imageUrl": "https://picsum.photos/seed/wellsite-geology/600/400",
+      "description": "Geologist at a drilling site looking at rock samples",
+      "imageHint": "geologist drilling"
+    },
+    {
+      "id": "course-core-analysis",
+      "imageUrl": "https://picsum.photos/seed/core-analysis/600/400",
+      "description": "Rock core samples laid out for analysis",
+      "imageHint": "core samples"
+    },
+    {
+      "id": "course-sandstone-reservoirs",
+      "imageUrl": "https://images.unsplash.com/photo-1555181937-efe4e074a301?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzYW5kc3RvbmUlMjB0ZXh0dXJlfGVufDB8fHx8MTc1OTc3NDk0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Close-up of a sandstone rock texture",
+      "imageHint": "sandstone texture"
+    },
+    {
+      "id": "course-carbonate-reservoirs",
+      "imageUrl": "https://picsum.photos/seed/carbonate-reservoirs/600/400",
+      "description": "Fossiliferous limestone rock texture",
+      "imageHint": "limestone texture"
+    },
+    {
+      "id": "course-pump-alignment",
+      "imageUrl": "https://picsum.photos/seed/pump-alignment/600/400",
+      "description": "Laser alignment tool on an industrial pump",
+      "imageHint": "laser alignment"
+    },
+    {
+      "id": "course-oil-corrosion",
+      "imageUrl": "https://picsum.photos/seed/oil-corrosion/600/400",
+      "description": "Corroded pipeline section",
+      "imageHint": "corroded pipe"
+    },
+    {
+      "id": "course-inspection-calibration",
+      "imageUrl": "https://picsum.photos/seed/inspection-calibration/600/400",
+      "description": "Technician calibrating a pressure gauge",
+      "imageHint": "technician calibrating"
+    },
+    {
+      "id": "course-valve-maintenance",
+      "imageUrl": "https://images.unsplash.com/photo-1701448149957-b96dbd1926ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxpbmR1c3RyaWFsJTIwdmFsdmVzfGVufDB8fHx8MTc1OTc3NzUxM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Industrial valves in a workshop",
+      "imageHint": "industrial valves"
+    },
+    {
+      "id": "course-equipment-inspection",
+      "imageUrl": "https://picsum.photos/seed/equipment-inspection/600/400",
+      "description": "Inspector with a checklist looking at machinery",
+      "imageHint": "inspector machinery"
+    },
+    {
+      "id": "course-pipe-coating",
+      "imageUrl": "https://picsum.photos/seed/pipe-coating/600/400",
+      "description": "Newly coated industrial pipes",
+      "imageHint": "coated pipes"
+    },
+    {
+      "id": "course-rov",
+      "imageUrl": "https://picsum.photos/seed/rov/600/400",
+      "description": "ROV submarine exploring underwater",
+      "imageHint": "ROV underwater"
+    },
+    {
+      "id": "course-subsea-production",
+      "imageUrl": "https://picsum.photos/seed/subsea-production/600/400",
+      "description": "Subsea christmas tree on the seabed",
+      "imageHint": "subsea equipment"
+    },
+    {
+      "id": "course-oil-accounting",
+      "imageUrl": "https://picsum.photos/seed/oil-accounting/600/400",
+      "description": "Ledger book with an oil barrel icon",
+      "imageHint": "ledger oil"
+    },
+    {
+      "id": "course-treasury-management-2",
+      "imageUrl": "https://images.unsplash.com/photo-1565126035964-29e1c95b13f9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxiYW5rJTIwdmF1bHR8ZW58MHx8fHwxNzU5NzA4OTYyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Bank vault with gold bars",
+      "imageHint": "bank vault"
+    },
+    {
+      "id": "course-general-accounting",
+      "imageUrl": "https://picsum.photos/seed/general-accounting/600/400",
+      "description": "Person working on accounts with a calculator",
+      "imageHint": "accounting calculator"
+    },
+    {
+      "id": "course-financial-audit",
+      "imageUrl": "https://picsum.photos/seed/financial-audit/600/400",
+      "description": "Auditor reviewing financial statements with a magnifying glass",
+      "imageHint": "auditor review"
+    },
+    {
+      "id": "course-taxation",
+      "imageUrl": "https://images.unsplash.com/photo-1563198804-b144dfc1661c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx0YXglMjBmb3Jtc3xlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Tax forms and a pen",
+      "imageHint": "tax forms"
+    },
+    {
+      "id": "course-corp-finance-management",
+      "imageUrl": "https://picsum.photos/seed/corp-finance-management/600/400",
+      "description": "Skyscraper buildings representing corporate finance",
+      "imageHint": "corporate finance"
+    },
+    {
+      "id": "course-investment-projects",
+      "imageUrl": "https://images.unsplash.com/photo-1609867271967-a82f85c48531?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjb25zdHJ1Y3Rpb24lMjBwcm9qZWN0fGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Construction site of a new project",
+      "imageHint": "construction project"
+    },
+    {
+      "id": "course-sales-techniques",
+      "imageUrl": "https://picsum.photos/seed/sales-techniques/600/400",
+      "description": "Salesperson shaking hands with a client",
+      "imageHint": "sales handshake"
+    },
+    {
+      "id": "course-investment-analysis",
+      "imageUrl": "https://images.unsplash.com/photo-1579225663317-c0251b4369bc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzdG9jayUyMGNoYXJ0c3xlbnwwfHx8fDE3NTk3MjE0MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Stock market charts on a screen",
+      "imageHint": "stock charts"
+    },
+    {
+      "id": "course-technical-writing",
+      "imageUrl": "https://images.unsplash.com/photo-1715929602089-552e57a48810?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8dGVjaG5pY2FsJTIwbWFudWFsfGVufDB8fHx8MTc1OTc2NzE2NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Person writing a technical manual",
+      "imageHint": "technical manual"
+    },
+    {
+      "id": "course-financial-management",
+      "imageUrl": "https://picsum.photos/seed/financial-management/600/400",
+      "description": "A flowchart of financial decisions",
+      "imageHint": "finance flowchart"
+    },
+    {
+      "id": "course-capital-markets",
+      "imageUrl": "https://images.unsplash.com/photo-1534469650761-fce6cc26ac0d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzdG9jayUyMGV4Y2hhbmdlfGVufDB8fHx8MTc1OTc3NDk0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Image of a stock exchange trading floor",
+      "imageHint": "stock exchange"
+    },
+    {
+      "id": "course-financial-risk-management",
+      "imageUrl": "https://picsum.photos/seed/financial-risk-management/600/400",
+      "description": "Dominoes falling, one being stopped by a hand",
+      "imageHint": "stopping risk"
+    },
+    {
+      "id": "course-hr-management",
+      "imageUrl": "https://picsum.photos/seed/hr-management/600/400",
+      "description": "Human Resources flowchart with employee icons",
+      "imageHint": "HR flowchart"
+    },
+    {
+      "id": "course-accounting-for-non-accountants-2",
+      "imageUrl": "https://picsum.photos/seed/accounting-for-non-accountants-2/600/400",
+      "description": "Simple drawing explaining debits and credits",
+      "imageHint": "simple accounting"
+    },
+    {
+      "id": "course-quality-management",
+      "imageUrl": "https://picsum.photos/seed/quality-management/600/400",
+      "description": "A quality check stamp on a document",
+      "imageHint": "quality stamp"
+    },
+    {
+      "id": "course-fleet-management",
+      "imageUrl": "https://picsum.photos/seed/fleet-management/600/400",
+      "description": "GPS map showing a fleet of vehicles",
+      "imageHint": "GPS fleet"
+    },
+    {
+      "id": "course-intro-pm-non-pms",
+      "imageUrl": "https://picsum.photos/seed/intro-pm-non-pms/600/400",
+      "description": "People collaborating around a project board",
+      "imageHint": "project board"
+    },
+    {
+      "id": "course-project-risk-management",
+      "imageUrl": "https://picsum.photos/seed/project-risk-management/600/400",
+      "description": "A path with multiple diverging options and question marks",
+      "imageHint": "path options"
+    },
+    {
+      "id": "course-iso21500",
+      "imageUrl": "https://picsum.photos/seed/iso21500/600/400",
+      "description": "ISO certification logo with project management icons",
+      "imageHint": "ISO project"
+    },
+    {
+      "id": "course-strategic-project-management",
+      "imageUrl": "https://picsum.photos/seed/strategic-project-management/600/400",
+      "description": "A compass pointing towards 'strategy'",
+      "imageHint": "strategy compass"
+    },
+    {
+      "id": "course-budget-planning",
+      "imageUrl": "https://images.unsplash.com/photo-1729488368227-1f1eee39ff20?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxidWRnZXQlMjBjaGFydHxlbnwwfHx8fDE3NTk3Njk2MDZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "A pie chart for a budget",
+      "imageHint": "budget chart"
+    },
+    {
+      "id": "course-financial-forecasting",
+      "imageUrl": "https://picsum.photos/seed/financial-forecasting/600/400",
+      "description": "A crystal ball showing financial charts",
+      "imageHint": "finance crystalball"
+    },
+    {
+      "id": "course-feasibility-study",
+      "imageUrl": "https://picsum.photos/seed/feasibility-study/600/400",
+      "description": "A checklist for a feasibility study",
+      "imageHint": "feasibility checklist"
+    },
+    {
+      "id": "course-debt-management",
+      "imageUrl": "https://picsum.photos/seed/debt-management/600/400",
+      "description": "A person cutting up a credit card",
+      "imageHint": "cutting debt"
+    },
+    {
+      "id": "course-excel-finance",
+      "imageUrl": "https://picsum.photos/seed/excel-finance/600/400",
+      "description": "Excel spreadsheet with financial formulas",
+      "imageHint": "excel formulas"
+    },
+    {
+      "id": "course-accounting-audit",
+      "imageUrl": "https://picsum.photos/seed/accounting-audit/600/400",
+      "description": "An auditor's desk with financial papers",
+      "imageHint": "auditor desk"
+    },
+    {
+      "id": "course-general-accounting-1",
+      "imageUrl": "https://picsum.photos/seed/general-accounting-1/600/400",
+      "description": "An accounting ledger book",
+      "imageHint": "accounting ledger"
+    },
+    {
+      "id": "course-general-accounting-2",
+      "imageUrl": "https://picsum.photos/seed/general-accounting-2/600/400",
+      "description": "Final balance sheet report",
+      "imageHint": "balance sheet"
+    },
+    {
+      "id": "course-analytical-accounting",
+      "imageUrl": "https://picsum.photos/seed/analytical-accounting/600/400",
+      "description": "Cost breakdown chart",
+      "imageHint": "cost chart"
+    },
+    {
+      "id": "course-angolan-tax-regime",
+      "imageUrl": "https://picsum.photos/seed/angolan-tax-regime/600/400",
+      "description": "Tax document with the flag of Angola",
+      "imageHint": "Angola tax"
+    },
+    {
+      "id": "course-balanced-scorecard",
+      "imageUrl": "https://picsum.photos/seed/balanced-scorecard/600/400",
+      "description": "A balanced scale with different business icons",
+      "imageHint": "business scale"
+    },
+    {
+      "id": "course-ms-project",
+      "imageUrl": "https://picsum.photos/seed/ms-project/600/400",
+      "description": "Gantt chart in MS Project software",
+      "imageHint": "Gantt chart"
+    },
+    {
+      "id": "course-excel-advanced",
+      "imageUrl": "https://images.unsplash.com/photo-1597386601945-8980df52c3dc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxFeGNlbCUyMGRhc2hib2FyZHxlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Complex Excel dashboard with pivot tables",
+      "imageHint": "Excel dashboard"
+    },
+    {
+      "id": "course-digital-marketing",
+      "imageUrl": "https://picsum.photos/seed/digital-marketing/600/400",
+      "description": "Digital marketing concept with icons",
+      "imageHint": "marketing icons"
+    },
+    {
+      "id": "course-autocad-3d",
+      "imageUrl": "https://picsum.photos/seed/autocad-3d/600/400",
+      "description": "3D wireframe model in AutoCAD",
+      "imageHint": "3D wireframe"
+    },
+    {
+      "id": "course-primavera",
+      "imageUrl": "https://images.unsplash.com/photo-1692162708361-d172ee4f0129?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwcm9qZWN0JTIwc2NoZWR1bGV8ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Primavera P6 project schedule",
+      "imageHint": "project schedule"
+    },
+    {
+      "id": "course-primavera-payroll",
+      "imageUrl": "https://picsum.photos/seed/primavera-payroll/600/400",
+      "description": "Payroll screen in Primavera software",
+      "imageHint": "payroll software"
+    },
+    {
+      "id": "course-sap-hcm",
+      "imageUrl": "https://images.unsplash.com/photo-1701318134643-89f62a0d78f9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxTQVAlMjBzY3JlZW58ZW58MHx8fHwxNzU5Nzc0OTQ5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "SAP Human Capital Management screen",
+      "imageHint": "SAP screen"
+    },
+    {
+      "id": "course-excel-intermediate",
+      "imageUrl": "https://picsum.photos/seed/excel-intermediate/600/400",
+      "description": "Excel sheet with VLOOKUP function",
+      "imageHint": "Excel function"
+    },
+    {
+      "id": "course-excel-advanced-2",
+      "imageUrl": "https://picsum.photos/seed/excel-advanced-2/600/400",
+      "description": "Advanced Excel charts and pivot table",
+      "imageHint": "Excel charts"
+    },
+    {
+      "id": "course-excel-basic",
+      "imageUrl": "https://picsum.photos/seed/excel-basic/600/400",
+      "description": "A simple Excel spreadsheet",
+      "imageHint": "Excel sheet"
+    },
+    {
+      "id": "course-sap-basis-2",
+      "imageUrl": "https://picsum.photos/seed/sap-basis-2/600/400",
+      "description": "SAP system administration console",
+      "imageHint": "SAP console"
+    },
+    {
+      "id": "course-network-admin",
+      "imageUrl": "https://images.unsplash.com/photo-1667984550707-bf0beecaa082?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxuZXR3b3JrJTIwc2VydmVyc3xlbnwwfHx8fDE3NTk3NzgyMzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Network administrator managing servers",
+      "imageHint": "network servers"
+    },
+    {
+      "id": "course-it-security",
+      "imageUrl": "https://images.unsplash.com/photo-1610168388506-27746a9332e6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxmaXJld2FsbCUyMG5ldHdvcmt8ZW58MHx8fHwxNzU5Nzc5MjU2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "A firewall graphic protecting a network",
+      "imageHint": "firewall network"
+    },
+    {
+      "id": "course-word",
+      "imageUrl": "https://picsum.photos/seed/word/600/400",
+      "description": "A professional document being edited in Word",
+      "imageHint": "Word document"
+    },
+    {
+      "id": "course-outlook",
+      "imageUrl": "https://picsum.photos/seed/outlook/600/400",
+      "description": "Outlook calendar and inbox view",
+      "imageHint": "Outlook calendar"
+    },
+    {
+      "id": "course-access",
+      "imageUrl": "https://picsum.photos/seed/access/600/400",
+      "description": "Microsoft Access database relationship view",
+      "imageHint": "database relationship"
+    },
+    {
+      "id": "course-teams",
+      "imageUrl": "https://images.unsplash.com/photo-1586985564259-6211deb4c122?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8dmlkZW8lMjBjb25mZXJlbmNlfGVufDB8fHx8MTc1OTY5NzYxMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Microsoft Teams video conference call",
+      "imageHint": "video conference"
+    },
+    {
+      "id": "course-office",
+      "imageUrl": "https://picsum.photos/seed/office/600/400",
+      "description": "Microsoft Office suite logos",
+      "imageHint": "Office logos"
+    },
+    {
+      "id": "course-primavera-2",
+      "imageUrl": "https://picsum.photos/seed/primavera-2/600/400",
+      "description": "Complex project plan in Primavera",
+      "imageHint": "complex project"
+    },
+    {
+      "id": "course-sap-ipl-1",
+      "imageUrl": "https://picsum.photos/seed/sap-ipl-1/600/400",
+      "description": "Basic SAP transaction screen",
+      "imageHint": "SAP transaction"
+    },
+    {
+      "id": "course-sap-ipl-2",
+      "imageUrl": "https://picsum.photos/seed/sap-ipl-2/600/400",
+      "description": "Advanced SAP reporting screen",
+      "imageHint": "SAP report"
+    },
+    {
+      "id": "course-hardware",
+      "imageUrl": "https://images.unsplash.com/photo-1653132491302-fbee23efb785?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjb21wdXRlciUyMG1vdGhlcmJvYXJkfGVufDB8fHx8MTc1OTc2NTQ2OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Computer motherboard and components",
+      "imageHint": "computer motherboard"
+    },
+    {
+      "id": "course-structured-cabling",
+      "imageUrl": "https://images.unsplash.com/photo-1591808216268-ce0b82787efe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzZXJ2ZXIlMjByYWNrfGVufDB8fHx8MTc1OTcyNjc3NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Organized server rack with structured cabling",
+      "imageHint": "server rack"
+    },
+    {
+      "id": "course-it-security-2",
+      "imageUrl": "https://images.unsplash.com/photo-1697382608786-bcf4c113b86e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxkaWdpdGFsJTIwcGFkbG9ja3xlbnwwfHx8fDE3NTk3Nzg2NTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Padlock on a digital screen",
+      "imageHint": "digital padlock"
+    },
+    {
+      "id": "course-forklift-pettibone",
+      "imageUrl": "https://picsum.photos/seed/forklift-pettibone/600/400",
+      "description": "Pettibone forklift moving material",
+      "imageHint": "forklift material"
+    },
+    {
+      "id": "course-industrial-instrumentation",
+      "imageUrl": "https://picsum.photos/seed/industrial-instrumentation/600/400",
+      "description": "Control panel with industrial gauges",
+      "imageHint": "control panel"
+    },
+    {
+      "id": "course-industrial-welding",
+      "imageUrl": "https://picsum.photos/seed/industrial-welding/600/400",
+      "description": "Welder at work with sparks",
+      "imageHint": "welder sparks"
+    },
+    {
+      "id": "course-industrial-painting",
+      "imageUrl": "https://picsum.photos/seed/industrial-painting/600/400",
+      "description": "Industrial painter spray painting a large structure",
+      "imageHint": "spray painting"
+    },
+    {
+      "id": "course-process-control",
+      "imageUrl": "https://picsum.photos/seed/process-control/600/400",
+      "description": "PID control loop diagram",
+      "imageHint": "PID diagram"
+    },
+    {
+      "id": "course-industrial-automation",
+      "imageUrl": "https://images.unsplash.com/photo-1647427060118-4911c9821b82?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxyb2JvdGljJTIwYXJtfGVufDB8fHx8MTc1OTc4NDAwN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Robotic arm on a production line",
+      "imageHint": "robotic arm"
+    },
+    {
+      "id": "course-production-operator",
+      "imageUrl": "https://picsum.photos/seed/production-operator/600/400",
+      "description": "Operator monitoring a machine",
+      "imageHint": "operator machine"
+    },
+    {
+      "id": "course-control-room-operator",
+      "imageUrl": "https://images.unsplash.com/photo-1589186161289-9eb8898086df?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y29udHJvbCUyMHJvb218ZW58MHx8fHwxNzU5Nzc0OTQ5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Control room with multiple screens",
+      "imageHint": "control room"
+    },
+    {
+      "id": "course-plc",
+      "imageUrl": "https://images.unsplash.com/photo-1731834451058-6042dc488f3e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxQTEMlMjBjb250cm9sbGVyfGVufDB8fHx8MTc1OTc2OTYxM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "PLC controller with wiring",
+      "imageHint": "PLC controller"
+    },
+    {
+      "id": "course-industrial-maintenance",
+      "imageUrl": "https://images.unsplash.com/photo-1741418570708-498ebc098b96?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx0ZWNobmljaWFuJTIwbWFpbnRlbmFuY2V8ZW58MHx8fHwxNzU5NzY1NTk1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Technician maintaining industrial equipment",
+      "imageHint": "technician maintenance"
+    },
+    {
+      "id": "course-quality-management-2",
+      "imageUrl": "https://picsum.photos/seed/quality-management-2/600/400",
+      "description": "ISO 9001 certification badge",
+      "imageHint": "ISO badge"
+    },
+    {
+      "id": "course-electrical-safety",
+      "imageUrl": "https://picsum.photos/seed/electrical-safety/600/400",
+      "description": "Lockout/tagout (LOTO) on an electrical panel",
+      "imageHint": "LOTO safety"
+    },
+    {
+      "id": "course-process-safety",
+      "imageUrl": "https://picsum.photos/seed/process-safety/600/400",
+      "description": "HAZOP analysis diagram",
+      "imageHint": "HAZOP diagram"
+    },
+    {
+      "id": "course-valve-maintenance-2",
+      "imageUrl": "https://picsum.photos/seed/valve-maintenance-2/600/400",
+      "description": "Cutaway view of an industrial valve",
+      "imageHint": "valve cutaway"
+    },
+    {
+      "id": "course-maintenance-management-control",
+      "imageUrl": "https://images.unsplash.com/photo-1617131633412-39437b40a16b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxtYWludGVuYW5jZSUyMHNjaGVkdWxlfGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Maintenance schedule on a CMMS software",
+      "imageHint": "maintenance schedule"
+    },
+    {
+      "id": "course-process-kpi",
+      "imageUrl": "https://images.unsplash.com/photo-1623543965216-64e0dae5bfc0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxLUEklMjBkYXNoYm9hcmR8ZW58MHx8fHwxNzU5Nzc0OTQ5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Dashboard with Key Performance Indicators",
+      "imageHint": "KPI dashboard"
+    },
+    {
+      "id": "course-industrial-waste",
+      "imageUrl": "https://images.unsplash.com/photo-1511189226387-984ec4ffea80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxyZWN5Y2xpbmclMjBiaW5zfGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Recycling symbols on industrial bins",
+      "imageHint": "recycling bins"
+    },
+    {
+      "id": "course-industrial-projects",
+      "imageUrl": "https://picsum.photos/seed/industrial-projects/600/400",
+      "description": "Blueprint of an industrial plant",
+      "imageHint": "industrial blueprint"
+    },
+    {
+      "id": "course-machine-maintenance",
+      "imageUrl": "https://images.unsplash.com/photo-1619505372149-07875c35b313?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxtZWNoYW5pYyUyMGVuZ2luZXxlbnwwfHx8fDE3NTk2ODEwOTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Mechanic working on a large machine engine",
+      "imageHint": "mechanic engine"
+    },
+    {
+      "id": "course-industrial-safety",
+      "imageUrl": "https://picsum.photos/seed/industrial-safety/600/400",
+      "description": "Safety signs in a factory",
+      "imageHint": "safety signs"
+    },
+    {
+      "id": "course-machine-safety-iso",
+      "imageUrl": "https://picsum.photos/seed/machine-safety-iso/600/400",
+      "description": "Safety guard on a machine",
+      "imageHint": "machine guard"
+    },
+    {
+      "id": "course-client-management",
+      "imageUrl": "https://images.unsplash.com/photo-1584301952952-8544e5ae7a26?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxDUk0lMjBkYXNoYm9hcmR8ZW58MHx8fHwxNzU5NzYwMjA3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "CRM dashboard showing client data",
+      "imageHint": "CRM dashboard"
+    },
+    {
+      "id": "course-collections-management",
+      "imageUrl": "https://picsum.photos/seed/collections-management/600/400",
+      "description": "Person on a phone call discussing finances",
+      "imageHint": "finance call"
+    },
+    {
+      "id": "course-sales-techniques-2",
+      "imageUrl": "https://images.unsplash.com/photo-1607703703674-df96af81dffa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzYWxlcyUyMGZ1bm5lbHxlbnwwfHx8fDE3NTk3NzQ5NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Sales funnel diagram",
+      "imageHint": "sales funnel"
+    },
+    {
+      "id": "course-negotiation-techniques-2",
+      "imageUrl": "https://picsum.photos/seed/negotiation-techniques-2/600/400",
+      "description": "Weighing scales balancing two options",
+      "imageHint": "balancing options"
+    },
+    {
+      "id": "course-supply-chain-2",
+      "imageUrl": "https://images.unsplash.com/photo-1583686298564-46fbffda0707?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb250YWluZXIlMjBzaGlwfGVufDB8fHx8MTc1OTcyNjYwM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Container ship at a port",
+      "imageHint": "container ship"
+    },
+    {
+      "id": "course-supplier-management-2",
+      "imageUrl": "https://picsum.photos/seed/supplier-management-2/600/400",
+      "description": "Checklist for supplier evaluation",
+      "imageHint": "supplier checklist"
+    },
+    {
+      "id": "course-complaint-management-2",
+      "imageUrl": "https://images.unsplash.com/photo-1521898284481-a5ec348cb555?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjdXN0b21lciUyMHN1cHBvcnR8ZW58MHx8fHwxNzU5NjczODIyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Customer support agent talking to a client",
+      "imageHint": "customer support"
+    },
+    {
+      "id": "course-marketing-management",
+      "imageUrl": "https://images.unsplash.com/photo-1532622785990-d2c36a76f5a6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxtYXJrZXRpbmclMjBwbGFufGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Marketing plan on a whiteboard",
+      "imageHint": "marketing plan"
+    },
+    {
+      "id": "course-digital-marketing-2",
+      "imageUrl": "https://images.unsplash.com/photo-1755541516450-644adb257ad0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MXwxfHNlYXJjaHwxfHxzb2NpYWwlMjBtZWRpYXxlbnwwfHx8fDE3NTk3Njc1ODJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Social media icons on a screen",
+      "imageHint": "social media"
+    },
+    {
+      "id": "course-roi-marketing",
+      "imageUrl": "https://images.unsplash.com/photo-1727522974735-44251dfe61b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Uk9JJTIwY2hhcnR8ZW58MHx8fHwxNzU5Nzc0OTQ5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Chart showing Return on Investment",
+      "imageHint": "ROI chart"
+    },
+    {
+      "id": "course-commercial-management-2",
+      "imageUrl": "https://picsum.photos/seed/commercial-management-2/600/400",
+      "description": "Sales team analyzing performance charts",
+      "imageHint": "sales performance"
+    },
+    {
+      "id": "course-client-management-2",
+      "imageUrl": "https://images.unsplash.com/photo-1523975864490-174dd4d9a41e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjdXN0b21lciUyMGpvdXJuZXl8ZW58MHx8fHwxNzU5NzY2NzQwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Customer journey map",
+      "imageHint": "customer journey"
+    },
+    {
+      "id": "course-collections-management-2",
+      "imageUrl": "https://picsum.photos/seed/collections-management-2/600/400",
+      "description": "Invoice with a past due stamp",
+      "imageHint": "pastdue invoice"
+    },
+    {
+      "id": "course-sales-techniques-3",
+      "imageUrl": "https://picsum.photos/seed/sales-techniques-3/600/400",
+      "description": "Salesperson closing a deal",
+      "imageHint": "closing deal"
+    },
+    {
+      "id": "course-negotiation-techniques-2",
+      "imageUrl": "https://picsum.photos/seed/negotiation-techniques-2/600/400",
+      "description": "Weighing scales balancing two options",
+      "imageHint": "balancing options"
+    },
+    {
+      "id": "course-supply-chain-3",
+      "imageUrl": "https://picsum.photos/seed/supply-chain-3/600/400",
+      "description": "Drone delivering a package",
+      "imageHint": "drone delivery"
+    },
+    {
+      "id": "course-supplier-management-3",
+      "imageUrl": "https://picsum.photos/seed/supplier-management-3/600/400",
+      "description": "Supplier scorecard with performance ratings",
+      "imageHint": "supplier scorecard"
+    },
+    {
+      "id": "course-english-elementary",
+      "imageUrl": "https://picsum.photos/seed/english-elementary/600/400",
+      "description": "A-B-C blocks for learning",
+      "imageHint": "learning blocks"
+    },
+    {
+      "id": "course-english-pre-intermediate",
+      "imageUrl": "https://picsum.photos/seed/english-pre-intermediate/600/400",
+      "description": "Two people having a simple conversation",
+      "imageHint": "simple conversation"
+    },
+    {
+      "id": "course-english-intermediate",
+      "imageUrl": "https://picsum.photos/seed/english-intermediate/600/400",
+      "description": "A person reading a book in English",
+      "imageHint": "reading english"
+    },
+    {
+      "id": "course-english-upper-intermediate",
+      "imageUrl": "https://picsum.photos/seed/english-upper-intermediate/600/400",
+      "description": "A group discussion in a business setting",
+      "imageHint": "business discussion"
+    },
+    {
+      "id": "course-english-advanced",
+      "imageUrl": "https://picsum.photos/seed/english-advanced/600/400",
+      "description": "A person giving a speech at a podium",
+      "imageHint": "giving speech"
     }
   ]
 }
