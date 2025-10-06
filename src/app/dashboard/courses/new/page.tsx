@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, forwardRef, ComponentProps } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -11,7 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, Sparkles, Wand2 } from 'lucide-react';
+import { Loader2, Wand2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { generateCourseContentAction } from '@/app/actions';
 import type { GenerateCourseContentOutput } from '@/ai/flows/generate-course-content';
@@ -159,16 +159,16 @@ export default function NewCoursePage() {
               )}
 
               <div className="space-y-4">
-                <Input label="ID do Curso" defaultValue={generatedContent.courseId} readOnly />
-                <Input label="Duração" defaultValue={generatedContent.duration} readOnly />
-                <Textarea label="Objetivo Geral" defaultValue={generatedContent.generalObjective} rows={4} />
-                <Textarea label="O que vai aprender (separado por nova linha)" defaultValue={generatedContent.whatYouWillLearn.join('\\n')} rows={5} />
+                <InputWithLabel label="ID do Curso" defaultValue={generatedContent.courseId} readOnly />
+                <InputWithLabel label="Duração" defaultValue={generatedContent.duration} readOnly />
+                <TextareaWithLabel label="Objetivo Geral" defaultValue={generatedContent.generalObjective} rows={4} />
+                <TextareaWithLabel label="O que vai aprender (separado por nova linha)" defaultValue={generatedContent.whatYouWillLearn.join('\n')} rows={5} />
 
                 <div>
                   <h4 className="font-semibold mb-2">Módulos</h4>
                   <div className="space-y-2">
                     {generatedContent.modules.map((module, index) => (
-                      <Input key={index} label={`Módulo ${index + 1}`} defaultValue={`${module.title}: ${module.topics.join(', ')}`} />
+                      <InputWithLabel key={index} label={`Módulo ${index + 1}`} defaultValue={`${module.title}: ${module.topics.join(', ')}`} />
                     ))}
                   </div>
                 </div>
@@ -186,9 +186,9 @@ export default function NewCoursePage() {
 }
 
 // Helper component to add a label to the Input
-const InputWithLabel = React.forwardRef<
+const InputWithLabel = forwardRef<
   HTMLInputElement,
-  React.ComponentProps<typeof Input> & { label: string }
+  ComponentProps<typeof Input> & { label: string }
 >(({ label, ...props }, ref) => (
   <div className="space-y-2">
     <FormLabel>{label}</FormLabel>
@@ -197,9 +197,9 @@ const InputWithLabel = React.forwardRef<
 ));
 InputWithLabel.displayName = "InputWithLabel";
 
-const TextareaWithLabel = React.forwardRef<
+const TextareaWithLabel = forwardRef<
   HTMLTextAreaElement,
-  React.ComponentProps<typeof Textarea> & { label: string }
+  ComponentProps<typeof Textarea> & { label: string }
 >(({ label, ...props }, ref) => (
     <div className="space-y-2">
     <FormLabel>{label}</FormLabel>

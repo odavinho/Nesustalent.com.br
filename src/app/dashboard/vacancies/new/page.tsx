@@ -168,9 +168,9 @@ export default function NewVacancyPage() {
             <div className="mt-8 pt-6 border-t space-y-6">
               <h3 className="font-headline text-2xl">Descrição Gerada</h3>
               <div className="space-y-4">
-                <Textarea label="Descrição Geral" defaultValue={generatedContent.description} rows={4} />
-                <Textarea label="Responsabilidades (separado por nova linha)" defaultValue={generatedContent.responsibilities.join('\\n')} rows={6} />
-                <Textarea label="Requisitos (separado por nova linha)" defaultValue={generatedContent.requirements.join('\\n')} rows={6} />
+                <TextareaWithLabel label="Descrição Geral" defaultValue={generatedContent.description} rows={4} />
+                <TextareaWithLabel label="Responsabilidades (separado por nova linha)" defaultValue={generatedContent.responsibilities.join('\n')} rows={6} />
+                <TextareaWithLabel label="Requisitos (separado por nova linha)" defaultValue={generatedContent.requirements.join('\n')} rows={6} />
               </div>
               <Button onClick={handleSaveVacancy} className="w-full bg-green-600 hover:bg-green-700">
                 Salvar Vaga
