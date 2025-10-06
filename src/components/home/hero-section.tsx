@@ -35,7 +35,7 @@ export function HeroSection() {
           </Button>
           <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-black w-full sm:w-auto" asChild>
             <Link href="/recruitment">
-              Ver Vagas
+              Ver Vagas Abertas
             </Link>
           </Button>
         </div>

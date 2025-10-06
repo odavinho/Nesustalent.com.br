@@ -13,7 +13,7 @@ interface CourseCardProps {
 
 export function CourseCard({ course }: CourseCardProps) {
   const category = courseCategories.find(c => c.id === course.category);
-  const image = PlaceHolderImages.find(p => p.id === category?.imageId);
+  const image = PlaceHolderImages.find(p => p.id === course.imageId);
 
   return (
     <Link href={`/courses/${course.id}`} className="group">

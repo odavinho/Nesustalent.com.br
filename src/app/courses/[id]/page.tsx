@@ -16,7 +16,7 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
   }
 
   const category = courseCategories.find(c => c.id === course.category);
-  const image = PlaceHolderImages.find(p => p.id === category?.imageId);
+  const image = PlaceHolderImages.find(p => p.id === course.imageId);
   const relatedCourses = courses
     .filter(c => c.category === course.category && c.id !== course.id)
     .slice(0, 4);

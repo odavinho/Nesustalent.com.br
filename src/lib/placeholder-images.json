@@ -1,60 +1,6 @@
 {
   "placeholderImages": [
     {
-      "id": "dev-pessoal",
-      "description": "A person giving a presentation in a modern office.",
-      "imageUrl": "https://images.unsplash.com/photo-1690191793789-1bc4e0d18a11?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwcmVzZW50YXRpb24lMjBvZmZpY2V8ZW58MHx8fHwxNzU5NjcyNDc5fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "presentation office"
-    },
-    {
-      "id": "rh-gestao",
-      "description": "A group of professionals collaborating in a meeting.",
-      "imageUrl": "https://images.unsplash.com/photo-1681949103006-70066fb25dfe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx0ZWFtJTIwbWVldGluZ3xlbnwwfHx8fDE3NTk3NTM3MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "team meeting"
-    },
-    {
-      "id": "minerios-petroleo",
-      "description": "An oil rig at sunset.",
-      "imageUrl": "https://images.unsplash.com/photo-1562237548-3c36707230ce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxvaWwlMjByaWd8ZW58MHx8fHwxNzU5NzI3OTYzfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "oil rig"
-    },
-    {
-      "id": "financas-admin",
-      "description": "A desk with financial charts, a calculator, and a laptop.",
-      "imageUrl": "https://images.unsplash.com/photo-1745509267945-b25cbb4d50ef?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmaW5hbmNlJTIwY2hhcnRzfGVufDB8fHx8MTc1OTY1NjE3OXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "finance charts"
-    },
-    {
-      "id": "informatica-it",
-      "description": "A server room with glowing lights.",
-      "imageUrl": "https://images.unsplash.com/photo-1580106815433-a5b1d1d53d85?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzZXJ2ZXIlMjByb29tfGVufDB8fHx8MTc1OTY4ODM1M3ww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "server room"
-    },
-    {
-      "id": "industrial",
-      "description": "A modern factory interior with machinery.",
-      "imageUrl": "https://images.unsplash.com/photo-1654703680722-f80754f1cae1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxmYWN0b3J5JTIwaW5kdXN0cmlhbHxlbnwwfHx8fDE3NTk3NjEzMzN8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "factory industrial"
-    },
-    {
-      "id": "seguranca-trabalho",
-      "description": "A worker with a hard hat and safety vest.",
-      "imageUrl": "https://images.unsplash.com/photo-1681812508281-7589b75b2e46?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzYWZldHklMjB3b3JrZXJ8ZW58MHx8fHwxNzU5NzYxMzMzfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "safety worker"
-    },
-    {
-      "id": "marketing-comercial",
-      "description": "A digital marketing campaign dashboard on a screen.",
-      "imageUrl": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxkaWdpdGFsJTIwbWFya2V0aW5nfGVufDB8fHx8MTc1OTcwMjM2Nnww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "digital marketing"
-    },
-    {
-      "id": "ingles",
-      "description": "Flags of different English-speaking countries.",
-      "imageUrl": "https://images.unsplash.com/photo-1626117734570-9ae934d583f4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxsYW5ndWFnZSUyMGZsYWdzfGVufDB8fHx8MTc1OTc0OTEyNXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "language flags"
-    },
-    {
       "id": "recruitment-hero",
       "description": "A professional handshake closing a deal.",
       "imageUrl": "https://images.unsplash.com/photo-1521791136064-7986c2920216?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMGhhbmRzaGFrZXxlbnwwfHx8fDE3NTk3Mzg2ODB8MA&ixlib=rb-4.1.0&q=80&w=1080",
@@ -65,6 +11,1104 @@
       "description": "An inspiring image of a person looking towards a bright future.",
       "imageUrl": "https://images.unsplash.com/photo-1758682602646-06eb9179a35c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c3VjY2VzcyUyMGZ1dHVyZXxlbnwwfHx8fDE3NTk3NjEzMzN8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "success future"
+    },
+    {
+      "id": "about-hero",
+      "description": "Diverse group of professionals in a modern office.",
+      "imageUrl": "https://images.unsplash.com/photo-1521737852567-6949f3f9f2b5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx0ZWFtJTIwb2ZmaWNlfGVufDB8fHx8MTc1OTcwMjY0M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "team office"
+    },
+    {
+      "id": "location-angola",
+      "description": "Skyline of Luanda, Angola.",
+      "imageUrl": "https://images.unsplash.com/photo-1721840992615-ece406c5c534?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxMdWFuZGElMjBjaXR5fGVufDB8fHx8MTc1OTc3NDk0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "Luanda city"
+    },
+    {
+      "id": "location-brasil",
+      "description": "Beach in Santa Catarina, Brazil.",
+      "imageUrl": "https://images.unsplash.com/photo-1511225771260-3767ac2414fd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8QnJhemlsJTIwYmVhY2h8ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "Brazil beach"
+    },
+    {
+      "id": "location-portugal",
+      "description": "View of Setúbal, Portugal.",
+      "imageUrl": "https://images.unsplash.com/photo-1714218950675-83526ef5ad1f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxQb3J0dWdhbCUyMGNpdHl8ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "Portugal city"
+    },
+    {
+      "id": "avatar-1",
+      "description": "Avatar image for a user testimonial.",
+      "imageUrl": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NTk3NDM1MjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "avatar-2",
+      "description": "Avatar image for a user testimonial.",
+      "imageUrl": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NTk3NDM1MjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "avatar-3",
+      "description": "Avatar image for a user testimonial.",
+      "imageUrl": "https://images.unsplash.com/photo-1535643302794-19c3804b874b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NTk3NDM1MjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "avatar-4",
+      "description": "Avatar image for a user testimonial.",
+      "imageUrl": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NTk3NDM1MjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "course-presentation",
+      "description": "A person giving a presentation.",
+      "imageUrl": "https://images.unsplash.com/photo-1758691736664-0b83e4f1215e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwcmVzZW50YXRpb24lMjBza2lsbHxlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "presentation skill"
+    },
+    {
+      "id": "course-conflict",
+      "description": "Two people having a discussion.",
+      "imageUrl": "https://images.unsplash.com/photo-1632858265907-961f1454ccf6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxkaXNjdXNzaW9uJTIwbWVldGluZ3xlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "discussion meeting"
+    },
+    {
+      "id": "course-emotional",
+      "description": "A person meditating.",
+      "imageUrl": "https://images.unsplash.com/photo-1443059309078-bced073a51c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjYWxtJTIwbWVkaXRhdGlvbnxlbnwwfHx8fDE3NTk2NjcwNjh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "calm meditation"
+    },
+    {
+      "id": "course-service",
+      "description": "A smiling customer service representative.",
+      "imageUrl": "https://images.unsplash.com/photo-1560264418-c4445382edbc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjdXN0b21lciUyMHNlcnZpY2V8ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "customer service"
+    },
+    {
+      "id": "course-complaint",
+      "description": "A person writing on a notepad.",
+      "imageUrl": "https://images.unsplash.com/photo-1648412498608-fa20000ccbc8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx3cml0aW5nJTIwbm90ZXN8ZW58MHx8fHwxNzU5NjY2MzczfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "writing notes"
+    },
+    {
+      "id": "course-leadership",
+      "description": "A group of people looking at a leader.",
+      "imageUrl": "https://images.unsplash.com/photo-1646066490199-a395f7194f9e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx0ZWFtJTIwbGVhZGVyfGVufDB8fHx8MTc1OTc3NDk0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "team leader"
+    },
+    {
+      "id": "course-time",
+      "description": "A clock and a calendar.",
+      "imageUrl": "https://images.unsplash.com/photo-1518281361980-b26bfd556770?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx0aW1lJTIwbWFuYWdlbWVudHxlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "time management"
+    },
+    {
+      "id": "course-creative",
+      "description": "Lightbulbs and sketches.",
+      "imageUrl": "https://images.unsplash.com/photo-1594377157609-5c996118ac7f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjcmVhdGl2ZSUyMGlkZWFzfGVufDB8fHx8MTc1OTc3NDk0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "creative ideas"
+    },
+    {
+      "id": "course-performance",
+      "description": "A graph showing upward trend.",
+      "imageUrl": "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Z3Jvd3RoJTIwY2hhcnR8ZW58MHx8fHwxNzU5NzQyNTE4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "growth chart"
+    },
+    {
+      "id": "course-strategic-hr",
+      "description": "Chess pieces on a board.",
+      "imageUrl": "https://images.unsplash.com/photo-1628434752740-bbce2ec96935?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxzdHJhdGVneSUyMGdhbWV8ZW58MHx8fHwxNzU5NzE0ODMxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "strategy game"
+    },
+    {
+      "id": "course-recruitment",
+      "description": "People shaking hands.",
+      "imageUrl": "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxidXNpbmVzcyUyMGhhbmRzaGFrZXxlbnwwfHx8fDE3NTk3Mzg2ODB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "business handshake"
+    },
+    {
+      "id": "course-executive",
+      "description": "A modern office boardroom.",
+      "imageUrl": "https://images.unsplash.com/photo-1739298061740-5ed03045b280?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8b2ZmaWNlJTIwYm9hcmRyb29tfGVufDB8fHx8MTc1OTc3NDk0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "office boardroom"
+    },
+    {
+      "id": "course-effectiveness",
+      "description": "A target with an arrow in the center.",
+      "imageUrl": "https://images.unsplash.com/photo-1756365394848-9089dce11d54?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx0YXJnZXQlMjBzdWNjZXNzfGVufDB8fHx8MTc1OTc3NDk0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "target success"
+    },
+    {
+      "id": "course-team-management",
+      "description": "A team collaborating around a table.",
+      "imageUrl": "https://images.unsplash.com/photo-1622675363311-3e1904dc1885?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx0ZWFtJTIwY29sbGFib3JhdGlvbnxlbnwwfHx8fDE3NTk3NzQzNDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "team collaboration"
+    },
+    {
+      "id": "course-project-management",
+      "description": "Gantt chart on a screen.",
+      "imageUrl": "https://images.unsplash.com/photo-1527219525722-f9767a7f2884?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxwcm9qZWN0JTIwcGxhbnxlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "project plan"
+    },
+    {
+      "id": "course-strategic-hr-2",
+      "description": "Abstract network of people.",
+      "imageUrl": "https://images.unsplash.com/photo-1638389745870-20140b3d4237?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxwZW9wbGUlMjBuZXR3b3JrfGVufDB8fHx8MTc1OTc1NTM2NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "people network"
+    },
+    {
+      "id": "course-advanced-managers",
+      "description": "A person climbing a mountain.",
+      "imageUrl": "https://images.unsplash.com/photo-1602593427039-9272b7fb0429?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzdWNjZXNzJTIwY2xpbWJ8ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "success climb"
+    },
+    {
+      "id": "course-recruitment-2",
+      "description": "Magnifying glass over a resume.",
+      "imageUrl": "https://images.unsplash.com/photo-1635253548172-d82ffe76449d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxyZXN1bWUlMjBzZWFyY2h8ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "resume search"
+    },
+    {
+      "id": "course-hr-management",
+      "description": "An organization chart.",
+      "imageUrl": "https://images.unsplash.com/photo-1646617747563-4f080bddf282?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxvcmdhbml6YXRpb24lMjBjaGFydHxlbnwwfHx8fDE3NTk3NDc0ODZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "organization chart"
+    },
+    {
+      "id": "course-minerals",
+      "description": "A collection of different mineral rocks.",
+      "imageUrl": "https://images.unsplash.com/photo-1705073703471-ce459a78097d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxtaW5lcmFscyUyMGdlb2xvZ3l8ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "minerals geology"
+    },
+    {
+      "id": "course-minerals-env",
+      "description": "A green plant growing from rocks.",
+      "imageUrl": "https://images.unsplash.com/photo-1726597904186-c6ad20c21b03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxuYXR1cmUlMjBlbnZpcm9ubWVudHxlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "nature environment"
+    },
+    {
+      "id": "course-oil-gas",
+      "description": "An oil pumpjack in a field.",
+      "imageUrl": "https://images.unsplash.com/photo-1565866926760-213f0b57e8b6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxvaWwlMjBpbmR1c3RyeXxlbnwwfHx8fDE3NTk3NzE3Nzd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "oil industry"
+    },
+    {
+      "id": "course-iso14001",
+      "description": "A recycling symbol with a green leaf.",
+      "imageUrl": "https://images.unsplash.com/photo-1572202808998-93788f6d39da?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxlY28lMjBmcmllbmRseXxlbnwwfHx8fDE3NTk2OTgzODh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "eco friendly"
+    },
+    {
+      "id": "course-geology",
+      "description": "Layers of rock formations.",
+      "imageUrl": "https://images.unsplash.com/photo-1714199255743-82d94ca458d5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxyb2NrJTIwbGF5ZXJzfGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "rock layers"
+    },
+    {
+      "id": "course-geophysics-1",
+      "description": "Earth globe with seismic waves.",
+      "imageUrl": "https://images.unsplash.com/photo-1575468130861-a5295155e1d1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxlYXJ0aCUyMHNjaWVuY2V8ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "earth science"
+    },
+    {
+      "id": "course-geophysics-2",
+      "description": "Computer model of earth's crust.",
+      "imageUrl": "https://images.unsplash.com/photo-1563302899-13c1c51789c1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxlYXJ0aCUyMG1vZGVsfGVufDB8fHx8MTc1OTc3NDk0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "earth model"
+    },
+    {
+      "id": "course-geophysics-3",
+      "description": "Scientist looking at geological data.",
+      "imageUrl": "https://images.unsplash.com/photo-1523961131990-5ea7c61b2107?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxkYXRhJTIwYW5hbHlzaXN8ZW58MHx8fHwxNzU5NzQxMDU0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "data analysis"
+    },
+    {
+      "id": "course-drilling",
+      "description": "A large drill bit for oil exploration.",
+      "imageUrl": "https://images.unsplash.com/photo-1690508313456-bf8c851e8319?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxvaWwlMjBkcmlsbGluZ3xlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "oil drilling"
+    },
+    {
+      "id": "course-production-control",
+      "description": "A factory assembly line.",
+      "imageUrl": "https://images.unsplash.com/photo-1717386255785-59c670564341?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmYWN0b3J5JTIwcHJvZHVjdGlvbnxlbnwwfHx8fDE3NTk3MTk1OTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "factory production"
+    },
+    {
+      "id": "course-seismic",
+      "description": "A colorful seismic data graph.",
+      "imageUrl": "https://images.unsplash.com/photo-1653971296122-6b384285ed65?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxzZWlzbWljJTIwZGF0YXxlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "seismic data"
+    },
+    {
+      "id": "course-risk-mining",
+      "description": "A hard hat and safety goggles.",
+      "imageUrl": "https://images.unsplash.com/photo-1726589004565-bedfba94d3a2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxzYWZldHklMjBlcXVpcG1lbnR8ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "safety equipment"
+    },
+    {
+      "id": "course-formation-eval",
+      "description": "A geologist examining a rock core sample.",
+      "imageUrl": "https://images.unsplash.com/photo-1638987820784-fee91c1072ed?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Z2VvbG9neSUyMHNhbXBsZXxlbnwwfHx8fDE3NTk3NzQ5NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "geology sample"
+    },
+    {
+      "id": "course-reservoir",
+      "description": "A diagram of an underground reservoir.",
+      "imageUrl": "https://images.unsplash.com/photo-1713543475776-c0b7a7a7644c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxnZW9sb2d5JTIwZGlhZ3JhbXxlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "geology diagram"
+    },
+    {
+      "id": "course-angola-oil-tax",
+      "description": "An Angolan flag and an oil rig.",
+      "imageUrl": "https://images.unsplash.com/photo-1676392215161-8348ecf44eaa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxBbmdvbGElMjBvaWx8ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "Angola oil"
+    },
+    {
+      "id": "course-reservoir-geophysics",
+      "description": "3D model of an oil reservoir.",
+      "imageUrl": "https://images.unsplash.com/photo-1644329770639-1a20809b82a3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHwzRCUyMG1vZGVsfGVufDB8fHx8MTc1OTY2NzY2M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "3D model"
+    },
+    {
+      "id": "course-field-geology",
+      "description": "Geologists working in the field.",
+      "imageUrl": "https://images.unsplash.com/photo-1758972434573-c603964aea93?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxnZW9sb2d5JTIwZmllbGR8ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "geology field"
+    },
+    {
+      "id": "course-geochemistry",
+      "description": "Beakers and lab equipment.",
+      "imageUrl": "https://images.unsplash.com/photo-1532094349884-543bc11b234d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxzY2llbmNlJTIwbGFifGVufDB8fHx8MTc1OTY4OTc0Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "science lab"
+    },
+    {
+      "id": "course-irm",
+      "description": "A complex flowchart of a management system.",
+      "imageUrl": "https://images.unsplash.com/photo-1758876201787-bd6ad98b7d6c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxtYW5hZ2VtZW50JTIwZmxvd2NoYXJ0fGVufDB8fHx8MTc1OTc3NDk0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "management flowchart"
+    },
+    {
+      "id": "course-seismic-interpretation",
+      "description": "A person pointing at seismic data on a screen.",
+      "imageUrl": "https://images.unsplash.com/photo-1623524643836-cda81843d707?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxkYXRhJTIwaW50ZXJwcmV0YXRpb258ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "data interpretation"
+    },
+    {
+      "id": "course-angola-basins",
+      "description": "A map of Angola's geological basins.",
+      "imageUrl": "https://images.unsplash.com/photo-1588551385347-4bacb1e18f22?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxBbmdvbGElMjBtYXB8ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "Angola map"
+    },
+    {
+      "id": "course-oil-contracts",
+      "description": "A person signing a contract.",
+      "imageUrl": "https://images.unsplash.com/photo-1686771416282-3888ddaf249b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjb250cmFjdCUyMHNpZ25pbmd8ZW58MHx8fHwxNzU5Njc0MjIyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "contract signing"
+    },
+    {
+      "id": "course-well-geology",
+      "description": "Cross-section diagram of an oil well.",
+      "imageUrl": "https://images.unsplash.com/photo-1684183471954-bf40b75db270?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8b2lsJTIwd2VsbHxlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "oil well"
+    },
+    {
+      "id": "course-core-analysis",
+      "description": "Close-up of a rock core sample.",
+      "imageUrl": "https://images.unsplash.com/photo-1737272148205-edb3658d1877?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxyb2NrJTIwc2FtcGxlfGVufDB8fHx8MTc1OTc3NDk0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "rock sample"
+    },
+    {
+      "id": "course-sandstone",
+      "description": "A close-up of sandstone texture.",
+      "imageUrl": "https://images.unsplash.com/photo-1616980540869-c0e72dfbf08b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzYW5kc3RvbmUlMjB0ZXh0dXJlfGVufDB8fHx8MTc1OTc3NDk0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "sandstone texture"
+    },
+    {
+      "id": "course-carbonate",
+      "description": "A piece of carbonate rock.",
+      "imageUrl": "https://images.unsplash.com/photo-1754956043510-8e94a9f94219?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjYXJib25hdGUlMjByb2NrfGVufDB8fHx8MTc1OTc3NDk0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "carbonate rock"
+    },
+    {
+      "id": "course-corrosion",
+      "description": "Rusted metal surface.",
+      "imageUrl": "https://images.unsplash.com/photo-1613026071192-e0fbd7302bf0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxydXN0ZWQlMjBtZXRhbHxlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "rusted metal"
+    },
+    {
+      "id": "course-subsea",
+      "description": "Underwater subsea production equipment.",
+      "imageUrl": "https://images.unsplash.com/photo-1634648266812-b2d406ee7565?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c3Vic2VhJTIwZW5naW5lZXJpbmd8ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "subsea engineering"
+    },
+    {
+      "id": "course-finance-non-finance",
+      "description": "A person explaining a chart to another.",
+      "imageUrl": "https://images.unsplash.com/photo-1616587656977-ac36a5a430bc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxidXNpbmVzcyUyMG1lZXRpbmd8ZW58MHx8fHwxNzU5NzY0MTQ5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "business meeting"
+    },
+    {
+      "id": "course-treasury",
+      "description": "A secure bank vault.",
+      "imageUrl": "https://images.unsplash.com/photo-1515974256630-babc85765b1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxiYW5rJTIwdmF1bHR8ZW58MHx8fHwxNzU5NzA4OTYyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "bank vault"
+    },
+    {
+      "id": "course-document-management",
+      "description": "Organized files in a cabinet.",
+      "imageUrl": "https://images.unsplash.com/photo-1603703479763-01d0ce416b56?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxmaWxlJTIwb3JnYW5pemF0aW9ufGVufDB8fHx8MTc1OTc3NDk0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "file organization"
+    },
+    {
+      "id": "course-logistics",
+      "description": "A cargo ship with containers.",
+      "imageUrl": "https://images.unsplash.com/photo-1585713181935-d5f622cc2415?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjYXJnbyUyMHNoaXB8ZW58MHx8fHwxNzU5NjkxNzUwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cargo ship"
+    },
+    {
+      "id": "course-logistics-budget",
+      "description": "A calculator on top of shipping documents.",
+      "imageUrl": "https://images.unsplash.com/photo-1685119166946-d4050647b0e3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxsb2dpc3RpY3MlMjBidWRnZXR8ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "logistics budget"
+    },
+    {
+      "id": "course-procurement",
+      "description": "A person inspecting goods in a warehouse.",
+      "imageUrl": "https://images.unsplash.com/photo-1681731059898-72407df8431a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8d2FyZWhvdXNlJTIwaW5zcGVjdGlvbnxlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "warehouse inspection"
+    },
+    {
+      "id": "course-stock",
+      "description": "Warehouse shelves full of boxes.",
+      "imageUrl": "https://images.unsplash.com/photo-1592085198739-ffcad7f36b54?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx3YXJlaG91c2UlMjBzdG9ja3xlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "warehouse stock"
+    },
+    {
+      "id": "course-operations",
+      "description": "Gears and cogs working together.",
+      "imageUrl": "https://images.unsplash.com/photo-1696361279203-0476d7eecd26?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Z2VhcnMlMjBtYWNoaW5lfGVufDB8fHx8MTc1OTc0ODgwMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "gears machine"
+    },
+    {
+      "id": "course-warehouse",
+      "description": "A large, modern warehouse.",
+      "imageUrl": "https://images.unsplash.com/photo-1759159092038-d414f661dbf0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxsYXJnZSUyMHdhcmVob3VzZXxlbnwwfHx8fDE3NTk3NDk1Nzd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "large warehouse"
+    },
+    {
+      "id": "course-supply-chain",
+      "description": "A diagram of a supply chain network.",
+      "imageUrl": "https://images.unsplash.com/photo-1703226741497-6de4f67c6e11?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c3VwcGx5JTIwY2hhaW58ZW58MHx8fHwxNzU5NzMxNjk5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "supply chain"
+    },
+    {
+      "id": "course-supplier",
+      "description": "Two people shaking hands over a contract.",
+      "imageUrl": "https://images.unsplash.com/photo-1672380135241-c024f7fbfa13?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxidXNpbmVzcyUyMGRlYWx8ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "business deal"
+    },
+    {
+      "id": "course-strategic-sourcing",
+      "description": "A world map with connection lines.",
+      "imageUrl": "https://images.unsplash.com/photo-1542382257-80dedb725088?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxnbG9iYWwlMjBuZXR3b3JrfGVufDB8fHx8MTc1OTcwNzcwM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "global network"
+    },
+    {
+      "id": "course-transport",
+      "description": "A fleet of delivery trucks.",
+      "imageUrl": "https://images.unsplash.com/photo-1727303016382-a53bcfb57cd3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxkZWxpdmVyeSUyMHRydWNrc3xlbnwwfHx8fDE3NTk3MjMzMDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "delivery trucks"
+    },
+    {
+      "id": "course-oil-accounting",
+      "description": "An oil barrel and a ledger book.",
+      "imageUrl": "https://images.unsplash.com/photo-1640052078087-00c03d7418ae?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxvaWwlMjBmaW5hbmNlfGVufDB8fHx8MTc1OTc3NDk0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "oil finance"
+    },
+    {
+      "id": "course-treasury-2",
+      "description": "Stacks of coins and banknotes.",
+      "imageUrl": "https://images.unsplash.com/photo-1603777953715-34882e3b002f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bW9uZXklMjBjYXNofGVufDB8fHx8MTc1OTY2MjM2NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "money cash"
+    },
+    {
+      "id": "course-strategic-planning",
+      "description": "A person drawing a strategy on a whiteboard.",
+      "imageUrl": "https://images.unsplash.com/photo-1758873269117-d5845126928a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxzdHJhdGVneSUyMHdoaXRlYm9hcmR8ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "strategy whiteboard"
+    },
+    {
+      "id": "course-financial-analysis",
+      "description": "A screen with stock market data.",
+      "imageUrl": "https://images.unsplash.com/photo-1648275913341-7973ae7bc9b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxzdG9jayUyMG1hcmtldHxlbnwwfHx8fDE3NTk2NzY3MzJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "stock market"
+    },
+    {
+      "id": "course-general-accounting",
+      "description": "An accountant's desk with calculator and ledgers.",
+      "imageUrl": "https://images.unsplash.com/photo-1639300505533-9921527d6a50?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxhY2NvdW50aW5nJTIwZGVza3xlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "accounting desk"
+    },
+    {
+      "id": "course-financial-audit",
+      "description": "A person reviewing financial documents with a magnifying glass.",
+      "imageUrl": "https://images.unsplash.com/photo-1661237473026-83b6f4ea5706?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxhdWRpdCUyMHJldmlld3xlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "audit review"
+    },
+    {
+      "id": "course-taxation",
+      "description": "Tax forms and a pen.",
+      "imageUrl": "https://images.unsplash.com/photo-1586486855514-8c633cc6fd38?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx0YXglMjBmb3Jtc3xlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "tax forms"
+    },
+    {
+      "id": "course-corp-finance",
+      "description": "Skyscrapers in a financial district.",
+      "imageUrl": "https://images.unsplash.com/photo-1449157291145-7efd050a4d0e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmaW5hbmNpYWwlMjBkaXN0cmljdHxlbnwwfHx8fDE3NTk3NTcxMjJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "financial district"
+    },
+    {
+      "id": "course-investment-projects",
+      "description": "A construction site with cranes.",
+      "imageUrl": "https://images.unsplash.com/photo-1542621334-a254cf47733d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb25zdHJ1Y3Rpb24lMjBwcm9qZWN0fGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "construction project"
+    },
+    {
+      "id": "course-investment-analysis",
+      "description": "A magnifying glass over a financial chart.",
+      "imageUrl": "https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxmaW5hbmNpYWwlMjBhbmFseXNpc3xlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "financial analysis"
+    },
+    {
+      "id": "course-technical-writing",
+      "description": "A person writing in a technical manual.",
+      "imageUrl": "https://images.unsplash.com/photo-1758685845872-4edbf0e76014?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx0ZWNobmljYWwlMjB3cml0aW5nfGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "technical writing"
+    },
+    {
+      "id": "course-financial-management",
+      "description": "A person managing a budget on a laptop.",
+      "imageUrl": "https://images.unsplash.com/photo-1705948734497-9afe4176d0cd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxidWRnZXQlMjBtYW5hZ2VtZW50fGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "budget management"
+    },
+    {
+      "id": "course-capital-markets",
+      "description": "A stock exchange trading floor.",
+      "imageUrl": "https://images.unsplash.com/photo-1560221328-12fe60f83ab8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzdG9jayUyMGV4Y2hhbmdlfGVufDB8fHx8MTc1OTc3NDk0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "stock exchange"
+    },
+    {
+      "id": "course-financial-risk",
+      "description": "Dominoes falling in a row.",
+      "imageUrl": "https://images.unsplash.com/photo-1670688254802-c8350cab7b6a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxyaXNrJTIwY29uY2VwdHxlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "risk concept"
+    },
+    {
+      "id": "course-accounting-non-accountants",
+      "description": "Simple icons representing budget, savings, and investment.",
+      "imageUrl": "https://images.unsplash.com/photo-1577117599232-0aea5313982a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxmaW5hbmNlJTIwaWNvbnN8ZW58MHx8fHwxNzU5Nzc0OTQ5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "finance icons"
+    },
+    {
+      "id": "course-quality-management",
+      "description": "A quality control stamp of approval.",
+      "imageUrl": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxxdWFsaXR5JTIwY29udHJvbHxlbnwwfHx8fDE3NTk3NTk2Mjh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "quality control"
+    },
+    {
+      "id": "course-fleet-management",
+      "description": "A map with GPS tracking of vehicles.",
+      "imageUrl": "https://images.unsplash.com/photo-1625217527288-93919c99650a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxncHMlMjB0cmFja2luZ3xlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "gps tracking"
+    },
+    {
+      "id": "course-intro-pm",
+      "description": "Sticky notes on a board with a project plan.",
+      "imageUrl": "https://images.unsplash.com/photo-1523289333742-be1143f6b766?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwcm9qZWN0JTIwcGxhbm5pbmd8ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "project planning"
+    },
+    {
+      "id": "course-project-risk",
+      "description": "A path with multiple diverging options.",
+      "imageUrl": "https://images.unsplash.com/photo-1631006525707-5b6000dedda5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxkZWNpc2lvbiUyMHBhdGh8ZW58MHx8fHwxNzU5NzAyNzk3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "decision path"
+    },
+    {
+      "id": "course-iso21500",
+      "description": "A person holding a certificate with a seal.",
+      "imageUrl": "https://images.unsplash.com/photo-1614036417651-efe5912149d8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjZXJ0aWZpY2F0aW9uJTIwc3RhbmRhcmR8ZW58MHx8fHwxNzU5Nzc0OTQ5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "certification standard"
+    },
+    {
+      "id": "course-strategic-pm",
+      "description": "A chess board with a strategic move.",
+      "imageUrl": "https://images.unsplash.com/photo-1705043694763-978b6e1bff6c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzdHJhdGVneSUyMGNoZXNzfGVufDB8fHx8MTc1OTY4ODkzOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "strategy chess"
+    },
+    {
+      "id": "course-budgeting",
+      "description": "A pie chart representing a budget.",
+      "imageUrl": "https://images.unsplash.com/photo-1652422485192-d959b9a8d16e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8YnVkZ2V0JTIwY2hhcnR8ZW58MHx8fHwxNzU5NzY5NjA2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "budget chart"
+    },
+    {
+      "id": "course-financial-modeling",
+      "description": "A complex spreadsheet on a computer screen.",
+      "imageUrl": "https://images.unsplash.com/photo-1592474096967-7e5d62070cf7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxmaW5hbmNpYWwlMjBzcHJlYWRzaGVldHxlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "financial spreadsheet"
+    },
+    {
+      "id": "course-feasibility-study",
+      "description": "A checklist with check marks.",
+      "imageUrl": "https://images.unsplash.com/photo-1754039985001-ccafee437736?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxwbGFubmluZyUyMGNoZWNrbGlzdHxlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "planning checklist"
+    },
+    {
+      "id": "course-debt-management",
+      "description": "A person cutting up a credit card.",
+      "imageUrl": "https://images.unsplash.com/photo-1494797710133-75ad43b1cd95?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8ZGVidCUyMGZyZWV8ZW58MHx8fHwxNzU5Nzc0OTQ5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "debt free"
+    },
+    {
+      "id": "course-accounting-audit",
+      "description": "An auditor examining financial statements.",
+      "imageUrl": "https://images.unsplash.com/photo-1649209979970-f01d950cc5ed?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxmaW5hbmNpYWwlMjBhdWRpdHxlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "financial audit"
+    },
+    {
+      "id": "course-gen-accounting-1",
+      "description": "A basic ledger book and a pen.",
+      "imageUrl": "https://images.unsplash.com/photo-1652020503800-0ed3e0021746?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxhY2NvdW50aW5nJTIwbGVkZ2VyfGVufDB8fHx8MTc1OTY1ODUyM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "accounting ledger"
+    },
+    {
+      "id": "course-gen-accounting-2",
+      "description": "A more complex accounting spreadsheet.",
+      "imageUrl": "https://images.unsplash.com/photo-1623685462430-c485d0f6cd29?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxhY2NvdW50aW5nJTIwc3ByZWFkc2hlZXR8ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "accounting spreadsheet"
+    },
+    {
+      "id": "course-analytical-accounting",
+      "description": "Graphs and charts for data analysis.",
+      "imageUrl": "https://images.unsplash.com/photo-1542744173-05336fcc7ad4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8ZGF0YSUyMGFuYWx5c2lzfGVufDB8fHx8MTc1OTc0MTA1NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "data analysis"
+    },
+    {
+      "id": "course-angola-tax",
+      "description": "Angolan currency and tax documents.",
+      "imageUrl": "https://images.unsplash.com/photo-1690962850164-bd535fe7c753?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxBbmdvbGElMjBmaW5hbmNlfGVufDB8fHx8MTc1OTc3NDk0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "Angola finance"
+    },
+    {
+      "id": "course-bsc",
+      "description": "A balanced scorecard diagram.",
+      "imageUrl": "https://images.unsplash.com/photo-1678962855744-bf84750152c6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzY29yZWNhcmQlMjBkaWFncmFtfGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "scorecard diagram"
+    },
+    {
+      "id": "course-sap-basis",
+      "description": "A server room with a person working on a terminal.",
+      "imageUrl": "https://images.unsplash.com/photo-1510182760-5565485cf674?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzZXJ2ZXIlMjBhZG1pbnxlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "server admin"
+    },
+    {
+      "id": "course-powerpoint",
+      "description": "A slide presentation being shown on a screen.",
+      "imageUrl": "https://images.unsplash.com/photo-1622952736534-4ca61f7992fb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwcmVzZW50YXRpb24lMjBzbGlkZXxlbnwwfHx8fDE3NTk2ODAxMjV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "presentation slide"
+    },
+    {
+      "id": "course-excel-purchasing",
+      "description": "An Excel sheet with a list of purchases.",
+      "imageUrl": "https://images.unsplash.com/photo-1658203897339-0b8c64a42fba?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxFeGNlbCUyMHNwcmVhZHNoZWV0fGVufDB8fHx8MTc1OTc3NDk0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "Excel spreadsheet"
+    },
+    {
+      "id": "course-infosec",
+      "description": "A digital padlock icon on a screen.",
+      "imageUrl": "https://images.unsplash.com/photo-1559581958-df379578606a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjeWJlciUyMHNlY3VyaXR5fGVufDB8fHx8MTc1OTY5ODE2Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cyber security"
+    },
+    {
+      "id": "course-ms-project",
+      "description": "A Gantt chart in Microsoft Project.",
+      "imageUrl": "https://images.unsplash.com/photo-1572177812156-58036aae439c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxwcm9qZWN0JTIwbWFuYWdlbWVudHxlbnwwfHx8fDE3NTk3MzM4NTN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "project management"
+    },
+    {
+      "id": "course-excel-advanced",
+      "description": "A complex Excel formula and chart.",
+      "imageUrl": "https://images.unsplash.com/photo-1529078155058-5d716f45d604?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxFeGNlbCUyMGRhdGF8ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "Excel data"
+    },
+    {
+      "id": "course-digital-marketing",
+      "description": "Social media icons and marketing funnels.",
+      "imageUrl": "https://images.unsplash.com/photo-1562577309-2592ab84b1bc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxkaWdpdGFsJTIwbWFya2V0aW5nfGVufDB8fHx8MTc1OTcwMjM2Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "digital marketing"
+    },
+    {
+      "id": "course-autocad",
+      "description": "A 3D model of a building in AutoCAD.",
+      "imageUrl": "https://images.unsplash.com/photo-1649406458887-2b6561c36a4d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHwzRCUyMG1vZGVsaW5nfGVufDB8fHx8MTc1OTc3NDk0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "3D modeling"
+    },
+    {
+      "id": "course-primavera",
+      "description": "A project schedule in Primavera software.",
+      "imageUrl": "https://images.unsplash.com/photo-1692162708361-d172ee4f0129?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwcm9qZWN0JTIwc2NoZWR1bGV8ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "project schedule"
+    },
+    {
+      "id": "course-primavera-payroll",
+      "description": "A payroll report in Primavera.",
+      "imageUrl": "https://images.unsplash.com/photo-1617283011395-41c9ce26db49?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxwYXlyb2xsJTIwcmVwb3J0fGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "payroll report"
+    },
+    {
+      "id": "course-sap-hcm",
+      "description": "An HR dashboard in SAP.",
+      "imageUrl": "https://images.unsplash.com/photo-1584301952952-8544e5ae7a26?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxIUiUyMGRhc2hib2FyZHxlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "HR dashboard"
+    },
+    {
+      "id": "course-excel-intermediate",
+      "description": "An Excel sheet with pivot tables.",
+      "imageUrl": "https://images.unsplash.com/photo-1603296806553-5af152324d2f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwaXZvdCUyMHRhYmxlfGVufDB8fHx8MTc1OTc3NDk0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "pivot table"
+    },
+    {
+      "id": "course-excel-advanced-2",
+      "description": "A dashboard created in Excel.",
+      "imageUrl": "https://images.unsplash.com/photo-1706818033062-fb97420ef25e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxFeGNlbCUyMGRhc2hib2FyZHxlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "Excel dashboard"
+    },
+    {
+      "id": "course-excel-basic",
+      "description": "A simple Excel spreadsheet with a sum formula.",
+      "imageUrl": "https://images.unsplash.com/photo-1650074306028-c429bc71d7dd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxFeGNlbCUyMGJhc2ljfGVufDB8fHx8MTc1OTc3NDk0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "Excel basic"
+    },
+    {
+      "id": "course-sap-basis-2",
+      "description": "A system administrator monitoring SAP system health.",
+      "imageUrl": "https://images.unsplash.com/photo-1711006439997-f06ab27d529b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxzeXN0ZW0lMjBtb25pdG9yaW5nfGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "system monitoring"
+    },
+    {
+      "id": "course-power-bi",
+      "description": "An interactive data visualization dashboard in Power BI.",
+      "imageUrl": "https://images.unsplash.com/photo-1666875753105-c63a6f3bdc86?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxkYXRhJTIwZGFzaGJvYXJkfGVufDB8fHx8MTc1OTcxOTI0N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "data dashboard"
+    },
+    {
+      "id": "course-network-admin",
+      "description": "A network administrator working with server racks and cables.",
+      "imageUrl": "https://images.unsplash.com/photo-1546124404-9e7e3cac2ec1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxuZXR3b3JrJTIwYWRtaW58ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "network admin"
+    },
+    {
+      "id": "course-infosec-2",
+      "description": "A firewall graphic protecting a network.",
+      "imageUrl": "https://images.unsplash.com/photo-1599949104055-2d04026aee1e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxuZXR3b3JrJTIwc2VjdXJpdHl8ZW58MHx8fHwxNzU5Njc5MjM2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "network security"
+    },
+    {
+      "id": "course-word",
+      "description": "A person writing a document in Microsoft Word.",
+      "imageUrl": "https://images.unsplash.com/photo-1634562876572-5abe57afcceb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxkb2N1bWVudCUyMHdyaXRpbmd8ZW58MHx8fHwxNzU5NzYyMzAzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "document writing"
+    },
+    {
+      "id": "course-outlook",
+      "description": "An organized email inbox in Outlook.",
+      "imageUrl": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxlbWFpbCUyMGluYm94fGVufDB8fHx8MTc1OTY2MjQ3OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "email inbox"
+    },
+    {
+      "id": "course-access",
+      "description": "A database relationship diagram in Microsoft Access.",
+      "imageUrl": "https://images.unsplash.com/photo-1616861771635-49063a4636ed?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxkYXRhYmFzZSUyMGRpYWdyYW18ZW58MHx8fHwxNzU5NzMyNzI1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "database diagram"
+    },
+    {
+      "id": "course-teams",
+      "description": "A video conference call in Microsoft Teams.",
+      "imageUrl": "https://images.unsplash.com/photo-1612832164313-ac0d7e07b5ce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx2aWRlbyUyMGNhbGx8ZW58MHx8fHwxNzU5NzU2ODYxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "video call"
+    },
+    {
+      "id": "course-office",
+      "description": "The icons for Word, Excel, PowerPoint, and Outlook.",
+      "imageUrl": "https://images.unsplash.com/photo-1758448511255-ac2a24a135d7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxvZmZpY2UlMjBzdWl0ZXxlbnwwfHx8fDE3NTk2ODMzMDB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "office suite"
+    },
+    {
+      "id": "course-primavera-2",
+      "description": "A different view of a Primavera project plan.",
+      "imageUrl": "https://images.unsplash.com/photo-1512758017271-d7b84c2113f1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxwcm9qZWN0JTIwcGxhbnxlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "project plan"
+    },
+    {
+      "id": "course-sap-ipl1",
+      "description": "An introductory screen for a SAP application.",
+      "imageUrl": "https://images.unsplash.com/photo-1709432829562-67d8c8afd024?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxTQVAlMjBzY3JlZW58ZW58MHx8fHwxNzU5Nzc0OTQ5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "SAP screen"
+    },
+    {
+      "id": "course-sap-ipl2",
+      "description": "An advanced module screen in a SAP application.",
+      "imageUrl": "https://images.unsplash.com/photo-1751838638765-77f60d4de15e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxTQVAlMjBhZHZhbmNlZHxlbnwwfHx8fDE3NTk3NzQ5NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "SAP advanced"
+    },
+    {
+      "id": "course-hardware",
+      "description": "The inside of a computer with its components.",
+      "imageUrl": "https://images.unsplash.com/photo-1591238372408-8b98667c0460?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb21wdXRlciUyMGhhcmR3YXJlfGVufDB8fHx8MTc1OTc3NDk0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "computer hardware"
+    },
+    {
+      "id": "course-networking",
+      "description": "A diagram showing a computer network.",
+      "imageUrl": "https://images.unsplash.com/photo-1594915854088-2128db6a8db5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y29tcHV0ZXIlMjBuZXR3b3JrfGVufDB8fHx8MTc1OTY4OTc0M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "computer network"
+    },
+    {
+      "id": "course-infosec-3",
+      "description": "A person coding a security script.",
+      "imageUrl": "https://images.unsplash.com/photo-1634224143538-ce0221abf732?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzZWN1cml0eSUyMGNvZGV8ZW58MHx8fHwxNzU5Nzc0OTQ5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "security code"
+    },
+    {
+      "id": "course-excel-finance",
+      "description": "An Excel sheet with financial calculations.",
+      "imageUrl": "https://images.unsplash.com/photo-1614787296891-d1b2b1aced36?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxmaW5hbmNlJTIwZXhjZWx8ZW58MHx8fHwxNzU5Nzc0OTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "finance excel"
+    },
+    {
+      "id": "course-pump-alignment",
+      "description": "A technician aligning an industrial pump.",
+      "imageUrl": "https://images.unsplash.com/photo-1699791912502-84f9cb24cb01?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxpbmR1c3RyaWFsJTIwcHVtcHxlbnwwfHx8fDE3NTk2OTQxMzR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "industrial pump"
+    },
+    {
+      "id": "course-calibration",
+      "description": "A technician calibrating a pressure gauge.",
+      "imageUrl": "https://images.unsplash.com/photo-1600080404522-0d188a6a7971?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxlcXVpcG1lbnQlMjBjYWxpYnJhdGlvbnxlbnwwfHx8fDE3NTk2OTIxMDZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "equipment calibration"
+    },
+    {
+      "id": "course-valve-maintenance",
+      "description": "A large industrial valve being repaired.",
+      "imageUrl": "https://images.unsplash.com/photo-1758739956768-169833459935?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx2YWx2ZSUyMHJlcGFpcnxlbnwwfHx8fDE3NTk3NzQ5NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "valve repair"
+    },
+    {
+      "id": "course-equipment-inspection",
+      "description": "An inspector with a checklist looking at machinery.",
+      "imageUrl": "https://images.unsplash.com/photo-1758522966019-01e7b9b39766?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxlcXVpcG1lbnQlMjBpbnNwZWN0aW9ufGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "equipment inspection"
+    },
+    {
+      "id": "course-pipe-coating",
+      "description": "A machine applying coating to a pipe.",
+      "imageUrl": "https://images.unsplash.com/photo-1613979975410-f2ff2a3e6050?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwaXBlJTIwY29hdGluZ3xlbnwwfHx8fDE3NTk3NzQ5NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "pipe coating"
+    },
+    {
+      "id": "course-rov",
+      "description": "A remotely operated vehicle underwater.",
+      "imageUrl": "https://images.unsplash.com/photo-1663424778388-72e419ea6b84?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8dW5kZXJ3YXRlciUyMFJPVnxlbnwwfHx8fDE3NTk3NzQ5NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "underwater ROV"
+    },
+    {
+      "id": "course-scaffolding",
+      "description": "Complex scaffolding on a building.",
+      "imageUrl": "https://images.unsplash.com/photo-1664836443648-71bfcc3830a0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjb25zdHJ1Y3Rpb24lMjBzY2FmZm9sZGluZ3xlbnwwfHx8fDE3NTk3NzQ5NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "construction scaffolding"
+    },
+    {
+      "id": "course-forklift",
+      "description": "A person operating a forklift in a warehouse.",
+      "imageUrl": "https://images.unsplash.com/photo-1560395502-73df0e64baa9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxmb3JrbGlmdCUyMG9wZXJhdG9yfGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "forklift operator"
+    },
+    {
+      "id": "course-industrial-instrumentation",
+      "description": "A panel of industrial gauges and dials.",
+      "imageUrl": "https://images.unsplash.com/photo-1703041555997-f51216e6a532?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxpbmR1c3RyaWFsJTIwZ2F1Z2VzfGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "industrial gauges"
+    },
+    {
+      "id": "course-welding",
+      "description": "A welder at work with sparks flying.",
+      "imageUrl": "https://images.unsplash.com/photo-1602629726749-61bfe80aadca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx3ZWxkZXIlMjB3b3JraW5nfGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "welder working"
+    },
+    {
+      "id": "course-industrial-painting",
+      "description": "A person spray painting an industrial part.",
+      "imageUrl": "https://images.unsplash.com/photo-1739917278387-88670965c41e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxpbmR1c3RyaWFsJTIwcGFpbnRpbmd8ZW58MHx8fHwxNzU5Nzc0OTQ5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "industrial painting"
+    },
+    {
+      "id": "course-process-control",
+      "description": "A control room with many screens showing processes.",
+      "imageUrl": "https://images.unsplash.com/photo-1685720543547-cc4873188c75?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjb250cm9sJTIwcm9vbXxlbnwwfHx8fDE3NTk3NzQ5NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "control room"
+    },
+    {
+      "id": "course-automation",
+      "description": "Robotic arms working on an assembly line.",
+      "imageUrl": "https://images.unsplash.com/photo-1728724654223-ae890fc31f1f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxyb2JvdGljJTIwYXJtfGVufDB8fHx8MTc1OTY1MTcwMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "robotic arm"
+    },
+    {
+      "id": "course-production-operator",
+      "description": "An operator monitoring a machine in a factory.",
+      "imageUrl": "https://images.unsplash.com/photo-1583737177777-5b283e5bed3e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8ZmFjdG9yeSUyMG9wZXJhdG9yfGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "factory operator"
+    },
+    {
+      "id": "course-control-room",
+      "description": "A modern industrial control room with operators.",
+      "imageUrl": "https://images.unsplash.com/photo-1643040611925-d6f77a012f3a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxpbmR1c3RyaWFsJTIwY29udHJvbHxlbnwwfHx8fDE3NTk3NzQ5NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "industrial control"
+    },
+    {
+      "id": "course-plc",
+      "description": "A programmable logic controller unit with wiring.",
+      "imageUrl": "https://images.unsplash.com/photo-1731834451058-6042dc488f3e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxQTEMlMjBjb250cm9sbGVyfGVufDB8fHx8MTc1OTc2OTYxM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "PLC controller"
+    },
+    {
+      "id": "course-industrial-maintenance",
+      "description": "A mechanic working on a large engine.",
+      "imageUrl": "https://images.unsplash.com/photo-1726867544292-fefe36817fff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxlbmdpbmUlMjBtYWludGVuYW5jZXxlbnwwfHx8fDE3NTk3NzQ5NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "engine maintenance"
+    },
+    {
+      "id": "course-quality-management-2",
+      "description": "A person with a clipboard inspecting products.",
+      "imageUrl": "https://images.unsplash.com/photo-1700915181126-1f49f6bb2c94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxxdWFsaXR5JTIwaW5zcGVjdGlvbnxlbnwwfHx8fDE3NTk3MTU3Nzl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "quality inspection"
+    },
+    {
+      "id": "course-electrical-safety",
+      "description": "An electrician wearing safety gloves.",
+      "imageUrl": "https://images.unsplash.com/photo-1595856898575-9d187bd32fd6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxlbGVjdHJpY2FsJTIwc2FmZXR5fGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "electrical safety"
+    },
+    {
+      "id": "course-process-safety",
+      "description": "Safety signs in an industrial plant.",
+      "imageUrl": "https://images.unsplash.com/photo-1582489852031-9a1ad48ed893?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxpbmR1c3RyaWFsJTIwc2FmZXR5fGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "industrial safety"
+    },
+    {
+      "id": "course-valve-maintenance-2",
+      "description": "Tools for repairing industrial valves.",
+      "imageUrl": "https://images.unsplash.com/photo-1671543565338-8b22a87b8359?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxyZXBhaXIlMjB0b29sc3xlbnwwfHx8fDE3NTk3NzQ5NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "repair tools"
+    },
+    {
+      "id": "course-maintenance-management",
+      "description": "A maintenance schedule on a computer.",
+      "imageUrl": "https://images.unsplash.com/photo-1619450444634-61b9241e20b0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtYWludGVuYW5jZSUyMHNjaGVkdWxlfGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "maintenance schedule"
+    },
+    {
+      "id": "course-process-indicators",
+      "description": "A dashboard with key performance indicators.",
+      "imageUrl": "https://images.unsplash.com/photo-1622816188655-9e99d5197616?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxLUEklMjBkYXNoYm9hcmR8ZW58MHx8fHwxNzU5Nzc0OTQ5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "KPI dashboard"
+    },
+    {
+      "id": "course-waste-management",
+      "description": "Different colored bins for recycling.",
+      "imageUrl": "https://images.unsplash.com/photo-1665904346443-8d20e0364129?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cmVjeWNsaW5nJTIwYmluc3xlbnwwfHx8fDE3NTk3NzQ5NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "recycling bins"
+    },
+    {
+      "id": "course-industrial-projects",
+      "description": "Blueprints for an industrial project.",
+      "imageUrl": "https://images.unsplash.com/photo-1610650394144-a778795cf585?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxwcm9qZWN0JTIwYmx1ZXByaW50c3xlbnwwfHx8fDE3NTk3NzQ5NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "project blueprints"
+    },
+    {
+      "id": "course-machine-maintenance",
+      "description": "A technician lubricating a machine part.",
+      "imageUrl": "https://images.unsplash.com/photo-1701448149869-36e550b8712d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtYWNoaW5lJTIwbHVicmljYXRpb258ZW58MHx8fHwxNzU5Nzc0OTQ5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "machine lubrication"
+    },
+    {
+      "id": "course-work-safety",
+      "description": "A team of workers in a safety meeting.",
+      "imageUrl": "https://images.unsplash.com/photo-1665136786194-2113ad5d1942?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzYWZldHklMjBtZWV0aW5nfGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "safety meeting"
+    },
+    {
+      "id": "course-risk-prevention",
+      "description": "A sign with a warning triangle.",
+      "imageUrl": "https://images.unsplash.com/photo-1606331068321-77ce461591c2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx3YXJuaW5nJTIwc2lnbnxlbnwwfHx8fDE3NTk3NzEwOTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "warning sign"
+    },
+    {
+      "id": "course-machine-safety",
+      "description": "An emergency stop button on a machine.",
+      "imageUrl": "https://images.unsplash.com/photo-1663755787934-3742b0f5983a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxlbWVyZ2VuY3klMjBidXR0b258ZW58MHx8fHwxNzU5Nzc0OTQ5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "emergency button"
+    },
+    {
+      "id": "course-sales-techniques",
+      "description": "A salesperson giving a pitch.",
+      "imageUrl": "https://images.unsplash.com/photo-1613503945424-6ed8ed36d0ce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzYWxlcyUyMHBpdGNofGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "sales pitch"
+    },
+    {
+      "id": "course-commercial-management",
+      "description": "A bustling modern shopping mall.",
+      "imageUrl": "https://images.unsplash.com/photo-1481437156560-3205f6a55735?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxzaG9wcGluZyUyMG1hbGx8ZW58MHx8fHwxNzU5NjkzNzgwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "shopping mall"
+    },
+    {
+      "id": "course-client-management",
+      "description": "A person on a video call with a client.",
+      "imageUrl": "https://images.unsplash.com/photo-1758876018602-a22311f70109?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjbGllbnQlMjBjYWxsfGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "client call"
+    },
+    {
+      "id": "course-debt-collection",
+      "description": "An invoice marked as 'overdue'.",
+      "imageUrl": "https://images.unsplash.com/photo-1612984138279-a52cb9151e9b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxvdmVyZHVlJTIwaW52b2ljZXxlbnwwfHx8fDE3NTk3NzQ5NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "overdue invoice"
+    },
+    {
+      "id": "course-sales-techniques-2",
+      "description": "A handshake closing a sale.",
+      "imageUrl": "https://images.unsplash.com/photo-1700847304964-9fe563059742?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxzYWxlcyUyMGRlYWx8ZW58MHx8fHwxNzU5Nzc0OTQ5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "sales deal"
+    },
+    {
+      "id": "course-negotiation",
+      "description": "Two people at a table negotiating.",
+      "imageUrl": "https://images.unsplash.com/photo-1597060254013-98930b916d52?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxidXNpbmVzcyUyMG5lZ290aWF0aW9ufGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "business negotiation"
+    },
+    {
+      "id": "course-supply-chain-2",
+      "description": "A global map with logistics routes.",
+      "imageUrl": "https://images.unsplash.com/photo-1617952739760-1dcae19a1d93?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxnbG9iYWwlMjBsb2dpc3RpY3N8ZW58MHx8fHwxNzU5NzQ5MzU3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "global logistics"
+    },
+    {
+      "id": "course-supplier-management",
+      "description": "A checklist for supplier evaluation.",
+      "imageUrl": "https://images.unsplash.com/photo-1693045181229-3eddc1a2e242?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzdXBwbGllciUyMGV2YWx1YXRpb258ZW58MHx8fHwxNzU5Nzc0OTQ5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "supplier evaluation"
+    },
+    {
+      "id": "course-complaint-management",
+      "description": "A customer support agent talking on the phone.",
+      "imageUrl": "https://images.unsplash.com/photo-1553775282-20af80779df7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjdXN0b21lciUyMHN1cHBvcnR8ZW58MHx8fHwxNzU5NjczODIyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "customer support"
+    },
+    {
+      "id": "course-marketing-management",
+      "description": "A marketing plan on a whiteboard.",
+      "imageUrl": "https://images.unsplash.com/photo-1624555130581-1d9cca783bc0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bWFya2V0aW5nJTIwcGxhbnxlbnwwfHx8fDE3NTk3NzQ5NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "marketing plan"
+    },
+    {
+      "id": "course-digital-marketing-2",
+      "description": "A smartphone showing social media ads.",
+      "imageUrl": "https://images.unsplash.com/photo-1600096194534-95cf5ece04cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzb2NpYWwlMjBtZWRpYXxlbnwwfHx8fDE3NTk3Njc1ODJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "social media"
+    },
+    {
+      "id": "course-roi-marketing",
+      "description": "A graph showing Return on Investment.",
+      "imageUrl": "https://images.unsplash.com/photo-1755540735826-0ae8cc8b0fe4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxST0klMjBjaGFydHxlbnwwfHx8fDE3NTk3NzQ5NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ROI chart"
+    },
+    {
+      "id": "course-commercial-management-2",
+      "description": "A retail store interior.",
+      "imageUrl": "https://images.unsplash.com/photo-1546213290-e1b492ab3eee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxyZXRhaWwlMjBzdG9yZXxlbnwwfHx8fDE3NTk3MTM3MDF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "retail store"
+    },
+    {
+      "id": "course-client-management-2",
+      "description": "A CRM dashboard on a laptop screen.",
+      "imageUrl": "https://images.unsplash.com/photo-1658761530733-b780acca3043?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxDUk0lMjBzb2Z0d2FyZXxlbnwwfHx8fDE3NTk3NzQ5NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "CRM software"
+    },
+    {
+      "id": "course-debt-collection-2",
+      "description": "A legal gavel and a calculator.",
+      "imageUrl": "https://images.unsplash.com/photo-1528747008803-f9f5cc8f1a64?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxsZWdhbCUyMGZpbmFuY2V8ZW58MHx8fHwxNzU5Nzc0OTQ5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "legal finance"
+    },
+    {
+      "id": "course-sales-techniques-3",
+      "description": "A sales funnel diagram.",
+      "imageUrl": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzYWxlcyUyMGZ1bm5lbHxlbnwwfHx8fDE3NTk3NzQ5NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "sales funnel"
+    },
+    {
+      "id": "course-negotiation-2",
+      "description": "Two hands in a firm handshake.",
+      "imageUrl": "https://images.unsplash.com/photo-1551730459-84fae7145feb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8YWdyZWVtZW50JTIwaGFuZHNoYWtlfGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "agreement handshake"
+    },
+    {
+      "id": "course-supply-chain-3",
+      "description": "A warehouse with automated robots.",
+      "imageUrl": "https://images.unsplash.com/photo-1651525670104-db1d3b13c3d9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8YXV0b21hdGVkJTIwd2FyZWhvdXNlfGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "automated warehouse"
+    },
+    {
+      "id": "course-supplier-management-2",
+      "description": "A person auditing a supplier's factory.",
+      "imageUrl": "https://images.unsplash.com/photo-1612128216922-452f4d82de8c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8ZmFjdG9yeSUyMGF1ZGl0fGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "factory audit"
+    },
+    {
+      "id": "course-english-beginner",
+      "description": "The letters 'ABC' on wooden blocks.",
+      "imageUrl": "https://images.unsplash.com/photo-1634128221889-82ed6efebfc3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxsZWFybmluZyUyMGFscGhhYmV0fGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "learning alphabet"
+    },
+    {
+      "id": "course-english-elementary",
+      "description": "A simple English sentence written on a chalkboard.",
+      "imageUrl": "https://images.unsplash.com/photo-1610484826967-09c5720778c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxsZWFybmluZyUyMGVuZ2xpc2h8ZW58MHx8fHwxNzU5Nzc0OTQ5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "learning english"
+    },
+    {
+      "id": "course-english-pre-intermediate",
+      "description": "A group of diverse people having a conversation.",
+      "imageUrl": "https://images.unsplash.com/photo-1604881991405-b273c7a4386a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxwZW9wbGUlMjB0YWxraW5nfGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "people talking"
+    },
+    {
+      "id": "course-english-intermediate",
+      "description": "A person reading an English newspaper.",
+      "imageUrl": "https://images.unsplash.com/photo-1557428894-56bcc97113fe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxyZWFkaW5nJTIwbmV3c3BhcGVyfGVufDB8fHx8MTc1OTc3NDk0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "reading newspaper"
+    },
+    {
+      "id": "course-english-upper-intermediate",
+      "description": "A student giving a presentation in English.",
+      "imageUrl": "https://images.unsplash.com/photo-1660795863766-cc0ee743185b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzdHVkZW50JTIwcHJlc2VudGF0aW9ufGVufDB8fHx8MTc1OTc0MDkxOXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "student presentation"
+    },
+    {
+      "id": "course-english-advanced",
+      "description": "A bookshelf filled with classic English literature.",
+      "imageUrl": "https://images.unsplash.com/photo-1656310415047-2677eb228341?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjbGFzc2ljJTIwYm9va3N8ZW58MHx8fHwxNzU5NzU4NDU4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "classic books"
     }
   ]
 }

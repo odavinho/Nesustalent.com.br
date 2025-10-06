@@ -31,7 +31,8 @@ export function Footer() {
             <h3 className="font-headline text-lg font-medium">Plataforma</h3>
             <ul className="mt-4 space-y-2 text-sm">
               <li><Link href="/courses" className="text-muted-foreground hover:text-primary">Cursos</Link></li>
-              <li><Link href="/recruitment" className="text-muted-foreground hover:text-primary">Recrutamento</Link></li>
+              <li><Link href="/recruitment" className="text-muted-foreground hover:text-primary">Vagas</Link></li>
+               <li><Link href="/about" className="text-muted-foreground hover:text-primary">Sobre Nós</Link></li>
               <li><Link href="/dashboard" className="text-muted-foreground hover:text-primary">Minha Conta</Link></li>
             </ul>
           </div>
@@ -39,7 +40,7 @@ export function Footer() {
           <div>
             <h3 className="font-headline text-lg font-medium">Empresa</h3>
             <ul className="mt-4 space-y-2 text-sm">
-              <li><Link href="#" className="text-muted-foreground hover:text-primary">Sobre Nós</Link></li>
+              <li><Link href="/about" className="text-muted-foreground hover:text-primary">Sobre Nós</Link></li>
               <li><Link href="#" className="text-muted-foreground hover:text-primary">Contato</Link></li>
               <li><Link href="#" className="text-muted-foreground hover:text-primary">Termos de Serviço</Link></li>
               <li><Link href="#" className="text-muted-foreground hover:text-primary">Política de Privacidade</Link></li>

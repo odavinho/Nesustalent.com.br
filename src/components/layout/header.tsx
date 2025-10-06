@@ -6,15 +6,18 @@ import { Logo } from '@/components/shared/logo';
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { usePathname } from 'next/navigation';
 
 const navLinks = [
   { href: '/courses', label: 'Cursos' },
-  { href: '/recruitment', label: 'Recrutamento' },
+  { href: '/recruitment', label: 'Vagas' },
+  { href: '/about', label: 'Sobre Nós' },
   { href: '/dashboard', label: 'Dashboard' },
 ];
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <header className="bg-card shadow-sm sticky top-0 z-40">
@@ -31,7 +34,10 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="font-medium text-foreground/80 hover:text-foreground transition-colors"
+                className={cn(
+                  "font-medium transition-colors",
+                  pathname === link.href ? "text-primary font-semibold" : "text-foreground/80 hover:text-foreground"
+                )}
               >
                 {link.label}
               </Link>
@@ -68,7 +74,10 @@ export function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="block px-3 py-2 rounded-md text-base font-medium text-foreground/80 hover:bg-secondary"
+              className={cn(
+                "block px-3 py-2 rounded-md text-base font-medium",
+                 pathname === link.href ? "bg-secondary text-primary font-semibold" : "text-foreground/80 hover:bg-secondary"
+              )}
               onClick={() => setIsMenuOpen(false)}
             >
               {link.label}
