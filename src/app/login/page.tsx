@@ -7,8 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/shared/logo";
 import Link from "next/link";
-import { useAuth } from '@/firebase/provider';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useAuth } from '@/firebase';
+import { signInWithEmailAndPassword, type AuthError } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
@@ -33,10 +33,17 @@ export default function LoginPage() {
       router.push('/dashboard');
     } catch (error: any) {
       console.error(error);
+      let description = 'Verifique suas credenciais e tente novamente.';
+      if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+          description = 'E-mail ou senha inválidos. Por favor, verifique seus dados ou crie uma conta se ainda não tiver uma.';
+      } else if (error.message) {
+          description = error.message;
+      }
+      
       toast({
         variant: 'destructive',
         title: 'Erro no login',
-        description: error.message || 'Verifique suas credenciais e tente novamente.',
+        description: description,
       });
     } finally {
       setIsLoading(false);
