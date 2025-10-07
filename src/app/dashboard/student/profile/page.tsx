@@ -2,12 +2,12 @@
 
 import { useUser, useFirestore, useMemoFirebase, useDoc } from '@/firebase';
 import { doc, setDoc } from 'firebase/firestore';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Wand2 } from 'lucide-react';
+import { Loader2, Wand2, PlusCircle, Trash2 } from 'lucide-react';
 import type { UserProfile } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,6 +16,14 @@ import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
+import { extractProfileFromResumeAction } from '@/app/actions';
+
+const fileToDataUri = (file: File) => new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+});
 
 const profileSchema = z.object({
     firstName: z.string().min(1, 'O nome é obrigatório.'),
@@ -24,21 +32,19 @@ const profileSchema = z.object({
     nationality: z.string().min(3, 'A nacionalidade é obrigatória.'),
     yearsOfExperience: z.coerce.number().min(0, 'Os anos de experiência devem ser um número positivo.'),
     functionalArea: z.string().min(3, 'A área funcional é obrigatória.'),
-    latestCompany: z.string().optional(),
-    latestRole: z.string().optional(),
+    skills: z.string().describe("Competências separadas por vírgula").optional(),
     resumeUrl: z.string().url('Por favor, insira um URL válido para o seu CV.').optional().or(z.literal('')),
-    // Campos adicionados - por agora como objetos únicos para simplicidade da UI
-    academicHistory: z.object({
-        institution: z.string().optional(),
-        degree: z.string().optional(),
-        year: z.string().optional(),
-    }).optional(),
-    workExperience: z.object({
-        company: z.string().optional(),
-        role: z.string().optional(),
-        period: z.string().optional(),
+    academicHistory: z.array(z.object({
+        institution: z.string().min(1, "Instituição é obrigatória"),
+        degree: z.string().min(1, "Curso/Grau é obrigatório"),
+        year: z.string().min(4, "Ano é obrigatório"),
+    })).optional(),
+    workExperience: z.array(z.object({
+        company: z.string().min(1, "Empresa é obrigatória"),
+        role: z.string().min(1, "Função é obrigatória"),
+        period: z.string().min(1, "Período é obrigatório"),
         description: z.string().optional(),
-    }).optional(),
+    })).optional(),
 });
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
@@ -48,6 +54,8 @@ export default function ProfilePage() {
     const firestore = useFirestore();
     const { toast } = useToast();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isAnalyzing, setIsAnalyzing] = useState(false);
+    const [cvFile, setCvFile] = useState<File | null>(null);
 
     const userProfileRef = useMemoFirebase(() => {
         if (!firestore || !user) return null;
@@ -65,10 +73,21 @@ export default function ProfilePage() {
             nationality: '',
             yearsOfExperience: 0,
             functionalArea: '',
-            latestCompany: '',
-            latestRole: '',
+            skills: '',
             resumeUrl: '',
+            academicHistory: [],
+            workExperience: [],
         }
+    });
+
+    const { fields: academicFields, append: appendAcademic, remove: removeAcademic } = useFieldArray({
+        control: form.control,
+        name: "academicHistory"
+    });
+
+    const { fields: workFields, append: appendWork, remove: removeWork } = useFieldArray({
+        control: form.control,
+        name: "workExperience"
     });
 
     useEffect(() => {
@@ -81,16 +100,50 @@ export default function ProfilePage() {
                 nationality: userProfile.nationality || '',
                 yearsOfExperience: userProfile.yearsOfExperience || 0,
                 functionalArea: userProfile.functionalArea || '',
-                latestCompany: userProfile.latestCompany || '',
-                latestRole: userProfile.latestRole || '',
+                // @ts-ignore
+                skills: userProfile.skills?.join(', ') || '',
                 resumeUrl: userProfile.resumeUrl || '',
-                // @ts-ignore
-                academicHistory: userProfile.academicHistory?.[0] || { institution: '', degree: '', year: '' },
-                // @ts-ignore
-                workExperience: userProfile.workExperience?.[0] || { company: '', role: '', period: '', description: '' },
+                academicHistory: userProfile.academicHistory || [],
+                workExperience: userProfile.workExperience || [],
             });
         }
     }, [userProfile, form, user]);
+
+    const handleAnalyzeAndFill = async () => {
+        if (!cvFile) {
+            toast({
+                variant: 'destructive',
+                title: 'Nenhum ficheiro selecionado',
+                description: 'Por favor, carregue o seu CV em formato PDF ou DOCX.',
+            });
+            return;
+        }
+        setIsAnalyzing(true);
+        try {
+            const resumeDataUri = await fileToDataUri(cvFile);
+            const result = await extractProfileFromResumeAction({ resumeDataUri });
+
+            form.reset({
+                ...form.getValues(),
+                ...result,
+                skills: result.skills?.join(', ') || '',
+            });
+
+            toast({
+                title: 'Perfil preenchido!',
+                description: 'Os dados do seu CV foram preenchidos. Por favor, reveja e salve.',
+            });
+        } catch (error) {
+            toast({
+                variant: 'destructive',
+                title: 'Erro na Análise',
+                description: error instanceof Error ? error.message : 'Não foi possível analisar o CV.',
+            });
+        } finally {
+            setIsAnalyzing(false);
+        }
+    };
+
 
     const onSubmit: SubmitHandler<ProfileFormValues> = async (data) => {
         if (!user || !firestore) {
@@ -102,14 +155,13 @@ export default function ProfilePage() {
             const userDocRef = doc(firestore, 'users', user.uid);
             const userType = userProfile?.userType || 'student';
             
-            // Estrutura os dados para arrays
             const finalData = {
                 ...data,
+                // @ts-ignore
+                skills: data.skills ? data.skills.split(',').map(s => s.trim()) : [],
                 userType: userType, 
                 email: user.email, 
                 id: user.uid,
-                academicHistory: data.academicHistory?.institution ? [data.academicHistory] : [],
-                workExperience: data.workExperience?.company ? [data.workExperience] : [],
             };
 
             await setDoc(userDocRef, finalData, { merge: true });
@@ -137,14 +189,21 @@ export default function ProfilePage() {
             </CardHeader>
             <CardContent>
                 <div className="space-y-4 mb-8 p-6 border rounded-lg bg-secondary/50">
-                    <h4 className="font-semibold text-lg">Preenchimento Automático</h4>
+                    <h4 className="font-semibold text-lg">Preenchimento Automático com IA</h4>
                     <p className="text-sm text-muted-foreground">
-                        Poupe tempo! Carregue o seu CV em formato PDF e deixe a nossa IA preencher os campos do seu perfil por si.
+                        Poupe tempo! Carregue o seu CV em formato PDF ou DOCX e deixe a nossa IA preencher os campos do seu perfil por si.
                     </p>
                     <div className="flex gap-4 items-center">
-                        <Input id="cv-upload" type="file" accept=".pdf" className="max-w-xs" />
-                        <Button variant="outline">
-                            <Wand2 className="mr-2 h-4 w-4" /> Analisar e Preencher
+                        <Input 
+                            id="cv-upload" 
+                            type="file" 
+                            accept=".pdf,.doc,.docx" 
+                            className="max-w-xs" 
+                            onChange={(e) => setCvFile(e.target.files ? e.target.files[0] : null)}
+                        />
+                        <Button variant="outline" onClick={handleAnalyzeAndFill} disabled={isAnalyzing}>
+                            {isAnalyzing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
+                             Analisar e Preencher
                         </Button>
                     </div>
                 </div>
@@ -196,45 +255,61 @@ export default function ProfilePage() {
                         </div>
                         
                         <Separator />
-
+                        
                         <div>
                              <h3 className="font-headline text-xl mb-4">Formação Académica</h3>
                              <div className="space-y-6">
-                                 <FormField
-                                    control={form.control}
-                                    name="academicHistory.institution"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Instituição de Ensino</FormLabel>
-                                            <FormControl><Input placeholder="Ex: Universidade Agostinho Neto" {...field} /></FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <div className="grid md:grid-cols-2 gap-6">
-                                <FormField
-                                    control={form.control}
-                                    name="academicHistory.degree"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Curso/Grau</FormLabel>
-                                            <FormControl><Input placeholder="Ex: Licenciatura em Engenharia Informática" {...field} /></FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="academicHistory.year"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Ano de Conclusão</FormLabel>
-                                            <FormControl><Input placeholder="Ex: 2015" {...field} /></FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                                {academicFields.map((field, index) => (
+                                <div key={field.id} className="p-4 border rounded-md relative space-y-4">
+                                     <FormField
+                                        control={form.control}
+                                        name={`academicHistory.${index}.institution`}
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Instituição de Ensino</FormLabel>
+                                                <FormControl><Input placeholder="Ex: Universidade Agostinho Neto" {...field} /></FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <div className="grid md:grid-cols-2 gap-6">
+                                    <FormField
+                                        control={form.control}
+                                        name={`academicHistory.${index}.degree`}
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Curso/Grau</FormLabel>
+                                                <FormControl><Input placeholder="Ex: Licenciatura em Engenharia Informática" {...field} /></FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name={`academicHistory.${index}.year`}
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Ano de Conclusão</FormLabel>
+                                                <FormControl><Input placeholder="Ex: 2015" {...field} /></FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    </div>
+                                    <Button type="button" variant="ghost" size="icon" className="absolute top-2 right-2" onClick={() => removeAcademic(index)}>
+                                        <Trash2 className="h-4 w-4 text-destructive"/>
+                                    </Button>
                                 </div>
+                                ))}
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => appendAcademic({ institution: '', degree: '', year: '' })}
+                                >
+                                    <PlusCircle className="mr-2 h-4 w-4"/>
+                                    Adicionar Formação
+                                </Button>
                              </div>
                         </div>
 
@@ -278,55 +353,75 @@ export default function ProfilePage() {
                                         )}
                                     />
                                 </div>
-                                <h4 className="font-semibold pt-4">Última Experiência</h4>
-                                <div className="grid md:grid-cols-2 gap-6">
-                                     <FormField
-                                        control={form.control}
-                                        name="workExperience.company"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Empresa</FormLabel>
-                                                <FormControl><Input {...field} /></FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                     <FormField
-                                        control={form.control}
-                                        name="workExperience.role"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Função</FormLabel>
-                                                <FormControl><Input {...field} /></FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                                 <FormField
-                                    control={form.control}
-                                    name="workExperience.period"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Período</FormLabel>
-                                            <FormControl><Input placeholder="Ex: Jan 2020 - Presente" {...field} /></FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                 <FormField
-                                    control={form.control}
-                                    name="workExperience.description"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Descrição das Responsabilidades</FormLabel>
-                                            <FormControl><Textarea rows={4} {...field} /></FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+
+                                {workFields.map((field, index) => (
+                                    <div key={field.id} className="p-4 border rounded-md relative space-y-4 pt-6">
+                                        <h4 className="font-semibold absolute -top-3 bg-background px-2">Experiência {index + 1}</h4>
+                                        <div className="grid md:grid-cols-2 gap-6">
+                                            <FormField
+                                                control={form.control}
+                                                name={`workExperience.${index}.company`}
+                                                render={({ field }) => (
+                                                    <FormItem><FormLabel>Empresa</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name={`workExperience.${index}.role`}
+                                                render={({ field }) => (
+                                                    <FormItem><FormLabel>Função</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                        <FormField
+                                            control={form.control}
+                                            name={`workExperience.${index}.period`}
+                                            render={({ field }) => (
+                                                <FormItem><FormLabel>Período</FormLabel><FormControl><Input placeholder="Ex: Jan 2020 - Presente" {...field} /></FormControl><FormMessage /></FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name={`workExperience.${index}.description`}
+                                            render={({ field }) => (
+                                                <FormItem><FormLabel>Descrição das Responsabilidades</FormLabel><FormControl><Textarea rows={3} {...field} /></FormControl><FormMessage /></FormItem>
+                                            )}
+                                        />
+                                        <Button type="button" variant="ghost" size="icon" className="absolute top-2 right-2" onClick={() => removeWork(index)}>
+                                            <Trash2 className="h-4 w-4 text-destructive"/>
+                                        </Button>
+                                    </div>
+                                ))}
+                                 <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => appendWork({ company: '', role: '', period: '', description: '' })}
+                                >
+                                    <PlusCircle className="mr-2 h-4 w-4"/>
+                                    Adicionar Experiência
+                                </Button>
                             </div>
                         </div>
+
+                        <Separator />
+
+                        <div>
+                            <h3 className="font-headline text-xl mb-4">Competências</h3>
+                            <FormField
+                                control={form.control}
+                                name="skills"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Principais Competências</FormLabel>
+                                        <FormControl><Textarea placeholder="Ex: React, Gestão de Projetos, Liderança,..." rows={3} {...field} /></FormControl>
+                                        <FormDescription>Separe as competências por vírgulas.</FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
 
                         <Separator />
                         

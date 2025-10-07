@@ -44,7 +44,7 @@ export interface Course {
     company: string;
     role: string;
     period: string;
-    description: string;
+    description?: string;
   }
 
   export interface UserProfile {
@@ -61,8 +61,7 @@ export interface Course {
     yearsOfExperience?: number;
     functionalArea?: string;
     subFunctionalArea?: string;
-    latestCompany?: string;
-    latestRole?: string;
+    skills?: string[];
     professionalLevel?: string;
     academicHistory?: AcademicHistory[];
     workExperience?: WorkExperience[];

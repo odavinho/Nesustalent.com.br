@@ -67,6 +67,13 @@
           "type": "string",
           "description": "The user's professional level (e.g., department head)."
         },
+        "skills": {
+          "type": "array",
+          "description": "A list of the user's skills.",
+          "items": {
+            "type": "string"
+          }
+        },
         "academicHistory": {
             "type": "array",
             "description": "The user's academic history.",
@@ -93,14 +100,6 @@
                 },
                 "required": ["company", "role", "period"]
             }
-        },
-        "latestCompany": {
-          "type": "string",
-          "description": "The user's most recent employer."
-        },
-        "latestRole": {
-          "type": "string",
-          "description": "The user's most recent job title."
         }
       },
       "required": [

@@ -4,6 +4,8 @@ import { aiResumeAnalysis, AIResumeAnalysisInput, AIResumeAnalysisOutput } from 
 import { personalizedCourseRecommendations, PersonalizedCourseRecommendationsInput, PersonalizedCourseRecommendationsOutput } from "@/ai/flows/personalized-course-recommendations";
 import { generateCourseContent, GenerateCourseContentInput, GenerateCourseContentOutput } from "@/ai/flows/generate-course-content";
 import { generateVacancyContent, GenerateVacancyContentInput, GenerateVacancyContentOutput } from "@/ai/flows/generate-vacancy-content";
+import { extractProfileFromResume, ExtractProfileFromResumeInput, ExtractProfileFromResumeOutput } from "@/ai/flows/extract-profile-from-resume";
+
 
 import { courses } from "@/lib/courses";
 import fs from 'fs/promises';
@@ -20,6 +22,16 @@ export async function analyzeResumeAction(input: AIResumeAnalysisInput): Promise
     throw new Error("Failed to analyze resume. Please try again.");
   }
 }
+
+export async function extractProfileFromResumeAction(input: ExtractProfileFromResumeInput): Promise<ExtractProfileFromResumeOutput> {
+    try {
+      const output = await extractProfileFromResume(input);
+      return output;
+    } catch (error) {
+      console.error("Error in extractProfileFromResumeAction:", error);
+      throw new Error("Failed to extract profile from resume. Please try again.");
+    }
+  }
 
 export async function getCourseRecommendationsAction(input: { userProfile: string }): Promise<PersonalizedCourseRecommendationsOutput> {
     const courseCatalog = courses.map(c => `${c.id}: ${c.name}`).join('\n');
