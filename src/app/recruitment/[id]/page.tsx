@@ -1,20 +1,84 @@
+'use client';
+
 import { vacancies } from "@/lib/vacancies";
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Briefcase, Clock, MapPin, Share2 } from "lucide-react";
+import { ArrowLeft, Briefcase, Clock, MapPin, Share2, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { courseCategories } from "@/lib/courses";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { useUser, useFirestore } from "@/firebase";
+import { collection, addDoc, serverTimestamp, query, where, getDocs } from "firebase/firestore";
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 export default function VacancyDetailPage({ params }: { params: { id: string } }) {
   const vacancy = vacancies.find(v => v.id === params.id);
+  const { user, isUserLoading } = useUser();
+  const firestore = useFirestore();
+  const { toast } = useToast();
+  const router = useRouter();
+  const [isApplying, setIsApplying] = useState(false);
 
   if (!vacancy) {
     notFound();
   }
+
+  const handleApply = async () => {
+    if (!user) {
+      toast({
+        variant: "destructive",
+        title: "Acesso Negado",
+        description: "Você precisa fazer login para se candidatar a uma vaga.",
+      });
+      router.push('/login');
+      return;
+    }
+
+    setIsApplying(true);
+    try {
+      // Check if user has already applied
+      const applicationsRef = collection(firestore, 'applications');
+      const q = query(applicationsRef, where("userId", "==", user.uid), where("jobPostingId", "==", vacancy.id));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        toast({
+          variant: "destructive",
+          title: "Candidatura Duplicada",
+          description: "Você já se candidatou para esta vaga.",
+        });
+        return;
+      }
+      
+      // Add new application
+      await addDoc(applicationsRef, {
+        userId: user.uid,
+        jobPostingId: vacancy.id,
+        applicationDate: serverTimestamp(),
+        status: 'Recebida',
+        notes: '',
+      });
+
+      toast({
+        title: "Candidatura Enviada!",
+        description: `Sua candidatura para ${vacancy.title} foi enviada com sucesso.`,
+      });
+
+    } catch (error) {
+        console.error("Error applying for job: ", error);
+        toast({
+            variant: "destructive",
+            title: "Erro ao se candidatar",
+            description: "Ocorreu um erro ao enviar sua candidatura. Tente novamente.",
+        });
+    } finally {
+        setIsApplying(false);
+    }
+  };
 
   const category = courseCategories.find(c => c.id === vacancy.category);
 
@@ -66,7 +130,18 @@ export default function VacancyDetailPage({ params }: { params: { id: string } }
                                   <span><strong>Tipo:</strong> {vacancy.type}</span>
                               </div>
                           </div>
-                          <Button size="lg" className="w-full mt-6 bg-accent hover:bg-accent/90 text-accent-foreground">Candidatar-se</Button>
+                          <Button 
+                            size="lg" 
+                            className="w-full mt-6 bg-accent hover:bg-accent/90 text-accent-foreground"
+                            onClick={handleApply}
+                            disabled={isUserLoading || isApplying}
+                          >
+                            {isApplying ? (
+                                <><Loader2 className="mr-2 h-4 w-4 animate-spin"/>A processar...</>
+                            ) : (
+                                "Candidatar-se"
+                            )}
+                          </Button>
                           <Button size="lg" variant="outline" className="w-full mt-2">
                               <Share2 size={16} className="mr-2"/>
                               Compartilhar

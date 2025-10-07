@@ -37,6 +37,43 @@
           "type": "string",
           "description": "URL to the user's resume/CV.",
           "format": "uri"
+        },
+        "academicTitle": {
+          "type": "string",
+          "description": "The user's highest academic title."
+        },
+        "nationality": {
+          "type": "string",
+          "description": "The user's nationality."
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "description": "The user's date of birth.",
+          "format": "date"
+        },
+        "yearsOfExperience": {
+          "type": "number",
+          "description": "The user's total years of professional experience."
+        },
+        "functionalArea": {
+          "type": "string",
+          "description": "The primary functional area of the user's expertise."
+        },
+        "subFunctionalArea": {
+          "type": "string",
+          "description": "The sub-area of the user's expertise."
+        },
+        "latestCompany": {
+          "type": "string",
+          "description": "The user's most recent employer."
+        },
+        "latestRole": {
+          "type": "string",
+          "description": "The user's most recent job title."
+        },
+        "professionalLevel": {
+          "type": "string",
+          "description": "The user's professional level (e.g., department head)."
         }
       },
       "required": [
@@ -252,7 +289,7 @@
         },
         "status": {
           "type": "string",
-          "description": "The current status of the application (e.g., 'submitted', 'reviewed', 'interviewing', 'offered', 'rejected')."
+          "description": "The current status of the application (e.g., 'Recebida', 'Em análise', 'Entrevistando', 'Oferta', 'Rejeitada')."
         },
         "notes": {
           "type": "string",
