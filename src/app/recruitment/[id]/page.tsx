@@ -13,10 +13,11 @@ import { Footer } from "@/components/layout/footer";
 import { useUser, useFirestore, errorEmitter, FirestorePermissionError } from "@/firebase";
 import { collection, addDoc, serverTimestamp, query, where, getDocs } from "firebase/firestore";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import React, { useState } from "react";
 
 export default function VacancyDetailPage({ params }: { params: { id: string } }) {
-  const vacancy = vacancies.find(v => v.id === params.id);
+  const resolvedParams = React.use(params);
+  const vacancy = vacancies.find(v => v.id === resolvedParams.id);
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   const { toast } = useToast();
@@ -53,7 +54,7 @@ export default function VacancyDetailPage({ params }: { params: { id: string } }
             toast({
             variant: "destructive",
             title: "Candidatura Duplicada",
-            description: "Você já se candidatou para esta vaga.",
+            description: "Você já se candiditou para esta vaga.",
             });
             setIsApplying(false);
             return;

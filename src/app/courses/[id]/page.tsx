@@ -10,10 +10,12 @@ import { CourseCard } from "@/components/courses/course-card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import React from "react";
 
 
 export default function CourseDetailPage({ params }: { params: { id: string } }) {
-  const course = courses.find(c => c.id === params.id);
+  const resolvedParams = React.use(params);
+  const course = courses.find(c => c.id === resolvedParams.id);
 
   if (!course) {
     notFound();
