@@ -37,17 +37,28 @@ export default function LoginPage() {
       router.push('/dashboard');
 
     } catch (error: any) {
-      console.error(error);
-      let description = 'Verifique suas credenciais e tente novamente.';
-      if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-          description = 'E-mail ou senha inválidos. Por favor, verifique seus dados ou crie uma conta se ainda não tiver uma.';
-      } else if (error.message) {
-          description = error.message;
+      console.error("Firebase Login Error:", error);
+      let description = 'Ocorreu um erro inesperado. Verifique a consola para mais detalhes.';
+      
+      switch (error.code) {
+        case 'auth/user-not-found':
+        case 'auth/wrong-password':
+        case 'auth/invalid-credential':
+          description = 'E-mail ou senha inválidos. Por favor, verifique os seus dados ou crie uma conta se ainda não tiver uma.';
+          break;
+        case 'auth/invalid-email':
+          description = 'O formato do e-mail é inválido.';
+          break;
+        case 'auth/too-many-requests':
+          description = 'O acesso a esta conta foi temporariamente desativado devido a muitas tentativas de login falhadas. Tente novamente mais tarde.';
+          break;
+        default:
+          description = error.message || 'Não foi possível fazer login. Por favor, tente novamente.';
       }
       
       toast({
         variant: 'destructive',
-        title: 'Erro no login',
+        title: 'Erro no Login',
         description: description,
       });
     } finally {
