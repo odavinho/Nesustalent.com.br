@@ -1,7 +1,7 @@
 'use client';
 import { useUser } from '@/firebase';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Loading from './loading';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { User, Shield, GraduationCap } from 'lucide-react';
@@ -25,33 +25,30 @@ export default function DashboardRedirectPage() {
     const { user, isUserLoading } = useUser();
     const router = useRouter();
     const [availableRoles, setAvailableRoles] = useState<Array<'student' | 'instructor' | 'admin'>>([]);
-    const [isRoleLoading, setIsRoleLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        if (!isUserLoading) {
-            if (user) {
-                getUserRole(user.email || '').then(roles => {
-                    setAvailableRoles(roles);
-                    if (roles.length === 1) {
-                        router.replace(`/dashboard/${roles[0]}`);
-                    } else {
-                        setIsRoleLoading(false);
-                    }
-                });
-            } else {
-                router.replace('/login');
-            }
+        if (isUserLoading) {
+            return; // Wait until user auth state is resolved
         }
+
+        if (!user) {
+            router.replace('/login');
+            return;
+        }
+
+        getUserRole(user.email || '').then(roles => {
+            setAvailableRoles(roles);
+            if (roles.length === 1) {
+                router.replace(`/dashboard/${roles[0]}`);
+            } else {
+                setIsLoading(false); // Only stop loading if we need to show the role selector
+            }
+        });
     }, [user, isUserLoading, router]);
     
-    // Show loading screen while user or roles are being determined, or if it's about to redirect.
-    if (isUserLoading || isRoleLoading || (user && availableRoles.length === 1)) {
+    if (isLoading) {
         return <Loading />;
-    }
-
-    // This case should ideally not be reached if the effect handles redirection, but it's a good fallback.
-    if (!user) {
-        return <Loading />; 
     }
 
     return (
