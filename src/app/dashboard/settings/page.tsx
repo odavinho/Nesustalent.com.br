@@ -42,14 +42,16 @@ const AddItemDialog = ({ type }: { type: 'parceiro' | 'certificação' }) => (
                 <AlertDialogTitle>Adicionar Novo {type === 'parceiro' ? 'Parceiro' : 'Certificação'}</AlertDialogTitle>
                 <AlertDialogDescription>
                     Para adicionar um novo item, por favor, solicite ao assistente fornecendo as seguintes informações:
+                </AlertDialogDescription>
+                 <div className="text-sm text-muted-foreground">
                     <ul className="list-disc pl-5 mt-2 text-foreground/80 bg-secondary p-3 rounded-md">
                         <li>Um <strong>ID único</strong> (ex: 'partner-novo-logo' ou 'cert-nova-iso')</li>
                         <li>O <strong>URL da imagem</strong> do logotipo/certificado.</li>
                         <li>Uma <strong>descrição</strong> para a imagem (ex: 'Logotipo da Nova Empresa').</li>
-                        <li>Uma <strong>dica para IA</strong> (1-2 palavras, ex: 'company logo').</li>
+                        <li>Uma <strong>dica para IA</strong> (1-2 palavras, ex: 'tech logo').</li>
                     </ul>
                     <p className="mt-2">Exemplo de solicitação: "Adicione um novo parceiro com ID 'partner-techcorp', URL '...', descrição '...', e dica 'tech logo'."</p>
-                </AlertDialogDescription>
+                </div>
             </AlertDialogHeader>
             <AlertDialogFooter>
                 <AlertDialogAction>Entendido</AlertDialogAction>
