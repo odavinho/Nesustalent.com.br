@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/shared/logo';
-import { Menu, X, LogOut, User } from 'lucide-react';
+import { Menu, X, LogOut, UserCircle } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { usePathname, useRouter } from 'next/navigation';
@@ -18,6 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Skeleton } from '../ui/skeleton';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 const navLinks = [
   { href: '/courses', label: 'Cursos' },
@@ -37,6 +38,13 @@ export function Header() {
     await signOut(auth);
     router.push('/');
   };
+
+  const getInitials = (name: string | null | undefined) => {
+    if (!name) return '';
+    const names = name.split(' ');
+    const initials = names.map(n => n[0]).join('');
+    return initials.slice(0, 2).toUpperCase();
+  }
 
   return (
     <header className="bg-card shadow-sm sticky top-0 z-40">
@@ -70,8 +78,11 @@ export function Header() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="gap-2">
-                    <User />
-                    {user.displayName || user.email}
+                     <Avatar className="h-8 w-8">
+                      <AvatarImage src={user.photoURL || undefined} />
+                      <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
+                    </Avatar>
+                    <span className='hidden sm:inline'>{user.displayName || user.email}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -79,6 +90,9 @@ export function Header() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
                     <Link href="/dashboard">Painel</Link>
+                  </DropdownMenuItem>
+                   <DropdownMenuItem asChild>
+                    <Link href="/dashboard/student/profile">Meu Perfil</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem disabled>Configurações</DropdownMenuItem>
                   <DropdownMenuSeparator />
