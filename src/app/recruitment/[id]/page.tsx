@@ -10,10 +10,11 @@ import { courseCategories } from "@/lib/courses";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { useUser, useFirestore, errorEmitter, FirestorePermissionError } from "@/firebase";
+import { useUser, useFirestore, errorEmitter, FirestorePermissionError, useDoc, useMemoFirebase } from "@/firebase";
 import { doc, setDoc, serverTimestamp, getDoc } from "firebase/firestore";
 import { useToast } from "@/hooks/use-toast";
 import React, { useState } from "react";
+import type { UserProfile } from "@/lib/types";
 
 export default function VacancyDetailPage({ params }: { params: { id: string } }) {
   const resolvedParams = React.use(params);
@@ -23,6 +24,13 @@ export default function VacancyDetailPage({ params }: { params: { id: string } }
   const { toast } = useToast();
   const router = useRouter();
   const [isApplying, setIsApplying] = useState(false);
+
+  const userProfileRef = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return doc(firestore, 'users', user.uid);
+  }, [firestore, user]);
+
+  const { data: userProfile } = useDoc<UserProfile>(userProfileRef);
 
   if (!vacancy) {
     notFound();
@@ -39,12 +47,45 @@ export default function VacancyDetailPage({ params }: { params: { id: string } }
       return;
     }
 
+    // Profile completion check
+    if (!userProfile?.resumeUrl || !userProfile?.academicTitle || !userProfile?.yearsOfExperience) {
+        toast({
+            variant: "destructive",
+            title: "Perfil Incompleto",
+            description: "Para se candidatar, por favor, preencha as seções de experiência, formação, competências, certificados e adicione o seu CV no seu painel.",
+          });
+        return;
+    }
+
     if (!firestore) return;
 
     setIsApplying(true);
     
     const applicationId = `${user.uid}_${vacancy.id}`;
     const applicationRef = doc(firestore, 'applications', applicationId);
+    
+    // First, check if the application already exists to provide a specific message.
+    try {
+        const docSnap = await getDoc(applicationRef);
+        if (docSnap.exists()) {
+            toast({
+                variant: "destructive",
+                title: "Candidatura Duplicada",
+                description: "Você já se candiditou para esta vaga.",
+            });
+            setIsApplying(false);
+            return;
+        }
+    } catch (error) {
+        console.error("Get Doc Error:", error);
+        const permissionError = new FirestorePermissionError({
+            path: applicationRef.path,
+            operation: 'get',
+        });
+        errorEmitter.emit('permission-error', permissionError);
+        setIsApplying(false);
+        return;
+    }
     
     const applicationData = {
         userId: user.uid,
@@ -62,33 +103,12 @@ export default function VacancyDetailPage({ params }: { params: { id: string } }
         });
       })
       .catch(async (error) => {
-        // Check if the error is because the document already exists, which our rules might prevent if not handled correctly.
-        // For this scenario, let's assume a permission error on write means it might already exist or rules are too strict.
-        if (error.code === 'permission-denied') {
-             const docSnap = await getDoc(applicationRef).catch(() => null);
-             if (docSnap?.exists()) {
-                toast({
-                    variant: "destructive",
-                    title: "Candidatura Duplicada",
-                    description: "Você já se candiditou para esta vaga.",
-                });
-             } else {
-                const permissionError = new FirestorePermissionError({
-                    path: applicationRef.path,
-                    operation: 'create',
-                    requestResourceData: applicationData,
-                });
-                errorEmitter.emit('permission-error', permissionError);
-             }
-        } else {
-            console.error("Firestore Error:", error);
-            const permissionError = new FirestorePermissionError({
-                path: applicationRef.path,
-                operation: 'create',
-                requestResourceData: applicationData,
-            });
-            errorEmitter.emit('permission-error', permissionError);
-        }
+        const permissionError = new FirestorePermissionError({
+            path: applicationRef.path,
+            operation: 'create',
+            requestResourceData: applicationData,
+        });
+        errorEmitter.emit('permission-error', permissionError);
       })
       .finally(() => {
         setIsApplying(false);
