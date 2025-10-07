@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { useUser, useFirestore, errorEmitter, FirestorePermissionError } from "@/firebase";
-import { collection, addDoc, serverTimestamp, query, where, getDocs } from "firebase/firestore";
+import { doc, setDoc, serverTimestamp, getDoc } from "firebase/firestore";
 import { useToast } from "@/hooks/use-toast";
 import React, { useState } from "react";
 
@@ -43,14 +43,14 @@ export default function VacancyDetailPage({ params }: { params: { id: string } }
 
     setIsApplying(true);
     
-    // Check if user has already applied
-    const applicationsRef = collection(firestore, 'applications');
-    const q = query(applicationsRef, where("userId", "==", user.uid), where("jobPostingId", "==", vacancy.id));
+    // Create a predictable document ID from userId and vacancyId
+    const applicationId = `${user.uid}_${vacancy.id}`;
+    const applicationRef = doc(firestore, 'applications', applicationId);
     
     try {
-        const querySnapshot = await getDocs(q);
+        const docSnap = await getDoc(applicationRef);
 
-        if (!querySnapshot.empty) {
+        if (docSnap.exists()) {
             toast({
             variant: "destructive",
             title: "Candidatura Duplicada",
@@ -60,7 +60,7 @@ export default function VacancyDetailPage({ params }: { params: { id: string } }
             return;
         }
 
-        // Add new application
+        // Add new application using setDoc with the predictable ID
         const applicationData = {
             userId: user.uid,
             jobPostingId: vacancy.id,
@@ -69,7 +69,7 @@ export default function VacancyDetailPage({ params }: { params: { id: string } }
             notes: '',
         };
 
-        addDoc(applicationsRef, applicationData)
+        setDoc(applicationRef, applicationData)
         .then(() => {
             toast({
                 title: "Candidatura Enviada!",
@@ -77,8 +77,9 @@ export default function VacancyDetailPage({ params }: { params: { id: string } }
             });
         })
         .catch(async (error) => {
+            console.error("Firestore Error:", error);
             const permissionError = new FirestorePermissionError({
-                path: 'applications',
+                path: applicationRef.path,
                 operation: 'create',
                 requestResourceData: applicationData,
             });
@@ -88,9 +89,10 @@ export default function VacancyDetailPage({ params }: { params: { id: string } }
         });
 
     } catch (error) {
+        console.error("Get Doc Error:", error);
         const permissionError = new FirestorePermissionError({
-            path: 'applications',
-            operation: 'list',
+            path: applicationRef.path,
+            operation: 'get',
         });
         errorEmitter.emit('permission-error', permissionError);
         setIsApplying(false);

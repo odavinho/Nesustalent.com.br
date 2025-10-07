@@ -272,7 +272,7 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the Application entity."
+          "description": "Composite unique identifier for the Application entity (userId_jobPostingId)."
         },
         "userId": {
           "type": "string",
@@ -404,11 +404,11 @@
           "schema": {
             "$ref": "#/backend/entities/Application"
           },
-          "description": "Stores job applications. Includes userId and jobPostingId for relationship tracking.",
+          "description": "Stores job applications. The document ID is a composite of `userId_jobPostingId` to enforce uniqueness and simplify security rules.",
           "params": [
             {
               "name": "applicationId",
-              "description": "The unique identifier for the application."
+              "description": "The composite unique identifier for the application (userId_jobPostingId)."
             }
           ]
         }
