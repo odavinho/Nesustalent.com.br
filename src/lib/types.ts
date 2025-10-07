@@ -1,3 +1,5 @@
+import type { Timestamp } from 'firebase/firestore';
+
 export interface Course {
     id: string;
     name: string;
@@ -21,5 +23,33 @@ export interface Course {
     type: 'Full-time' | 'Part-time' | 'Remote';
     category: string;
     description: string;
+  }
+  
+  export interface Application {
+    id: string;
+    userId: string;
+    jobPostingId: string;
+    applicationDate: Timestamp;
+    status: 'Recebida' | 'Em análise' | 'Entrevistando' | 'Oferta' | 'Rejeitada';
+    notes?: string;
+  }
+
+  export interface UserProfile {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    userType: 'student' | 'instructor' | 'admin';
+    profilePictureUrl?: string;
+    resumeUrl?: string;
+    academicTitle?: string;
+    nationality?: string;
+    dateOfBirth?: string;
+    yearsOfExperience?: number;
+    functionalArea?: string;
+    subFunctionalArea?: string;
+    latestCompany?: string;
+    latestRole?: string;
+    professionalLevel?: string;
   }
   
