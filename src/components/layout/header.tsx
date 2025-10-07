@@ -3,21 +3,39 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/shared/logo';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, LogOut, User } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useUser, useAuth } from '@/firebase/provider';
+import { signOut } from 'firebase/auth';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Skeleton } from '../ui/skeleton';
 
 const navLinks = [
   { href: '/courses', label: 'Cursos' },
   { href: '/recruitment', label: 'Vagas' },
   { href: '/about', label: 'Sobre Nós' },
-  { href: '/dashboard', label: 'Dashboard' },
 ];
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
+  const { user, isUserLoading } = useUser();
+  const auth = useAuth();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    router.push('/');
+  };
 
   return (
     <header className="bg-card shadow-sm sticky top-0 z-40">
@@ -36,7 +54,7 @@ export function Header() {
                 href={link.href}
                 className={cn(
                   "font-medium transition-colors",
-                  pathname === link.href ? "text-primary font-semibold" : "text-foreground/80 hover:text-foreground"
+                  pathname.startsWith(link.href) ? "text-primary font-semibold" : "text-foreground/80 hover:text-foreground"
                 )}
               >
                 {link.label}
@@ -45,12 +63,40 @@ export function Header() {
           </nav>
 
           <div className="hidden md:flex items-center space-x-2">
-            <Button variant="ghost" asChild>
-              <Link href="/login">Entrar</Link>
-            </Button>
-            <Button className="bg-accent hover:bg-accent/90 text-accent-foreground" asChild>
-              <Link href="/signup">Cadastre-se</Link>
-            </Button>
+            {isUserLoading ? (
+              <Skeleton className="h-9 w-24" />
+            ) : user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="gap-2">
+                    <User />
+                    {user.displayName || user.email}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard">Painel</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem disabled>Configurações</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="text-red-500">
+                    <LogOut className="mr-2"/>
+                    Sair
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Button variant="ghost" asChild>
+                  <Link href="/login">Entrar</Link>
+                </Button>
+                <Button className="bg-accent hover:bg-accent/90 text-accent-foreground" asChild>
+                  <Link href="/signup">Cadastre-se</Link>
+                </Button>
+              </>
+            )}
           </div>
 
           <div className="md:hidden flex items-center">
@@ -76,22 +122,30 @@ export function Header() {
               href={link.href}
               className={cn(
                 "block px-3 py-2 rounded-md text-base font-medium",
-                 pathname === link.href ? "bg-secondary text-primary font-semibold" : "text-foreground/80 hover:bg-secondary"
+                 pathname.startsWith(link.href) ? "bg-secondary text-primary font-semibold" : "text-foreground/80 hover:bg-secondary"
               )}
               onClick={() => setIsMenuOpen(false)}
             >
               {link.label}
             </Link>
           ))}
-          <div className="pt-4 border-t">
-            <div className="flex items-center px-3 space-x-2">
-               <Button variant="ghost" className="w-full" asChild>
-                <Link href="/login">Entrar</Link>
-              </Button>
-              <Button className="w-full bg-accent hover:bg-accent/90 text-accent-foreground" asChild>
-                <Link href="/signup">Cadastre-se</Link>
-              </Button>
-            </div>
+           <div className="pt-4 border-t">
+            {user ? (
+               <div className="space-y-2 px-3">
+                 <p className="font-medium">{user.displayName || user.email}</p>
+                 <Button variant="outline" className="w-full" asChild><Link href="/dashboard">Painel</Link></Button>
+                 <Button variant="destructive" className="w-full" onClick={handleLogout}>Sair</Button>
+               </div>
+            ) : (
+              <div className="flex items-center px-3 space-x-2">
+                 <Button variant="ghost" className="w-full" asChild>
+                  <Link href="/login">Entrar</Link>
+                </Button>
+                <Button className="w-full bg-accent hover:bg-accent/90 text-accent-foreground" asChild>
+                  <Link href="/signup">Cadastre-se</Link>
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>
