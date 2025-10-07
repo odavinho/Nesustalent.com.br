@@ -6,6 +6,10 @@ import { generateCourseContent, GenerateCourseContentInput, GenerateCourseConten
 import { generateVacancyContent, GenerateVacancyContentInput, GenerateVacancyContentOutput } from "@/ai/flows/generate-vacancy-content";
 
 import { courses } from "@/lib/courses";
+import fs from 'fs/promises';
+import path from 'path';
+import { revalidatePath } from "next/cache";
+import type { ImagePlaceholder } from "@/lib/placeholder-images";
 
 export async function analyzeResumeAction(input: AIResumeAnalysisInput): Promise<AIResumeAnalysisOutput> {
   try {
@@ -51,5 +55,64 @@ export async function generateVacancyContentAction(input: GenerateVacancyContent
     } catch (error) {
         console.error("Error in generateVacancyContentAction:", error);
         throw new Error("Failed to generate vacancy content. Please try again.");
+    }
+}
+
+async function readImagesFile(): Promise<{ placeholderImages: ImagePlaceholder[] }> {
+    const filePath = path.join(process.cwd(), 'src', 'lib', 'placeholder-images.json');
+    const fileContent = await fs.readFile(filePath, 'utf-8');
+    return JSON.parse(fileContent);
+}
+
+async function writeImagesFile(data: { placeholderImages: ImagePlaceholder[] }): Promise<void> {
+    const filePath = path.join(process.cwd(), 'src', 'lib', 'placeholder-images.json');
+    const fileContent = JSON.stringify(data, null, 2);
+    await fs.writeFile(filePath, fileContent, 'utf-8');
+    revalidatePath('/dashboard/settings');
+    revalidatePath('/');
+    revalidatePath('/about');
+}
+
+export async function addImageAction(image: ImagePlaceholder): Promise<{ success: boolean; message: string }> {
+    try {
+        const data = await readImagesFile();
+        if (data.placeholderImages.some(p => p.id === image.id)) {
+            return { success: false, message: 'Já existe um item com este ID.' };
+        }
+        data.placeholderImages.push(image);
+        await writeImagesFile(data);
+        return { success: true, message: 'Item adicionado com sucesso!' };
+    } catch (error) {
+        return { success: false, message: 'Falha ao adicionar item.' };
+    }
+}
+
+export async function updateImageAction(image: ImagePlaceholder): Promise<{ success: boolean; message: string }> {
+    try {
+        const data = await readImagesFile();
+        const index = data.placeholderImages.findIndex(p => p.id === image.id);
+        if (index === -1) {
+            return { success: false, message: 'Item não encontrado.' };
+        }
+        data.placeholderImages[index] = image;
+        await writeImagesFile(data);
+        return { success: true, message: 'Item atualizado com sucesso!' };
+    } catch (error) {
+        return { success: false, message: 'Falha ao atualizar item.' };
+    }
+}
+
+export async function deleteImageAction(id: string): Promise<{ success: boolean; message: string }> {
+    try {
+        const data = await readImagesFile();
+        const initialLength = data.placeholderImages.length;
+        data.placeholderImages = data.placeholderImages.filter(p => p.id !== id);
+        if (data.placeholderImages.length === initialLength) {
+            return { success: false, message: 'Item não encontrado para excluir.' };
+        }
+        await writeImagesFile(data);
+        return { success: true, message: 'Item excluído com sucesso!' };
+    } catch (error) {
+        return { success: false, message: 'Falha ao excluir item.' };
     }
 }
