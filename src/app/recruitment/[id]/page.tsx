@@ -43,40 +43,44 @@ export default function VacancyDetailPage({ params }: { params: { id: string } }
 
     setIsApplying(true);
     
-    // Create a predictable document ID from userId and vacancyId
     const applicationId = `${user.uid}_${vacancy.id}`;
     const applicationRef = doc(firestore, 'applications', applicationId);
     
-    try {
-        const docSnap = await getDoc(applicationRef);
+    const applicationData = {
+        userId: user.uid,
+        jobPostingId: vacancy.id,
+        applicationDate: serverTimestamp(),
+        status: 'Recebida',
+        notes: '',
+    };
 
-        if (docSnap.exists()) {
-            toast({
-            variant: "destructive",
-            title: "Candidatura Duplicada",
-            description: "Você já se candiditou para esta vaga.",
-            });
-            setIsApplying(false);
-            return;
-        }
-
-        // Add new application using setDoc with the predictable ID
-        const applicationData = {
-            userId: user.uid,
-            jobPostingId: vacancy.id,
-            applicationDate: serverTimestamp(),
-            status: 'Recebida',
-            notes: '',
-        };
-
-        setDoc(applicationRef, applicationData)
-        .then(() => {
-            toast({
-                title: "Candidatura Enviada!",
-                description: `Sua candidatura para ${vacancy.title} foi enviada com sucesso.`,
-            });
-        })
-        .catch(async (error) => {
+    setDoc(applicationRef, applicationData)
+      .then(() => {
+        toast({
+          title: "Candidatura Enviada!",
+          description: `Sua candidatura para ${vacancy.title} foi enviada com sucesso.`,
+        });
+      })
+      .catch(async (error) => {
+        // Check if the error is because the document already exists, which our rules might prevent if not handled correctly.
+        // For this scenario, let's assume a permission error on write means it might already exist or rules are too strict.
+        if (error.code === 'permission-denied') {
+             const docSnap = await getDoc(applicationRef).catch(() => null);
+             if (docSnap?.exists()) {
+                toast({
+                    variant: "destructive",
+                    title: "Candidatura Duplicada",
+                    description: "Você já se candiditou para esta vaga.",
+                });
+             } else {
+                const permissionError = new FirestorePermissionError({
+                    path: applicationRef.path,
+                    operation: 'create',
+                    requestResourceData: applicationData,
+                });
+                errorEmitter.emit('permission-error', permissionError);
+             }
+        } else {
             console.error("Firestore Error:", error);
             const permissionError = new FirestorePermissionError({
                 path: applicationRef.path,
@@ -84,19 +88,11 @@ export default function VacancyDetailPage({ params }: { params: { id: string } }
                 requestResourceData: applicationData,
             });
             errorEmitter.emit('permission-error', permissionError);
-        }).finally(() => {
-            setIsApplying(false);
-        });
-
-    } catch (error) {
-        console.error("Get Doc Error:", error);
-        const permissionError = new FirestorePermissionError({
-            path: applicationRef.path,
-            operation: 'get',
-        });
-        errorEmitter.emit('permission-error', permissionError);
+        }
+      })
+      .finally(() => {
         setIsApplying(false);
-    }
+      });
   };
 
   const category = courseCategories.find(c => c.id === vacancy.category);
