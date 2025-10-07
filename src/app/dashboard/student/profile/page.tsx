@@ -1,6 +1,6 @@
 'use client';
 
-import { useUser, useFirestore, useMemoFirebase, useDoc } from '@/firebase';
+import { useUser, useFirestore, useMemoFirebase, useDoc, errorEmitter, FirestorePermissionError } from '@/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { useForm, SubmitHandler, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -100,8 +100,7 @@ export default function ProfilePage() {
                 nationality: userProfile.nationality || '',
                 yearsOfExperience: userProfile.yearsOfExperience || 0,
                 functionalArea: userProfile.functionalArea || '',
-                // @ts-ignore
-                skills: userProfile.skills?.join(', ') || '',
+                skills: Array.isArray(userProfile.skills) ? userProfile.skills.join(', ') : '',
                 resumeUrl: userProfile.resumeUrl || '',
                 academicHistory: userProfile.academicHistory || [],
                 workExperience: userProfile.workExperience || [],
@@ -151,28 +150,38 @@ export default function ProfilePage() {
             return;
         }
         setIsSubmitting(true);
-        try {
-            const userDocRef = doc(firestore, 'users', user.uid);
-            const userType = userProfile?.userType || 'student';
-            
-            const finalData = {
-                ...data,
-                // @ts-ignore
-                skills: data.skills ? data.skills.split(',').map(s => s.trim()) : [],
-                userType: userType, 
-                email: user.email, 
-                id: user.uid,
-            };
+        
+        const userDocRef = doc(firestore, 'users', user.uid);
+        
+        const finalData: Omit<UserProfile, 'id' | 'email' | 'userType'> & { skills: string[] } = {
+            ...data,
+            skills: data.skills ? data.skills.split(',').map(s => s.trim()).filter(s => s) : [],
+        };
 
-            await setDoc(userDocRef, finalData, { merge: true });
-            
-            toast({ title: 'Sucesso!', description: 'O seu perfil foi atualizado.' });
-        } catch (error) {
-            console.error('Error updating profile:', error);
-            toast({ variant: 'destructive', title: 'Erro', description: 'Não foi possível atualizar o seu perfil.' });
-        } finally {
-            setIsSubmitting(false);
-        }
+        const profileToSave = {
+            ...userProfile, // existing data
+            ...finalData,   // new form data
+            id: user.uid,
+            email: user.email!,
+            userType: userProfile?.userType || 'student',
+        };
+
+        setDoc(userDocRef, profileToSave, { merge: true })
+            .then(() => {
+                toast({ title: 'Sucesso!', description: 'O seu perfil foi atualizado.' });
+            })
+            .catch(async (error) => {
+                console.error('Error updating profile:', error);
+                const permissionError = new FirestorePermissionError({
+                    path: userDocRef.path,
+                    operation: 'update',
+                    requestResourceData: profileToSave,
+                });
+                errorEmitter.emit('permission-error', permissionError);
+            })
+            .finally(() => {
+                setIsSubmitting(false);
+            });
     };
     
     if (isUserLoading || isProfileLoading) {
