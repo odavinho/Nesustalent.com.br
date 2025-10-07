@@ -72,7 +72,7 @@ export default function SignupPage() {
           <Card>
               <CardHeader>
                   <CardTitle>Cadastre-se</CardTitle>
-                  <CardDescription>Para testar, crie contas com os emails 'admin@nexustalent.com' ou 'instructor@nexustalent.com' e uma senha à sua escolha.</CardDescription>
+                  <CardDescription>Para testar os diferentes painéis, crie contas usando os emails 'admin@nexustalent.com' ou 'instructor@nexustalent.com' com uma senha à sua escolha.</CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSignup} className="space-y-4">
