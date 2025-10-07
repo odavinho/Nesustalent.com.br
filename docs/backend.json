@@ -63,6 +63,37 @@
           "type": "string",
           "description": "The sub-area of the user's expertise."
         },
+        "professionalLevel": {
+          "type": "string",
+          "description": "The user's professional level (e.g., department head)."
+        },
+        "academicHistory": {
+            "type": "array",
+            "description": "The user's academic history.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "institution": {"type": "string"},
+                    "degree": {"type": "string"},
+                    "year": {"type": "string"}
+                },
+                "required": ["institution", "degree", "year"]
+            }
+        },
+        "workExperience": {
+            "type": "array",
+            "description": "The user's professional work experience.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "company": {"type": "string"},
+                    "role": {"type": "string"},
+                    "period": {"type": "string"},
+                    "description": {"type": "string"}
+                },
+                "required": ["company", "role", "period"]
+            }
+        },
         "latestCompany": {
           "type": "string",
           "description": "The user's most recent employer."
@@ -70,10 +101,6 @@
         "latestRole": {
           "type": "string",
           "description": "The user's most recent job title."
-        },
-        "professionalLevel": {
-          "type": "string",
-          "description": "The user's professional level (e.g., department head)."
         }
       },
       "required": [
@@ -289,7 +316,8 @@
         },
         "status": {
           "type": "string",
-          "description": "The current status of the application (e.g., 'Recebida', 'Em análise', 'Entrevistando', 'Oferta', 'Rejeitada')."
+          "description": "The current status of the application (e.g., 'Recebida', 'Em análise', 'Entrevistando', 'Oferta', 'Rejeitada').",
+          "enum": ["Recebida", "Em análise", "Entrevistando", "Oferta", "Rejeitada"]
         },
         "notes": {
           "type": "string",

@@ -34,6 +34,19 @@ export interface Course {
     notes?: string;
   }
 
+  export interface AcademicHistory {
+    institution: string;
+    degree: string;
+    year: string;
+  }
+
+  export interface WorkExperience {
+    company: string;
+    role: string;
+    period: string;
+    description: string;
+  }
+
   export interface UserProfile {
     id: string;
     firstName: string;
@@ -51,5 +64,7 @@ export interface Course {
     latestCompany?: string;
     latestRole?: string;
     professionalLevel?: string;
+    academicHistory?: AcademicHistory[];
+    workExperience?: WorkExperience[];
   }
   
