@@ -12,6 +12,8 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
+import { Header } from '@/components/layout/header';
+import { Footer } from '@/components/layout/footer';
 
 // Mock function to get user role. In a real app, this would come from your database.
 const getUserRole = async (uid: string): Promise<'student' | 'instructor' | 'admin'> => {
@@ -77,49 +79,53 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[80vh] py-12 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md space-y-8">
-        <div className="text-center">
-            <Link href="/" className="inline-block">
-                <Logo />
-            </Link>
-          <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-foreground font-headline">
-            Acesse sua conta
-          </h2>
-          <p className="mt-2 text-center text-sm text-muted-foreground">
-            Ou{' '}
-            <Link href="/signup" className="font-medium text-primary hover:text-primary/90">
-              crie uma conta agora
-            </Link>
-          </p>
+    <>
+      <Header />
+      <main className="flex items-center justify-center flex-grow py-12 px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-md space-y-8">
+          <div className="text-center">
+              <Link href="/" className="inline-block">
+                  <Logo />
+              </Link>
+            <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-foreground font-headline">
+              Acesse sua conta
+            </h2>
+            <p className="mt-2 text-center text-sm text-muted-foreground">
+              Ou{' '}
+              <Link href="/signup" className="font-medium text-primary hover:text-primary/90">
+                crie uma conta agora
+              </Link>
+            </p>
+          </div>
+          <Card>
+              <CardHeader>
+                  <CardTitle>Entrar</CardTitle>
+                  <CardDescription>Digite seu e-mail e senha para acessar a plataforma.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleLogin} className="space-y-4">
+                  <div className="space-y-2">
+                      <Label htmlFor="email">E-mail</Label>
+                      <Input id="email" type="email" placeholder="seu-admin@email.com" required value={email} onChange={e => setEmail(e.target.value)} />
+                  </div>
+                  <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                          <Label htmlFor="password">Senha</Label>
+                          <Link href="#" className="text-sm font-medium text-primary hover:underline">
+                              Esqueceu sua senha?
+                          </Link>
+                      </div>
+                      <Input id="password" type="password" required value={password} onChange={e => setPassword(e.target.value)} />
+                  </div>
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Entrar'}
+                  </Button>
+                </form>
+              </CardContent>
+          </Card>
         </div>
-        <Card>
-            <CardHeader>
-                <CardTitle>Entrar</CardTitle>
-                <CardDescription>Digite seu e-mail e senha para acessar a plataforma.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleLogin} className="space-y-4">
-                 <div className="space-y-2">
-                    <Label htmlFor="email">E-mail</Label>
-                    <Input id="email" type="email" placeholder="seu-admin@email.com" required value={email} onChange={e => setEmail(e.target.value)} />
-                </div>
-                 <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                        <Label htmlFor="password">Senha</Label>
-                        <Link href="#" className="text-sm font-medium text-primary hover:underline">
-                            Esqueceu sua senha?
-                        </Link>
-                    </div>
-                    <Input id="password" type="password" required value={password} onChange={e => setPassword(e.target.value)} />
-                </div>
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Entrar'}
-                </Button>
-              </form>
-            </CardContent>
-        </Card>
-      </div>
-    </div>
+      </main>
+      <Footer />
+    </>
   );
 }
