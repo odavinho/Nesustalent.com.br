@@ -72,7 +72,7 @@ export default function SignupPage() {
           <Card>
               <CardHeader>
                   <CardTitle>Cadastre-se</CardTitle>
-                  <CardDescription>É rápido e fácil. Comece sua jornada na NexusTalent hoje.</CardDescription>
+                  <CardDescription>Para testar, crie contas com os emails 'admin@nexustalent.com' ou 'instructor@nexustalent.com' e uma senha à sua escolha.</CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSignup} className="space-y-4">

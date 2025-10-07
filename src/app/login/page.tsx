@@ -88,13 +88,13 @@ export default function LoginPage() {
           <Card>
               <CardHeader>
                   <CardTitle>Entrar</CardTitle>
-                  <CardDescription>Para testar, use 'admin@nexustalent.com' ou 'instructor@nexustalent.com' para ver os diferentes painéis.</CardDescription>
+                  <CardDescription>Use as credenciais da conta que você criou na página de registo.</CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div className="space-y-2">
                       <Label htmlFor="email">E-mail</Label>
-                      <Input id="email" type="email" placeholder="seu-admin@email.com" required value={email} onChange={e => setEmail(e.target.value)} />
+                      <Input id="email" type="email" placeholder="seu@email.com" required value={email} onChange={e => setEmail(e.target.value)} />
                   </div>
                   <div className="space-y-2">
                       <div className="flex items-center justify-between">
