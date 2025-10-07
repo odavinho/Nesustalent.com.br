@@ -3,19 +3,19 @@ import { useUser } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import Loading from './loading';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { User, Shield, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
 
 // Mock function to get user role. In a real app, this would come from your database.
-const getUserRole = async (uid: string): Promise<Array<'student' | 'instructor' | 'admin'>> => {
+const getUserRole = async (email: string): Promise<Array<'student' | 'instructor' | 'admin'>> => {
     // For demonstration, we'll assign roles based on the email.
     // This is NOT secure and should be replaced with a real database call.
     const roles: Array<'student' | 'instructor' | 'admin'>> = ['student']; // All users are students by default
-    if (uid.includes('admin')) {
+    if (email.includes('admin')) {
       roles.push('admin');
     }
-    if (uid.includes('instructor')) {
+    if (email.includes('instructor')) {
       roles.push('instructor');
     }
     return roles;
@@ -25,27 +25,33 @@ export default function DashboardRedirectPage() {
     const { user, isUserLoading } = useUser();
     const router = useRouter();
     const [availableRoles, setAvailableRoles] = useState<Array<'student' | 'instructor' | 'admin'>>([]);
+    const [isRoleLoading, setIsRoleLoading] = useState(true);
 
     useEffect(() => {
-        if (!isUserLoading && user) {
-            getUserRole(user.email || '').then(roles => {
-                setAvailableRoles(roles);
-                // If user has only one role, redirect immediately.
-                if (roles.length === 1) {
-                    router.replace(`/dashboard/${roles[0]}`);
-                }
-            });
-        } else if (!isUserLoading && !user) {
-            router.replace('/login');
+        if (!isUserLoading) {
+            if (user) {
+                getUserRole(user.email || '').then(roles => {
+                    setAvailableRoles(roles);
+                    if (roles.length === 1) {
+                        router.replace(`/dashboard/${roles[0]}`);
+                    } else {
+                        setIsRoleLoading(false);
+                    }
+                });
+            } else {
+                router.replace('/login');
+            }
         }
     }, [user, isUserLoading, router]);
-
-    if (isUserLoading || (user && availableRoles.length <= 1) ) {
+    
+    // Show loading screen while user or roles are being determined, or if it's about to redirect.
+    if (isUserLoading || isRoleLoading || (user && availableRoles.length === 1)) {
         return <Loading />;
     }
 
+    // This case should ideally not be reached if the effect handles redirection, but it's a good fallback.
     if (!user) {
-      return <Loading />; // Or a message telling them to log in
+        return <Loading />; 
     }
 
     return (
