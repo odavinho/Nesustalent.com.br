@@ -1,7 +1,7 @@
 'use client';
 import { useUser } from '@/firebase';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Loading from './loading';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { User, Shield, GraduationCap } from 'lucide-react';
@@ -11,7 +11,7 @@ import Link from 'next/link';
 const getUserRole = async (uid: string): Promise<Array<'student' | 'instructor' | 'admin'>> => {
     // For demonstration, we'll assign roles based on the email.
     // This is NOT secure and should be replaced with a real database call.
-    const roles: Array<'student' | 'instructor' | 'admin'> = ['student']; // All users are students by default
+    const roles: Array<'student' | 'instructor' | 'admin'>> = ['student']; // All users are students by default
     if (uid.includes('admin')) {
       roles.push('admin');
     }
@@ -24,7 +24,7 @@ const getUserRole = async (uid: string): Promise<Array<'student' | 'instructor' 
 export default function DashboardRedirectPage() {
     const { user, isUserLoading } = useUser();
     const router = useRouter();
-    const [availableRoles, setAvailableRoles] = React.useState<Array<'student' | 'instructor' | 'admin'>>([]);
+    const [availableRoles, setAvailableRoles] = useState<Array<'student' | 'instructor' | 'admin'>>([]);
 
     useEffect(() => {
         if (!isUserLoading && user) {
