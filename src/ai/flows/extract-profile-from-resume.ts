@@ -69,7 +69,7 @@ const extractProfileFromResumeFlow = ai.defineFlow(
   {
     name: 'extractProfileFromResumeFlow',
     inputSchema: ExtractProfileFromResumeInputSchema,
-    outputSchema: ExtractProfileFromResume-OutputSchema,
+    outputSchema: ExtractProfileFromResumeOutputSchema,
   },
   async input => {
     const { output } = await prompt(input);
