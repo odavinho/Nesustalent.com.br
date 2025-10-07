@@ -24,7 +24,7 @@ const navLinks = [
   { href: '/courses', label: 'Cursos' },
   { href: '/recruitment', label: 'Vagas' },
   { href: '/about', label: 'Sobre Nós' },
-  { href: '#', label: 'Blog' },
+  { href: '/blog', label: 'Blog' },
 ];
 
 export function Header() {
