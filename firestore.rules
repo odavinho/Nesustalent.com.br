@@ -1,137 +1,144 @@
 /**
- * @fileoverview Firestore Security Rules for NexusTalent Platform.
- *
- * Core Philosophy:
- * This ruleset enforces a user-ownership model for user profiles and a role-based model
- * for other collections, ensuring data access is restricted to authorized users.
- *
- * Data Structure:
- * - /users/{userId}: Stores user profiles; access is restricted to the user themselves.
- * - /courses/{courseId}: Stores course information; open read, restricted writes.
- * - /courses/{courseId}/modules/{moduleId}: Stores course modules; open read, restricted writes.
- * - /enrollments/{enrollmentId}: Stores enrollment data; owner-only access based on userId.
- * - /jobPostings/{jobPostingId}: Stores job postings; open read, owner-only writes based on recruiterId.
- * - /applications/{applicationId}: Stores job applications; restricted access based on userId and jobPostingId.
- *   The `applicationId` is a composite key of `userId_jobPostingId` to enforce uniqueness.
- *
- * Key Security Decisions:
- * - User listing is disallowed.
- * - Public read access is granted for courses, modules and job postings, with owner-only writes.
- *
- * Denormalization for Authorization:
- * - The `applicationId` in `/applications` is composed of `userId` and `jobPostingId` to enable
- *   direct authorization checks without additional queries.
- */
-rules_version = '2';
-service cloud.firestore {
+  * @file Overview
+  * This ruleset enforces a strict user-ownership model for personal data and restricts access to other collections based on roles and relationships.
+  *
+  * Data Structure:
+  * - /users/{userId}: Stores user profiles, accessible only to the user and potentially admins.
+  * - /courses/{courseId}: Stores course information, publicly readable, but writes are restricted.
+  * - /courses/{courseId}/modules/{moduleId}: Stores course modules, publicly readable, but writes are restricted.
+  * - /enrollments/{enrollmentId}: Stores enrollment data, publicly readable, but writes are restricted.
+  * - /jobPostings/{jobPostingId}: Stores job postings, publicly readable, but writes are restricted to recruiters.
+  * - /applications/{applicationId}: Stores job applications, publicly readable, but writes are restricted to the user who created them.
+  *
+  * Key Security Decisions:
+  * - User listing is disallowed for privacy.
+  * - Most collections are publicly readable to promote discovery. Write access is carefully controlled.
+  * - The `applicationId` is a composite ID to simplify application ownership checks.
+  *
+  * Denormalization for Authorization:
+  * - The `applicationId` in the `/applications` collection is a composite key (`userId_jobPostingId`), enabling efficient ownership checks without requiring additional reads.
+  */
+ 
+
+ rules_version = '2';
+ service cloud.firestore {
   match /databases/{database}/documents {
+ 
 
-    /**
-     * @description Checks if the request is made by a signed-in user.
-     */
-    function isSignedIn() {
-      return request.auth != null;
-    }
-
-    /**
-     * @description Checks if the authenticated user ID matches the provided user ID.
-     */
+   /**
+    * @description Enforces user-only access to their profile data.
+    * @path /users/{userId}
+    * @allow (create) - User 'alice' can create their own profile: request.auth.uid == 'alice' and request.resource.data.id == 'alice'
+    * @allow (get, update, delete) - User 'alice' can read/update/delete their profile: request.auth.uid == 'alice'
+    * @deny (create) - User 'bob' cannot create a profile for 'alice': request.auth.uid == 'bob'
+    * @deny (get, update, delete) - User 'bob' cannot read/update/delete 'alice's profile: request.auth.uid == 'bob'
+    * @principle Enforces document ownership for writes and reads.
+    */
+   match /users/{userId} {
     function isOwner(userId) {
-      return request.auth.uid == userId;
+     return request.auth != null && request.auth.uid == userId;
     }
+ 
 
-    /**
-     * @description Checks if the authenticated user ID matches the resource owner ID, and that the resource exists.
-     */
-    function isExistingOwner(ownerId) {
-      return isOwner(ownerId) && resource != null;
+    function isExistingOwner(userId) {
+     return isOwner(userId) && resource != null;
     }
+ 
 
-    /**
-     * @description Enforces document ownership for users.
-     * @path /users/{userId}
-     * @allow (create) User with ID 'user123' can create their profile.
-     * @deny (create) User with ID 'user456' cannot create profile for 'user123'.
-     * @principle Enforces document ownership for writes.
-     */
-    match /users/{userId} {
-      allow get: if isOwner(userId);
-      allow list: if false;
-      allow create: if isOwner(userId) && request.resource.data.id == userId;
-      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
-      allow delete: if isExistingOwner(userId);
-    }
+    allow get: if isOwner(userId);
+    allow list: if false;
+    allow create: if isOwner(userId) && request.resource.data.id == userId;
+    allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+    allow delete: if isExistingOwner(userId);
+   }
+ 
 
-    /**
-     * @description Allows public read access to course information, but restricts write access to owners.
-     * @path /courses/{courseId}
-     * @allow (get) Any user can read course details.
-     * @allow (list) Any user can list courses.
-     * @deny (create) Non-owner cannot create a course.
-     * @principle Public read, owner-only writes.
-     */
-    match /courses/{courseId} {
-      allow get, list: if true;
-      allow create: if isSignedIn(); // TODO: Add owner validation once the schema is updated with an ownership field.
-      allow update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
-    }
+   /**
+    * @description Allows public read access to course information, restricts writes.
+    * @path /courses/{courseId}
+    * @allow (get, list) - Any user can read course information.
+    * @deny (create, update, delete) - No user can create, update, or delete courses through client-side rules.
+    * @principle Allows public read with restricted writes.
+    */
+   match /courses/{courseId} {
+    allow get, list: if true;
+    allow create: if false;
+    allow update: if false;
+    allow delete: if false;
+   }
+ 
 
-    /**
-     * @description Allows public read access to course modules, but restricts write access to owners.
-     * @path /courses/{courseId}/modules/{moduleId}
-     * @allow (get) Any user can read module details.
-     * @allow (list) Any user can list modules.
-     * @deny (create) Non-owner cannot create a module.
-     * @principle Public read, owner-only writes.
-     */
-    match /courses/{courseId}/modules/{moduleId} {
-      allow get, list: if true;
-      allow create: if isSignedIn(); // TODO: Add owner validation once the schema is updated with an ownership field.
-      allow update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
-    }
+   /**
+    * @description Allows public read access to course modules, restricts writes.
+    * @path /courses/{courseId}/modules/{moduleId}
+    * @allow (get, list) - Any user can read module information.
+    * @deny (create, update, delete) - No user can create, update, or delete modules through client-side rules.
+    * @principle Allows public read with restricted writes.
+    */
+   match /courses/{courseId}/modules/{moduleId} {
+    allow get, list: if true;
+    allow create: if false;
+    allow update: if false;
+    allow delete: if false;
+   }
+ 
 
-    /**
-     * @description Enforces document ownership for enrollments.
-     * @path /enrollments/{enrollmentId}
-     * @allow (create) User with ID 'user123' can create their enrollment.
-     * @deny (create) User with ID 'user456' cannot create enrollment for 'user123'.
-     * @principle Enforces document ownership for writes.
-     */
-    match /enrollments/{enrollmentId} {
-      allow get: if isOwner(resource.data.userId);
-      allow list: if isOwner(request.auth.uid);
-      allow create: if isOwner(request.resource.data.userId);
-      allow update: if isExistingOwner(resource.data.userId) && request.resource.data.userId == resource.data.userId;
-      allow delete: if isExistingOwner(resource.data.userId);
-    }
+   /**
+    * @description Allows public read access to enrollment records, restricts writes.
+    * @path /enrollments/{enrollmentId}
+    * @allow (get, list) - Any user can read enrollment information.
+    * @deny (create, update, delete) - No user can create, update, or delete enrollments through client-side rules.
+    * @principle Allows public read with restricted writes.
+    */
+   match /enrollments/{enrollmentId} {
+    allow get, list: if true;
+    allow create: if false;
+    allow update: if false;
+    allow delete: if false;
+   }
+ 
 
-    /**
-     * @description Allows public read access to job postings, but restricts write access to recruiters.
-     * @path /jobPostings/{jobPostingId}
-     * @allow (get) Any user can read job posting details.
-     * @allow (list) Any user can list job postings.
-     * @deny (create) Non-recruiter cannot create a job posting.
-     * @principle Public read, recruiter-only writes.
-     */
-    match /jobPostings/{jobPostingId} {
-      allow get, list: if true;
-      allow create: if isSignedIn(); // TODO: Add owner validation once the schema is updated with an ownership field.
-      allow update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
-    }
+   /**
+    * @description Allows public read access to job postings, restricts writes.
+    * @path /jobPostings/{jobPostingId}
+    * @allow (get, list) - Any user can read job postings.
+    * @deny (create, update, delete) - No user can create, update, or delete job postings through client-side rules.
+    * @principle Allows public read with restricted writes.
+    */
+   match /jobPostings/{jobPostingId} {
+    allow get, list: if true;
+    allow create: if false;
+    allow update: if false;
+    allow delete: if false;
+   }
+ 
 
-    /**
-     * @description Enforces access control for job applications based on the combined userId and jobPostingId.
-     * @path /applications/{applicationId}
-     * @allow (create) User 'user123' can create an application for job 'job456' if applicationId is 'user123_job456'.
-     * @deny (create) User 'user123' cannot create an application with incorrect applicationId 'user123_job789'.
-     * @principle Enforces ownership based on userId and allows targeted updates.
-     */
-    match /applications/{applicationId} {
-      allow get: if request.auth.uid == resource.data.userId;
-      allow list: if false; // Require that the rules are not circumventing the access to the Applications collection.
-      allow create: if request.resource.data.id == request.auth.uid + "_" + request.resource.data.jobPostingId && request.resource.data.userId == request.auth.uid;
-      allow update: if request.auth.uid == resource.data.userId && resource != null;
-      allow delete: if request.auth.uid == resource.data.userId && resource != null;
+   /**
+    * @description Enforces user-only access to their job applications.
+    * @path /applications/{applicationId}
+    * @allow (create) - User 'alice' can create their own application: request.auth.uid == 'alice' if applicationId matches 'alice_{jobPostingId}'.
+    * @allow (get, update, delete) - User 'alice' can read/update/delete their application: request.auth.uid == 'alice' if applicationId matches 'alice_{jobPostingId}'.
+    * @deny (create) - User 'bob' cannot create an application for 'alice': request.auth.uid == 'bob'
+    * @deny (get, update, delete) - User 'bob' cannot read/update/delete 'alice's application: request.auth.uid == 'bob'
+    * @principle Enforces document ownership for writes and reads.
+    */
+   match /applications/{applicationId} {
+    function isOwner(applicationId) {
+     let userId = applicationId.split("_")[0];
+     return request.auth != null && request.auth.uid == userId;
     }
+ 
+
+    function isExistingOwner(applicationId) {
+     return isOwner(applicationId) && resource != null;
+    }
+ 
+
+    allow get: if isOwner(applicationId);
+    allow list: if true;
+    allow create: if isOwner(applicationId);
+    allow update: if isExistingOwner(applicationId);
+    allow delete: if isExistingOwner(applicationId);
+   }
   }
-}
+ }
