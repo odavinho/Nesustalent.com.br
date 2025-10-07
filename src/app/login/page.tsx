@@ -15,15 +15,6 @@ import { Loader2 } from 'lucide-react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 
-// Mock function to get user role. In a real app, this would come from your database.
-const getUserRole = async (uid: string): Promise<'student' | 'instructor' | 'admin'> => {
-  // For demonstration, we'll assign roles based on the email.
-  // This is NOT secure and should be replaced with a real database call.
-  if (uid.includes('admin')) return 'admin';
-  if (uid.includes('instructor')) return 'instructor';
-  return 'student';
-}
-
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -36,28 +27,14 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(auth, email, password);
       
       toast({
         title: 'Login bem-sucedido!',
         description: 'Redirecionando para o seu painel.',
       });
 
-      // Mock role-based redirection
-      const role = await getUserRole(userCredential.user.email || '');
-      switch (role) {
-        case 'admin':
-          router.push('/dashboard/admin');
-          break;
-        case 'instructor':
-          router.push('/dashboard/instructor');
-          break;
-        case 'student':
-          router.push('/dashboard/student');
-          break;
-        default:
-          router.push('/dashboard');
-      }
+      router.push('/dashboard');
 
     } catch (error: any) {
       console.error(error);
@@ -100,7 +77,7 @@ export default function LoginPage() {
           <Card>
               <CardHeader>
                   <CardTitle>Entrar</CardTitle>
-                  <CardDescription>Digite seu e-mail e senha para acessar a plataforma.</CardDescription>
+                  <CardDescription>Para testar, use 'admin@nexustalent.com' ou 'instructor@nexustalent.com' para ver os diferentes painéis.</CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleLogin} className="space-y-4">
