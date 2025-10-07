@@ -10,7 +10,7 @@ import { courseCategories } from "@/lib/courses";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { useUser, useFirestore } from "@/firebase";
+import { useUser, useFirestore, errorEmitter, FirestorePermissionError } from "@/firebase";
 import { collection, addDoc, serverTimestamp, query, where, getDocs } from "firebase/firestore";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
@@ -38,44 +38,60 @@ export default function VacancyDetailPage({ params }: { params: { id: string } }
       return;
     }
 
+    if (!firestore) return;
+
     setIsApplying(true);
+    
+    // Check if user has already applied
+    const applicationsRef = collection(firestore, 'applications');
+    const q = query(applicationsRef, where("userId", "==", user.uid), where("jobPostingId", "==", vacancy.id));
+    
     try {
-      // Check if user has already applied
-      const applicationsRef = collection(firestore, 'applications');
-      const q = query(applicationsRef, where("userId", "==", user.uid), where("jobPostingId", "==", vacancy.id));
-      const querySnapshot = await getDocs(q);
+        const querySnapshot = await getDocs(q);
 
-      if (!querySnapshot.empty) {
-        toast({
-          variant: "destructive",
-          title: "Candidatura Duplicada",
-          description: "Você já se candidatou para esta vaga.",
+        if (!querySnapshot.empty) {
+            toast({
+            variant: "destructive",
+            title: "Candidatura Duplicada",
+            description: "Você já se candidatou para esta vaga.",
+            });
+            setIsApplying(false);
+            return;
+        }
+
+        // Add new application
+        const applicationData = {
+            userId: user.uid,
+            jobPostingId: vacancy.id,
+            applicationDate: serverTimestamp(),
+            status: 'Recebida',
+            notes: '',
+        };
+
+        addDoc(applicationsRef, applicationData)
+        .then(() => {
+            toast({
+                title: "Candidatura Enviada!",
+                description: `Sua candidatura para ${vacancy.title} foi enviada com sucesso.`,
+            });
+        })
+        .catch(async (error) => {
+            const permissionError = new FirestorePermissionError({
+                path: 'applications',
+                operation: 'create',
+                requestResourceData: applicationData,
+            });
+            errorEmitter.emit('permission-error', permissionError);
+        }).finally(() => {
+            setIsApplying(false);
         });
-        return;
-      }
-      
-      // Add new application
-      await addDoc(applicationsRef, {
-        userId: user.uid,
-        jobPostingId: vacancy.id,
-        applicationDate: serverTimestamp(),
-        status: 'Recebida',
-        notes: '',
-      });
-
-      toast({
-        title: "Candidatura Enviada!",
-        description: `Sua candidatura para ${vacancy.title} foi enviada com sucesso.`,
-      });
 
     } catch (error) {
-        console.error("Error applying for job: ", error);
-        toast({
-            variant: "destructive",
-            title: "Erro ao se candidatar",
-            description: "Ocorreu um erro ao enviar sua candidatura. Tente novamente.",
+        const permissionError = new FirestorePermissionError({
+            path: 'applications',
+            operation: 'list',
         });
-    } finally {
+        errorEmitter.emit('permission-error', permissionError);
         setIsApplying(false);
     }
   };
