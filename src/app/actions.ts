@@ -60,8 +60,15 @@ export async function generateVacancyContentAction(input: GenerateVacancyContent
 
 async function readImagesFile(): Promise<{ placeholderImages: ImagePlaceholder[] }> {
     const filePath = path.join(process.cwd(), 'src', 'lib', 'placeholder-images.json');
-    const fileContent = await fs.readFile(filePath, 'utf-8');
-    return JSON.parse(fileContent);
+    try {
+        const fileContent = await fs.readFile(filePath, 'utf-8');
+        return JSON.parse(fileContent);
+    } catch (error) {
+        if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+            return { placeholderImages: [] };
+        }
+        throw error;
+    }
 }
 
 async function writeImagesFile(data: { placeholderImages: ImagePlaceholder[] }): Promise<void> {
@@ -83,7 +90,8 @@ export async function addImageAction(image: ImagePlaceholder): Promise<{ success
         await writeImagesFile(data);
         return { success: true, message: 'Item adicionado com sucesso!' };
     } catch (error) {
-        return { success: false, message: 'Falha ao adicionar item.' };
+        const message = error instanceof Error ? error.message : 'Falha ao adicionar item.';
+        return { success: false, message };
     }
 }
 
@@ -98,7 +106,8 @@ export async function updateImageAction(image: ImagePlaceholder): Promise<{ succ
         await writeImagesFile(data);
         return { success: true, message: 'Item atualizado com sucesso!' };
     } catch (error) {
-        return { success: false, message: 'Falha ao atualizar item.' };
+        const message = error instanceof Error ? error.message : 'Falha ao atualizar item.';
+        return { success: false, message };
     }
 }
 
@@ -113,6 +122,7 @@ export async function deleteImageAction(id: string): Promise<{ success: boolean;
         await writeImagesFile(data);
         return { success: true, message: 'Item excluído com sucesso!' };
     } catch (error) {
-        return { success: false, message: 'Falha ao excluir item.' };
+        const message = error instanceof Error ? error.message : 'Falha ao excluir item.';
+        return { success: false, message };
     }
 }

@@ -42,6 +42,7 @@ export function EditableImageGrid({ items, itemType, idPrefix }: EditableImageGr
               <div className="relative w-32 h-20 mb-4 rounded-md overflow-hidden bg-secondary">
                 <Image src={item.imageUrl} alt={item.description} fill className="object-contain" />
               </div>
+              <p className="text-xs text-muted-foreground mb-2 h-8 line-clamp-2">{item.description}</p>
               <div className="w-full space-y-2 opacity-0 group-hover:opacity-100 transition-opacity">
                 <Button variant="outline" size="sm" className="w-full" onClick={() => handleOpenDialog(item)}>
                   <Edit className="mr-2 h-4 w-4" />
@@ -57,7 +58,7 @@ export function EditableImageGrid({ items, itemType, idPrefix }: EditableImageGr
         ))}
         <Button
           variant="outline"
-          className="flex flex-col items-center justify-center h-full min-h-[200px] border-dashed"
+          className="flex flex-col items-center justify-center h-full min-h-[220px] border-dashed"
           onClick={() => handleOpenDialog(null)}
         >
           <PlusCircle className="h-8 w-8 text-muted-foreground mb-2" />

@@ -46,15 +46,17 @@ export function ImageFormDialog({ isOpen, setIsOpen, item, itemType, idPrefix }:
   });
 
   useEffect(() => {
-    if (item) {
-      form.reset(item);
-    } else {
-      form.reset({
-        id: `${idPrefix}`,
-        imageUrl: '',
-        description: '',
-        imageHint: '',
-      });
+    if (isOpen) {
+        if (item) {
+          form.reset(item);
+        } else {
+          form.reset({
+            id: `${idPrefix}`,
+            imageUrl: '',
+            description: '',
+            imageHint: '',
+          });
+        }
     }
   }, [item, form, idPrefix, isOpen]);
   
@@ -69,7 +71,8 @@ export function ImageFormDialog({ isOpen, setIsOpen, item, itemType, idPrefix }:
         toast({ variant: 'destructive', title: 'Erro', description: result.message });
       }
     } catch (error) {
-      toast({ variant: 'destructive', title: 'Erro', description: 'Ocorreu um erro inesperado.' });
+      const message = error instanceof Error ? error.message : 'Ocorreu um erro inesperado.';
+      toast({ variant: 'destructive', title: 'Erro', description: message });
     } finally {
       setIsSubmitting(false);
     }
