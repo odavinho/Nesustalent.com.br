@@ -8,10 +8,19 @@ import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/shared/logo";
 import Link from "next/link";
 import { useAuth } from '@/firebase';
-import { signInWithEmailAndPassword, type AuthError } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
+
+// Mock function to get user role. In a real app, this would come from your database.
+const getUserRole = async (uid: string): Promise<'student' | 'instructor' | 'admin'> => {
+  // For demonstration, we'll assign roles based on the email.
+  // This is NOT secure and should be replaced with a real database call.
+  if (uid.includes('admin')) return 'admin';
+  if (uid.includes('instructor')) return 'instructor';
+  return 'student';
+}
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -25,12 +34,29 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      
       toast({
         title: 'Login bem-sucedido!',
         description: 'Redirecionando para o seu painel.',
       });
-      router.push('/dashboard');
+
+      // Mock role-based redirection
+      const role = await getUserRole(userCredential.user.email || '');
+      switch (role) {
+        case 'admin':
+          router.push('/dashboard/admin');
+          break;
+        case 'instructor':
+          router.push('/dashboard/instructor');
+          break;
+        case 'student':
+          router.push('/dashboard/student');
+          break;
+        default:
+          router.push('/dashboard');
+      }
+
     } catch (error: any) {
       console.error(error);
       let description = 'Verifique suas credenciais e tente novamente.';
@@ -76,7 +102,7 @@ export default function LoginPage() {
               <form onSubmit={handleLogin} className="space-y-4">
                  <div className="space-y-2">
                     <Label htmlFor="email">E-mail</Label>
-                    <Input id="email" type="email" placeholder="seu@email.com" required value={email} onChange={e => setEmail(e.target.value)} />
+                    <Input id="email" type="email" placeholder="seu-admin@email.com" required value={email} onChange={e => setEmail(e.target.value)} />
                 </div>
                  <div className="space-y-2">
                     <div className="flex items-center justify-between">

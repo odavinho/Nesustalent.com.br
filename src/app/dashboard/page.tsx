@@ -1,106 +1,44 @@
-import { CourseRecommendations } from "@/components/dashboard/course-recommendations";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookMarked, User, Briefcase, GraduationCap, Settings } from "lucide-react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+'use client';
+import { useUser } from '@/firebase';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import Loading from './loading';
 
-export default function DashboardPage() {
-    // Mock data for enrolled courses
-    const enrolledCourses = [
-        { name: 'Técnicas de Apresentação', progress: 75 },
-        { name: 'Gestão de Conflitos', progress: 40 },
-        { name: 'Excel Avançado', progress: 100 },
-    ];
-  
-    return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="flex items-center gap-4 mb-8">
-        <User className="w-10 h-10 text-primary" />
-        <div>
-          <h1 className="font-headline text-4xl font-bold">Meu Painel</h1>
-          <p className="text-muted-foreground">Bem-vindo de volta, Administrador!</p>
-        </div>
-      </div>
-      
-      <div className="grid lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 grid gap-8 auto-rows-min">
-            <div className="grid md:grid-cols-2 gap-8">
-              <Card>
-                  <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                          <GraduationCap />
-                          Gestão de Cursos
-                      </CardTitle>
-                      <CardDescription>Adicione novos cursos à plataforma. Use a IA para gerar o conteúdo programático e a imagem.</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                      <Button asChild>
-                          <Link href="/dashboard/courses/new">Adicionar Novo Curso</Link>
-                      </Button>
-                  </CardContent>
-              </Card>
-              <Card>
-                  <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                          <Briefcase />
-                          Gestão de Vagas
-                      </CardTitle>
-                      <CardDescription>Publique novas oportunidades de emprego e gerencie as candidaturas recebidas.</CardDescription>
-                  </CardHeader>
-                  <CardContent className="flex gap-4">
-                      <Button asChild>
-                          <Link href="/dashboard/vacancies/new">Adicionar Nova Vaga</Link>
-                      </Button>
-                      <Button asChild variant="outline">
-                          <Link href="#">Gerir Candidaturas</Link>
-                      </Button>
-                  </CardContent>
-              </Card>
-            </div>
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Settings />
-                        Configurações do Site
-                    </CardTitle>
-                    <CardDescription>Visualize e prepare os dados do site para atualização (cursos, vagas, parceiros, etc.).</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Button asChild>
-                        <Link href="/dashboard/settings">Gerir Conteúdo</Link>
-                    </Button>
-                </CardContent>
-            </Card>
-             <CourseRecommendations />
-        </div>
+// Mock function to get user role. In a real app, this would come from your database.
+const getUserRole = async (uid: string): Promise<'student' | 'instructor' | 'admin'> => {
+    // For demonstration, we'll assign roles based on the email.
+    // This is NOT secure and should be replaced with a real database call.
+    if (uid.includes('admin')) return 'admin';
+    if (uid.includes('instructor')) return 'instructor';
+    return 'student';
+}
 
-        <div className="lg:col-span-1">
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <BookMarked />
-                        Meus Cursos Atuais
-                    </CardTitle>
-                    <CardDescription>Seu progresso de aprendizado.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="space-y-4">
-                        {enrolledCourses.map(course => (
-                            <div key={course.name}>
-                                <div className="flex justify-between items-center mb-1">
-                                    <h4 className="font-medium text-sm">{course.name}</h4>
-                                    <span className="text-sm font-semibold text-primary">{course.progress}%</span>
-                                </div>
-                                <div className="w-full bg-secondary rounded-full h-2.5">
-                                    <div className="bg-primary h-2.5 rounded-full" style={{width: `${course.progress}%`}}></div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </CardContent>
-            </Card>
-        </div>
-      </div>
-    </div>
-  );
+
+export default function DashboardRedirectPage() {
+    const { user, isUserLoading } = useUser();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!isUserLoading && user) {
+            getUserRole(user.email || '').then(role => {
+                switch (role) {
+                    case 'admin':
+                        router.replace('/dashboard/admin');
+                        break;
+                    case 'instructor':
+                        router.replace('/dashboard/instructor');
+                        break;
+                    case 'student':
+                        router.replace('/dashboard/student');
+                        break;
+                    default:
+                        router.replace('/'); // Fallback to home
+                }
+            });
+        } else if (!isUserLoading && !user) {
+            router.replace('/login');
+        }
+    }, [user, isUserLoading, router]);
+
+    return <Loading />;
 }
