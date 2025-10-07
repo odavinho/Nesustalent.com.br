@@ -23,6 +23,7 @@ const navLinks = [
   { href: '/courses', label: 'Cursos' },
   { href: '/recruitment', label: 'Vagas' },
   { href: '/about', label: 'Sobre Nós' },
+  { href: '#', label: 'Blog' },
 ];
 
 export function Header() {
@@ -54,7 +55,7 @@ export function Header() {
                 href={link.href}
                 className={cn(
                   "font-medium transition-colors",
-                  pathname.startsWith(link.href) ? "text-primary font-semibold" : "text-foreground/80 hover:text-foreground"
+                  pathname.startsWith(link.href) && link.href !== '#' ? "text-primary font-semibold" : "text-foreground/80 hover:text-foreground"
                 )}
               >
                 {link.label}
@@ -122,7 +123,7 @@ export function Header() {
               href={link.href}
               className={cn(
                 "block px-3 py-2 rounded-md text-base font-medium",
-                 pathname.startsWith(link.href) ? "bg-secondary text-primary font-semibold" : "text-foreground/80 hover:bg-secondary"
+                 pathname.startsWith(link.href) && link.href !== '#' ? "bg-secondary text-primary font-semibold" : "text-foreground/80 hover:bg-secondary"
               )}
               onClick={() => setIsMenuOpen(false)}
             >
