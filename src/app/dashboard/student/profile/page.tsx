@@ -352,7 +352,5 @@ function ProfileSkeleton() {
                 <Skeleton className="h-11 w-full" />
             </CardContent>
         </Card>
-    )
+    );
 }
-
-    

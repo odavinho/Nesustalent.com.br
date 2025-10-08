@@ -4,10 +4,10 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Loading from './loading';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { User, Shield, GraduationCap } from 'lucide-react';
+import { User, Shield, GraduationCap, Briefcase } from 'lucide-react';
 import Link from 'next/link';
 
-type Role = 'student' | 'instructor' | 'admin';
+type Role = 'student' | 'instructor' | 'admin' | 'recruiter';
 
 export default function DashboardRedirectPage() {
     const { user, isUserLoading } = useUser();
@@ -34,6 +34,9 @@ export default function DashboardRedirectPage() {
         if (userEmail.includes('instructor')) {
             roles.push('instructor');
         }
+        if (userEmail.includes('recruiter')) {
+            roles.push('recruiter');
+        }
         setAvailableRoles(roles);
 
         // Lógica de redirecionamento ou exibição
@@ -58,7 +61,7 @@ export default function DashboardRedirectPage() {
                     Você tem acesso a múltiplos painéis. Escolha qual deseja visualizar.
                 </p>
             </div>
-            <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-8">
+            <div className="max-w-4xl mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {availableRoles.includes('student') && (
                     <Link href="/dashboard/student">
                         <Card className="hover:shadow-lg hover:border-primary transition-all">
@@ -75,6 +78,16 @@ export default function DashboardRedirectPage() {
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2"><User /> Formador</CardTitle>
                                 <CardDescription>Gerencie seus cursos, alunos e conteúdo.</CardDescription>
+                            </CardHeader>
+                        </Card>
+                    </Link>
+                )}
+                 {availableRoles.includes('recruiter') && (
+                    <Link href="/dashboard/recruiter">
+                        <Card className="hover:shadow-lg hover:border-primary transition-all">
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2"><Briefcase /> Recrutador</CardTitle>
+                                <CardDescription>Gerencie vagas e analise candidaturas.</CardDescription>
                             </CardHeader>
                         </Card>
                     </Link>

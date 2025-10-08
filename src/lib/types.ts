@@ -52,7 +52,7 @@ export interface Course {
     firstName: string;
     lastName: string;
     email: string;
-    userType: 'student' | 'instructor' | 'admin';
+    userType: 'student' | 'instructor' | 'admin' | 'recruiter';
     profilePictureUrl?: string;
     resumeUrl?: string;
     academicTitle?: string;

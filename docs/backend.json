@@ -25,8 +25,8 @@
         },
         "userType": {
           "type": "string",
-          "description": "The type of user (e.g., 'student', 'instructor', 'admin').",
-          "enum": ["student", "instructor", "admin"]
+          "description": "The type of user (e.g., 'student', 'instructor', 'admin', 'recruiter').",
+          "enum": ["student", "instructor", "admin", "recruiter"]
         },
         "profilePictureUrl": {
           "type": "string",
