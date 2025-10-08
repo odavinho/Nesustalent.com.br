@@ -1,5 +1,5 @@
 import { SidebarProvider, Sidebar, SidebarTrigger, SidebarContent, SidebarHeader, SidebarInset } from "@/components/ui/sidebar";
-import { Header } from "@/components/layout/header";
+import { DashboardHeader } from "@/components/layout/dashboard-header";
 import { FirebaseClientProvider } from "@/firebase/client-provider";
 
 export default function DashboardLayout({
@@ -10,7 +10,7 @@ export default function DashboardLayout({
     return (
         <FirebaseClientProvider>
             <div className="min-h-screen flex flex-col">
-                <Header />
+                <DashboardHeader />
                 <SidebarProvider>
                     <Sidebar>
                         <SidebarHeader>

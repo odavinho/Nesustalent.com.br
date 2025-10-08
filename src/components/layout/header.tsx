@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/shared/logo';
 import { Menu, X, LogOut, Globe } from 'lucide-react';
-import { useState, useTransition, type ComponentProps } from 'react';
+import { useState, useTransition, type FC } from 'react';
 import { cn } from '@/lib/utils';
 import { usePathname, useRouter } from 'next/navigation';
 import { useUser, useAuth } from '@/firebase/provider';
@@ -22,63 +22,38 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { useLocale, useTranslations } from 'next-intl';
 
 
-// This new component will hold the parts of the UI that need translation.
-function TranslatedNav({ navLinks }: { navLinks: { href: string; label: string }[] }) {
+const LocaleSwitcher: FC = () => {
+    const [isPending, startTransition] = useTransition();
+    const locale = useLocale();
+    const router = useRouter();
     const pathname = usePathname();
+
+    function onLocaleChange(newLocale: string) {
+        const newPath = pathname.startsWith('/' + locale) ? `/${newLocale}${pathname.substring(3)}` : `/${newLocale}${pathname}`;
+        startTransition(() => {
+            router.replace(newPath);
+        });
+    }
+
     return (
-        <nav className="hidden md:flex md:items-center md:space-x-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  "font-medium transition-colors",
-                  pathname.endsWith(link.href) ? "text-primary font-semibold" : "text-foreground/80 hover:text-foreground"
-                )}
-              >
-                {link.label}
-              </Link>
-            ))}
-        </nav>
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                    <Globe />
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => onLocaleChange('pt')} disabled={isPending || locale === 'pt'}>Português</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onLocaleChange('en')} disabled={isPending || locale === 'en'}>English</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onLocaleChange('fr')} disabled={isPending || locale === 'fr'}>Français</DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
     );
 }
 
-function TranslatedMobileNav({ navLinks, onLinkClick }: { navLinks: { href: string; label: string }[], onLinkClick: () => void }) {
+const NavLinks = () => {
+    const t = useTranslations('Header');
     const pathname = usePathname();
-    return (
-        <>
-            {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={cn(
-                    "block px-3 py-2 rounded-md text-base font-medium",
-                     pathname.endsWith(link.href) ? "bg-secondary text-primary font-semibold" : "text-foreground/80 hover:bg-secondary"
-                  )}
-                  onClick={onLinkClick}
-                >
-                  {link.label}
-                </Link>
-              ))}
-        </>
-    )
-}
-
-// Wrapper component to provide translations only when available.
-function HeaderContent(props: ComponentProps<typeof Header>) {
-    let t: (key: keyof IntlMessages['Header']) => string;
-    try {
-        t = useTranslations('Header');
-    } catch (e) {
-        // Fallback for non-internationalized routes like the dashboard
-        t = (key) => ({
-            courses: 'Courses',
-            vacancies: 'Vacancies',
-            about: 'About Us',
-            blog: 'Blog'
-        }[key]);
-    }
-
     const navLinks = [
         { href: '/courses', label: t('courses') },
         { href: '/recruitment', label: t('vacancies') },
@@ -86,21 +61,96 @@ function HeaderContent(props: ComponentProps<typeof Header>) {
         { href: '/blog', label: t('blog') },
     ];
     
-    return <Header navLinks={navLinks} />;
+    return (
+        <>
+            <nav className="hidden md:flex md:items-center md:space-x-8">
+                {navLinks.map((link) => (
+                    <Link
+                        key={link.href}
+                        href={link.href}
+                        className={cn(
+                            "font-medium transition-colors",
+                            pathname.endsWith(link.href) ? "text-primary font-semibold" : "text-foreground/80 hover:text-foreground"
+                        )}
+                    >
+                        {link.label}
+                    </Link>
+                ))}
+            </nav>
+            <MobileNav navLinks={navLinks} />
+        </>
+    );
 }
 
+const MobileNav = ({ navLinks }: { navLinks: { href: string; label: string }[]}) => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const { user } = useUser();
+    const auth = useAuth();
+    const router = useRouter();
+    const pathname = usePathname();
 
-export function Header({ navLinks }: { navLinks?: { href: string; label: string }[] }) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const handleLogout = async () => {
+        await signOut(auth);
+        router.push('/');
+    };
+
+    return (
+        <>
+            <div className="md:hidden flex items-center">
+                <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                    {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                    <span className="sr-only">Toggle menu</span>
+                </Button>
+            </div>
+            <div
+                className={cn(
+                'md:hidden transition-all duration-300 ease-in-out absolute top-full left-0 w-full bg-card',
+                isMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
+                )}
+            >
+                <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t">
+                    {navLinks.map((link) => (
+                        <Link
+                        key={link.href}
+                        href={link.href}
+                        className={cn(
+                            "block px-3 py-2 rounded-md text-base font-medium",
+                            pathname.endsWith(link.href) ? "bg-secondary text-primary font-semibold" : "text-foreground/80 hover:bg-secondary"
+                        )}
+                        onClick={() => setIsMenuOpen(false)}
+                        >
+                        {link.label}
+                        </Link>
+                    ))}
+                   <div className="pt-4 border-t">
+                    {user ? (
+                       <div className="space-y-2 px-3">
+                         <p className="font-medium">{user.displayName || user.email}</p>
+                         <Button variant="outline" className="w-full" asChild><Link href="/dashboard">Painel</Link></Button>
+                         <Button variant="destructive" className="w-full" onClick={handleLogout}>Sair</Button>
+                       </div>
+                    ) : (
+                      <div className="flex items-center px-3 space-x-2">
+                         <Button variant="ghost" className="w-full" asChild>
+                          <Link href="/login">Entrar</Link>
+                        </Button>
+                        <Button className="w-full bg-accent hover:bg-accent/90 text-accent-foreground" asChild>
+                          <Link href="/signup">Cadastre-se</Link>
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+            </div>
+        </>
+    )
+}
+
+export function Header() {
+  const router = useRouter();
   const { user, isUserLoading } = useUser();
   const auth = useAuth();
-  const router = useRouter();
-
-  const [isPending, startTransition] = useTransition();
-  const locale = useLocale();
-  const pathname = usePathname();
-
-
+  
   const handleLogout = async () => {
     await signOut(auth);
     router.push('/');
@@ -113,15 +163,6 @@ export function Header({ navLinks }: { navLinks?: { href: string; label: string 
     return initials.slice(0, 2).toUpperCase();
   }
 
-  function onLocaleChange(newLocale: string) {
-    const newPath = pathname.startsWith('/' + locale) ? `/${newLocale}${pathname.substring(3)}` : `/${newLocale}${pathname}`;
-    startTransition(() => {
-      router.replace(newPath);
-    });
-  }
-  
-  const showNav = Array.isArray(navLinks);
-
   return (
     <header className="bg-card shadow-sm sticky top-0 z-40">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -132,21 +173,10 @@ export function Header({ navLinks }: { navLinks?: { href: string; label: string 
             </Link>
           </div>
 
-          {showNav && <TranslatedNav navLinks={navLinks} />}
+          <NavLinks />
 
-          <div className="hidden md:flex items-center space-x-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Globe />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => onLocaleChange('pt')} disabled={isPending || locale === 'pt'}>Português</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onLocaleChange('en')} disabled={isPending || locale === 'en'}>English</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onLocaleChange('fr')} disabled={isPending || locale === 'fr'}>Français</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+          <div className="flex items-center space-x-2">
+            <LocaleSwitcher />
 
             {isUserLoading ? (
               <Skeleton className="h-9 w-24" />
@@ -179,60 +209,19 @@ export function Header({ navLinks }: { navLinks?: { href: string; label: string 
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <>
+              <div className='hidden md:flex'>
                 <Button variant="ghost" asChild>
                   <Link href="/login">Entrar</Link>
                 </Button>
                 <Button className="bg-accent hover:bg-accent/90 text-accent-foreground" asChild>
                   <Link href="/signup">Cadastre-se</Link>
                 </Button>
-              </>
+              </div>
             )}
-          </div>
-
-          <div className="md:hidden flex items-center">
-            <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              <span className="sr-only">Toggle menu</span>
-            </Button>
+            
           </div>
         </div>
       </div>
-
-      {/* Mobile Menu */}
-      {showNav && (
-        <div
-            className={cn(
-            'md:hidden transition-all duration-300 ease-in-out',
-            isMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
-            )}
-        >
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t">
-                <TranslatedMobileNav navLinks={navLinks} onLinkClick={() => setIsMenuOpen(false)} />
-               <div className="pt-4 border-t">
-                {user ? (
-                   <div className="space-y-2 px-3">
-                     <p className="font-medium">{user.displayName || user.email}</p>
-                     <Button variant="outline" className="w-full" asChild><Link href="/dashboard">Painel</Link></Button>
-                     <Button variant="destructive" className="w-full" onClick={handleLogout}>Sair</Button>
-                   </div>
-                ) : (
-                  <div className="flex items-center px-3 space-x-2">
-                     <Button variant="ghost" className="w-full" asChild>
-                      <Link href="/login">Entrar</Link>
-                    </Button>
-                    <Button className="w-full bg-accent hover:bg-accent/90 text-accent-foreground" asChild>
-                      <Link href="/signup">Cadastre-se</Link>
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </div>
-        </div>
-      )}
     </header>
   );
 }
-
-// We now export the HeaderContent component as the default export for this module
-export { HeaderContent as Header };
