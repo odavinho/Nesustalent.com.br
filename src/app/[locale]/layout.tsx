@@ -30,12 +30,12 @@ export default function LocaleLayout({
         />
       </head>
       <body className={cn('font-body antialiased bg-background min-h-screen flex flex-col')}>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <FirebaseClientProvider>
+        <FirebaseClientProvider>
+          <NextIntlClientProvider locale={locale} messages={messages}>
               {children}
               <Toaster />
-          </FirebaseClientProvider>
-        </NextIntlClientProvider>
+          </NextIntlClientProvider>
+        </FirebaseClientProvider>
       </body>
     </html>
   );
