@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/shared/logo';
-import { Menu, X, LogOut, UserCircle, Globe } from 'lucide-react';
-import { useState } from 'react';
+import { Menu, X, LogOut, Globe } from 'lucide-react';
+import { useState, useTransition, type ComponentProps } from 'react';
 import { cn } from '@/lib/utils';
 import { usePathname, useRouter } from 'next/navigation';
 import { useUser, useAuth } from '@/firebase/provider';
@@ -20,18 +20,86 @@ import {
 import { Skeleton } from '../ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { useLocale, useTranslations } from 'next-intl';
-import { useTransition } from 'react';
 
-export function Header() {
-  const t = useTranslations('Header');
+
+// This new component will hold the parts of the UI that need translation.
+function TranslatedNav({ navLinks }: { navLinks: { href: string; label: string }[] }) {
+    const pathname = usePathname();
+    return (
+        <nav className="hidden md:flex md:items-center md:space-x-8">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  "font-medium transition-colors",
+                  pathname.endsWith(link.href) ? "text-primary font-semibold" : "text-foreground/80 hover:text-foreground"
+                )}
+              >
+                {link.label}
+              </Link>
+            ))}
+        </nav>
+    );
+}
+
+function TranslatedMobileNav({ navLinks, onLinkClick }: { navLinks: { href: string; label: string }[], onLinkClick: () => void }) {
+    const pathname = usePathname();
+    return (
+        <>
+            {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    "block px-3 py-2 rounded-md text-base font-medium",
+                     pathname.endsWith(link.href) ? "bg-secondary text-primary font-semibold" : "text-foreground/80 hover:bg-secondary"
+                  )}
+                  onClick={onLinkClick}
+                >
+                  {link.label}
+                </Link>
+              ))}
+        </>
+    )
+}
+
+// Wrapper component to provide translations only when available.
+function HeaderContent(props: ComponentProps<typeof Header>) {
+    let t: (key: keyof IntlMessages['Header']) => string;
+    try {
+        t = useTranslations('Header');
+    } catch (e) {
+        // Fallback for non-internationalized routes like the dashboard
+        t = (key) => ({
+            courses: 'Courses',
+            vacancies: 'Vacancies',
+            about: 'About Us',
+            blog: 'Blog'
+        }[key]);
+    }
+
+    const navLinks = [
+        { href: '/courses', label: t('courses') },
+        { href: '/recruitment', label: t('vacancies') },
+        { href: '/about', label: t('about') },
+        { href: '/blog', label: t('blog') },
+    ];
+    
+    return <Header navLinks={navLinks} />;
+}
+
+
+export function Header({ navLinks }: { navLinks?: { href: string; label: string }[] }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const pathname = usePathname();
   const { user, isUserLoading } = useUser();
   const auth = useAuth();
   const router = useRouter();
 
   const [isPending, startTransition] = useTransition();
   const locale = useLocale();
+  const pathname = usePathname();
+
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -45,18 +113,14 @@ export function Header() {
     return initials.slice(0, 2).toUpperCase();
   }
 
-  const navLinks = [
-    { href: '/courses', label: t('courses') },
-    { href: '/recruitment', label: t('vacancies') },
-    { href: '/about', label: t('about') },
-    { href: '/blog', label: t('blog') },
-  ];
-
   function onLocaleChange(newLocale: string) {
+    const newPath = pathname.startsWith('/' + locale) ? `/${newLocale}${pathname.substring(3)}` : `/${newLocale}${pathname}`;
     startTransition(() => {
-      router.replace(`/${newLocale}${pathname.substring(3)}`);
+      router.replace(newPath);
     });
   }
+  
+  const showNav = Array.isArray(navLinks);
 
   return (
     <header className="bg-card shadow-sm sticky top-0 z-40">
@@ -68,20 +132,7 @@ export function Header() {
             </Link>
           </div>
 
-          <nav className="hidden md:flex md:items-center md:space-x-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  "font-medium transition-colors",
-                  pathname.endsWith(link.href) ? "text-primary font-semibold" : "text-foreground/80 hover:text-foreground"
-                )}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+          {showNav && <TranslatedNav navLinks={navLinks} />}
 
           <div className="hidden md:flex items-center space-x-2">
             <DropdownMenu>
@@ -149,46 +200,39 @@ export function Header() {
       </div>
 
       {/* Mobile Menu */}
-      <div
-        className={cn(
-          'md:hidden transition-all duration-300 ease-in-out',
-          isMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
-        )}
-      >
-        <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "block px-3 py-2 rounded-md text-base font-medium",
-                 pathname.endsWith(link.href) ? "bg-secondary text-primary font-semibold" : "text-foreground/80 hover:bg-secondary"
-              )}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {link.label}
-            </Link>
-          ))}
-           <div className="pt-4 border-t">
-            {user ? (
-               <div className="space-y-2 px-3">
-                 <p className="font-medium">{user.displayName || user.email}</p>
-                 <Button variant="outline" className="w-full" asChild><Link href="/dashboard">Painel</Link></Button>
-                 <Button variant="destructive" className="w-full" onClick={handleLogout}>Sair</Button>
-               </div>
-            ) : (
-              <div className="flex items-center px-3 space-x-2">
-                 <Button variant="ghost" className="w-full" asChild>
-                  <Link href="/login">Entrar</Link>
-                </Button>
-                <Button className="w-full bg-accent hover:bg-accent/90 text-accent-foreground" asChild>
-                  <Link href="/signup">Cadastre-se</Link>
-                </Button>
-              </div>
+      {showNav && (
+        <div
+            className={cn(
+            'md:hidden transition-all duration-300 ease-in-out',
+            isMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
             )}
-          </div>
+        >
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t">
+                <TranslatedMobileNav navLinks={navLinks} onLinkClick={() => setIsMenuOpen(false)} />
+               <div className="pt-4 border-t">
+                {user ? (
+                   <div className="space-y-2 px-3">
+                     <p className="font-medium">{user.displayName || user.email}</p>
+                     <Button variant="outline" className="w-full" asChild><Link href="/dashboard">Painel</Link></Button>
+                     <Button variant="destructive" className="w-full" onClick={handleLogout}>Sair</Button>
+                   </div>
+                ) : (
+                  <div className="flex items-center px-3 space-x-2">
+                     <Button variant="ghost" className="w-full" asChild>
+                      <Link href="/login">Entrar</Link>
+                    </Button>
+                    <Button className="w-full bg-accent hover:bg-accent/90 text-accent-foreground" asChild>
+                      <Link href="/signup">Cadastre-se</Link>
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
         </div>
-      </div>
+      )}
     </header>
   );
 }
+
+// We now export the HeaderContent component as the default export for this module
+export { HeaderContent as Header };
