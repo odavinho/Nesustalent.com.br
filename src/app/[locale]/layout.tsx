@@ -3,22 +3,21 @@ import '../globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from "@/components/ui/toaster"
 import { FirebaseClientProvider } from '@/firebase/client-provider';
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
+import { NextIntlClientProvider, useMessages } from 'next-intl';
 
 export const metadata: Metadata = {
   title: 'NexusTalent - Cursos e Recrutamento',
   description: 'Plataforma de cursos online, presencial e recrutamento e seleção de pessoal.',
 };
 
-export default async function LocaleLayout({
+export default function LocaleLayout({
   children,
   params: {locale}
 }: Readonly<{
   children: React.ReactNode;
   params: {locale: string};
 }>) {
-  const messages = await getMessages();
+  const messages = useMessages();
 
   return (
     <html lang={locale}>
@@ -31,7 +30,7 @@ export default async function LocaleLayout({
         />
       </head>
       <body className={cn('font-body antialiased bg-background min-h-screen flex flex-col')}>
-        <NextIntlClientProvider messages={messages}>
+        <NextIntlClientProvider locale={locale} messages={messages}>
           <FirebaseClientProvider>
               {children}
               <Toaster />
