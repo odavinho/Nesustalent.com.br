@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/shared/logo';
-import { Menu, X, LogOut, UserCircle } from 'lucide-react';
+import { Menu, X, LogOut, UserCircle, Globe } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { usePathname, useRouter } from 'next/navigation';
@@ -19,20 +19,19 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Skeleton } from '../ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-
-const navLinks = [
-  { href: '/courses', label: 'Cursos' },
-  { href: '/recruitment', label: 'Vagas' },
-  { href: '/about', label: 'Sobre Nós' },
-  { href: '/blog', label: 'Blog' },
-];
+import { useLocale, useTranslations } from 'next-intl';
+import { useTransition } from 'react';
 
 export function Header() {
+  const t = useTranslations('Header');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
   const { user, isUserLoading } = useUser();
   const auth = useAuth();
   const router = useRouter();
+
+  const [isPending, startTransition] = useTransition();
+  const locale = useLocale();
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -44,6 +43,19 @@ export function Header() {
     const names = name.split(' ');
     const initials = names.map(n => n[0]).join('');
     return initials.slice(0, 2).toUpperCase();
+  }
+
+  const navLinks = [
+    { href: '/courses', label: t('courses') },
+    { href: '/recruitment', label: t('vacancies') },
+    { href: '/about', label: t('about') },
+    { href: '/blog', label: t('blog') },
+  ];
+
+  function onLocaleChange(newLocale: string) {
+    startTransition(() => {
+      router.replace(`/${newLocale}${pathname.substring(3)}`);
+    });
   }
 
   return (
@@ -63,7 +75,7 @@ export function Header() {
                 href={link.href}
                 className={cn(
                   "font-medium transition-colors",
-                  pathname.startsWith(link.href) && link.href !== '#' ? "text-primary font-semibold" : "text-foreground/80 hover:text-foreground"
+                  pathname.endsWith(link.href) ? "text-primary font-semibold" : "text-foreground/80 hover:text-foreground"
                 )}
               >
                 {link.label}
@@ -72,6 +84,19 @@ export function Header() {
           </nav>
 
           <div className="hidden md:flex items-center space-x-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Globe />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => onLocaleChange('pt')} disabled={isPending || locale === 'pt'}>Português</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onLocaleChange('en')} disabled={isPending || locale === 'en'}>English</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onLocaleChange('fr')} disabled={isPending || locale === 'fr'}>Français</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             {isUserLoading ? (
               <Skeleton className="h-9 w-24" />
             ) : user ? (
@@ -137,7 +162,7 @@ export function Header() {
               href={link.href}
               className={cn(
                 "block px-3 py-2 rounded-md text-base font-medium",
-                 pathname.startsWith(link.href) && link.href !== '#' ? "bg-secondary text-primary font-semibold" : "text-foreground/80 hover:bg-secondary"
+                 pathname.endsWith(link.href) ? "bg-secondary text-primary font-semibold" : "text-foreground/80 hover:bg-secondary"
               )}
               onClick={() => setIsMenuOpen(false)}
             >
