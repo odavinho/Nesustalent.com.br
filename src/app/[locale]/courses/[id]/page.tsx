@@ -14,8 +14,7 @@ import React from "react";
 
 
 export default function CourseDetailPage({ params }: { params: { id: string } }) {
-  const resolvedParams = React.use(params);
-  const course = courses.find(c => c.id === resolvedParams.id);
+  const course = courses.find(c => c.id === params.id);
 
   if (!course) {
     notFound();
