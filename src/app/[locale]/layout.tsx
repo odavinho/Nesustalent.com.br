@@ -1,14 +1,18 @@
 import { ReactNode } from "react";
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
+import { getMessages, unstable_setRequestLocale } from 'next-intl/server';
 
+type Props = {
+  children: ReactNode;
+  params: {locale: string};
+};
+ 
 export default async function LocaleLayout({
   children,
   params: {locale}
-}: {
-  children: ReactNode;
-  params: {locale: string};
-}) {
+}: Props) {
+  // Enable static rendering
+  unstable_setRequestLocale(locale);
   const messages = await getMessages();
 
   return (

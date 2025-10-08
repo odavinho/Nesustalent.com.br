@@ -1,11 +1,8 @@
 import {notFound} from 'next/navigation';
 import {getRequestConfig} from 'next-intl/server';
-
-const locales = ['pt', 'en', 'fr'];
  
 export default getRequestConfig(async ({locale}) => {
-  if (!locales.includes(locale as any)) notFound();
-
+  // No need to validate locale here, as this is handled by the middleware
   return {
     messages: (await import(`../messages/${locale}.json`)).default
   };
