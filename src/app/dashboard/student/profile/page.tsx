@@ -1,13 +1,14 @@
 'use client';
 
-import { useUser, useFirestore, useMemoFirebase, useDoc, errorEmitter, FirestorePermissionError } from '@/firebase';
+import { useUser, useFirestore, useMemoFirebase, useDoc, errorEmitter, FirestorePermissionError, useStorage } from '@/firebase';
 import { doc, setDoc } from 'firebase/firestore';
-import { useForm, SubmitHandler, useFieldArray }from 'react-hook-form';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { useForm, SubmitHandler, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Wand2, PlusCircle, Trash2, Edit, User, Briefcase, GraduationCap, Award, Link as LinkIcon, FileText } from 'lucide-react';
+import { Loader2, Wand2, PlusCircle, Trash2, Edit, User, Briefcase, GraduationCap, Award, Link as LinkIcon, FileText, Download } from 'lucide-react';
 import type { UserProfile, AcademicHistory, WorkExperience } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -53,9 +54,11 @@ type ProfileFormValues = z.infer<typeof profileSchema>;
 export default function ProfilePage() {
     const { user, isUserLoading } = useUser();
     const firestore = useFirestore();
+    const storage = useStorage();
     const { toast } = useToast();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
+    const [cvFile, setCvFile] = useState<File | null>(null);
 
     const userProfileRef = useMemoFirebase(() => {
         if (!firestore || !user) return null;
@@ -97,12 +100,29 @@ export default function ProfilePage() {
             return;
         }
         setIsSubmitting(true);
+
+        let resumeUrl = data.resumeUrl;
+
+        if (cvFile) {
+            try {
+                const storageRef = ref(storage, `resumes/${user.uid}/${cvFile.name}`);
+                const uploadResult = await uploadBytes(storageRef, cvFile);
+                resumeUrl = await getDownloadURL(uploadResult.ref);
+                toast({ title: 'Sucesso!', description: 'O seu CV foi carregado.' });
+            } catch (storageError) {
+                console.error("Storage Error:", storageError);
+                toast({ variant: 'destructive', title: 'Erro de Upload', description: 'Não foi possível guardar o seu CV.' });
+                setIsSubmitting(false);
+                return;
+            }
+        }
         
         const userDocRef = doc(firestore, 'users', user.uid);
         
         const finalData = {
             ...data,
             skills: data.skills ? data.skills.split(',').map(s => s.trim()).filter(s => s) : [],
+            resumeUrl: resumeUrl,
         };
 
         const profileToSave: UserProfile = {
@@ -143,7 +163,7 @@ export default function ProfilePage() {
         return <ProfileView profile={userProfile} onEdit={() => setIsEditing(true)} />;
     }
 
-    return <ProfileForm form={form} onSubmit={onSubmit} isSubmitting={isSubmitting} onCancel={() => setIsEditing(false)} />;
+    return <ProfileForm form={form} onSubmit={onSubmit} isSubmitting={isSubmitting} onCancel={() => setIsEditing(false)} setCvFile={setCvFile} />;
 }
 
 function ProfileView({ profile, onEdit }: { profile: UserProfile; onEdit: () => void }) {
@@ -212,10 +232,12 @@ function ProfileView({ profile, onEdit }: { profile: UserProfile; onEdit: () => 
                         </CardHeader>
                         <CardContent>
                             {profile.resumeUrl ? (
-                                <a href={profile.resumeUrl} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline flex items-center gap-2 break-all">
-                                    <LinkIcon size={16} /> Ver CV Externo
-                                </a>
-                            ) : <p className="text-sm text-muted-foreground">Nenhum URL de CV adicionado.</p>}
+                                <Button asChild variant="outline">
+                                    <a href={profile.resumeUrl} target="_blank" rel="noopener noreferrer">
+                                        <Download size={16} className="mr-2" /> Baixar CV
+                                    </a>
+                                </Button>
+                            ) : <p className="text-sm text-muted-foreground">Nenhum CV carregado.</p>}
                         </CardContent>
                     </Card>
                 </div>
@@ -224,10 +246,9 @@ function ProfileView({ profile, onEdit }: { profile: UserProfile; onEdit: () => 
     );
 }
 
-function ProfileForm({ form, onSubmit, isSubmitting, onCancel }: { form: any; onSubmit: SubmitHandler<ProfileFormValues>, isSubmitting: boolean, onCancel: () => void }) {
+function ProfileForm({ form, onSubmit, isSubmitting, onCancel, setCvFile }: { form: any; onSubmit: SubmitHandler<ProfileFormValues>, isSubmitting: boolean, onCancel: () => void, setCvFile: (file: File | null) => void }) {
     const { toast } = useToast();
     const [isAnalyzing, setIsAnalyzing] = useState(false);
-    const [cvFile, setCvFile] = useState<File | null>(null);
     
     const { fields: academicFields, append: appendAcademic, remove: removeAcademic } = useFieldArray({
         control: form.control, name: "academicHistory"
@@ -237,8 +258,16 @@ function ProfileForm({ form, onSubmit, isSubmitting, onCancel }: { form: any; on
         control: form.control, name: "workExperience"
     });
 
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files ? e.target.files[0] : null;
+        if (file) {
+            setCvFile(file);
+        }
+    };
+
     const handleAnalyzeAndFill = async () => {
-        if (!cvFile) {
+        const cvFile = form.getValues('cvFile');
+         if (!cvFile) {
             toast({ variant: 'destructive', title: 'Nenhum ficheiro selecionado', description: 'Por favor, carregue o seu CV em formato PDF ou DOCX.' });
             return;
         }
@@ -272,7 +301,7 @@ function ProfileForm({ form, onSubmit, isSubmitting, onCancel }: { form: any; on
                         Poupe tempo! Carregue o seu CV em formato PDF ou DOCX e deixe a nossa IA preencher os campos do seu perfil por si.
                     </p>
                     <div className="flex gap-4 items-center">
-                        <Input id="cv-upload" type="file" accept=".pdf,.doc,.docx" className="max-w-xs" onChange={(e) => setCvFile(e.target.files ? e.target.files[0] : null)} />
+                        <Input id="cv-upload" type="file" accept=".pdf,.doc,.docx" className="max-w-xs" onChange={handleFileChange} />
                         <Button variant="outline" onClick={handleAnalyzeAndFill} disabled={isAnalyzing}>
                             {isAnalyzing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />} Analisar e Preencher
                         </Button>
@@ -314,10 +343,6 @@ function ProfileForm({ form, onSubmit, isSubmitting, onCancel }: { form: any; on
                             <FormField control={form.control} name="skills" render={({ field }) => (<FormItem><FormLabel>Principais Competências</FormLabel><FormControl><Textarea placeholder="Ex: React, Gestão de Projetos, Liderança,..." rows={3} {...field} /></FormControl><FormDescription>Separe as competências por vírgulas.</FormDescription><FormMessage /></FormItem>)} />
                         </div>
                         <Separator />
-                        <div>
-                             <h3 className="font-headline text-xl mb-4">Currículo</h3>
-                             <FormField control={form.control} name="resumeUrl" render={({ field }) => (<FormItem><FormLabel>URL do CV (LinkedIn ou Google Drive)</FormLabel><FormControl><Input placeholder="https://..." {...field} /></FormControl><FormDescription>Certifique-se de que o link é público para que os recrutadores possam visualizá-lo.</FormDescription><FormMessage /></FormItem>)} />
-                        </div>
                         <div className="flex gap-4">
                             <Button type="button" variant="outline" onClick={onCancel}>Cancelar</Button>
                             <Button type="submit" disabled={isSubmitting}>

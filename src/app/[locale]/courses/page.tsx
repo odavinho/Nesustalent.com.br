@@ -16,6 +16,7 @@ import {
 import { FeaturedCourses } from '@/components/home/featured-courses';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
+import { RunningCourses } from '@/components/home/running-courses';
 
 const COURSES_PER_PAGE = 12;
 
@@ -121,6 +122,7 @@ export default function CoursesPage() {
             </div>
         )}
         </div>
+        <RunningCourses />
         <div className="bg-card py-16 mt-16">
             <FeaturedCourses title="Cursos em Alta" />
         </div>

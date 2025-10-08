@@ -8,6 +8,7 @@ import { CertificationsSection } from '@/components/home/certifications-section'
 import { CtaSection } from '@/components/home/cta-section';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
+import { RunningCourses } from '@/components/home/running-courses';
 
 export default function HomePage() {
   return (
@@ -17,6 +18,7 @@ export default function HomePage() {
         <HeroSection />
         <StatsSection />
         <FeaturedCourses />
+        <RunningCourses />
         <RecruitmentSection />
         <PartnersSection />
         <CertificationsSection />

@@ -5,6 +5,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { LocationsSection } from '@/components/home/locations-section';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
+import { RunningCourses } from '@/components/home/running-courses';
 
 const testimonials = [
     {
@@ -82,6 +83,8 @@ export default function AboutPage() {
                         </div>
                     </div>
                 </section>
+                
+                <RunningCourses />
 
                 {/* Locations Section */}
                 <LocationsSection />
