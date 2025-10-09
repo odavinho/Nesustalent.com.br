@@ -10,6 +10,7 @@ import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { courses } from '@/lib/courses';
 import Image from 'next/image';
 import { Card } from '../ui/card';
+import Link from 'next/link';
 
 export function RunningCourses() {
     const plugin = React.useRef(
@@ -46,18 +47,24 @@ export function RunningCourses() {
                              return (
                                 <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                                     <div className="p-1">
-                                    <Card className="overflow-hidden">
-                                        {image && (
-                                            <div className="relative h-48 w-full">
-                                                <Image 
-                                                    src={image.imageUrl} 
-                                                    alt={image.description} 
-                                                    fill
-                                                    className="object-cover" 
-                                                />
-                                            </div>
-                                        )}
-                                     </Card>
+                                    <Link href={`/courses/${course.id}`} className="group">
+                                        <Card className="overflow-hidden relative">
+                                            {image && (
+                                                <div className="relative h-48 w-full">
+                                                    <Image 
+                                                        src={image.imageUrl} 
+                                                        alt={image.description} 
+                                                        fill
+                                                        className="object-cover transition-transform duration-300 group-hover:scale-105" 
+                                                    />
+                                                     <div className="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition-colors" />
+                                                     <div className="absolute bottom-0 left-0 p-4">
+                                                        <h3 className="font-headline text-lg font-bold text-white">{course.name}</h3>
+                                                     </div>
+                                                </div>
+                                            )}
+                                        </Card>
+                                     </Link>
                                     </div>
                                 </CarouselItem>
                              )
