@@ -25,10 +25,10 @@ export function RunningCourses() {
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-12">
                     <h2 className="font-headline text-3xl sm:text-4xl font-bold text-foreground">
-                        Cursos em Andamento
+                        Cursos a decorrer
                     </h2>
                     <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
-                        Junte-se aos nossos cursos atualmente em andamento e comece a aprender hoje mesmo.
+                        Junte-se aos nossos cursos atualmente a decorrer e comece a aprender hoje mesmo.
                     </p>
                 </div>
                 <Carousel
