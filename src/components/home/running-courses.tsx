@@ -45,7 +45,7 @@ export function RunningCourses() {
                         {runningCourses.map((course, index) => {
                              const image = PlaceHolderImages.find(p => p.id === course.imageId);
                              return (
-                                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+                                <CarouselItem key={index} className="md:basis-1/3">
                                     <div className="p-1">
                                     <Link href={`/courses/${course.id}`} className="group">
                                         <Card className="overflow-hidden relative">
