@@ -7,12 +7,12 @@ import { generateVacancyContent, GenerateVacancyContentInput, GenerateVacancyCon
 import { extractProfileFromResume, ExtractProfileFromResumeInput, ExtractProfileFromResumeOutput } from "@/ai/flows/extract-profile-from-resume";
 
 
-import { courses } from "@/lib/courses";
-import fs from 'fs/promises';
-import path from 'path';
 import { revalidatePath } from "next/cache";
 import type { ImagePlaceholder } from "@/lib/placeholder-images";
+import { promises as fs } from 'fs';
+import path from 'path';
 
+// AI Actions
 export async function analyzeResumeAction(input: AIResumeAnalysisInput): Promise<AIResumeAnalysisOutput> {
   try {
     const output = await aiResumeAnalysis(input);
@@ -34,11 +34,12 @@ export async function extractProfileFromResumeAction(input: ExtractProfileFromRe
   }
 
 export async function getCourseRecommendationsAction(input: { userProfile: string }): Promise<PersonalizedCourseRecommendationsOutput> {
-    const courseCatalog = courses.map(c => `${c.id}: ${c.name}`).join('\n');
+    // This action might need to be updated to fetch courses from Firestore in the future
+    const courseCatalog: string[] = []; // Mocked for now
     
     const flowInput: PersonalizedCourseRecommendationsInput = {
         userProfile: input.userProfile,
-        courseCatalog: courseCatalog,
+        courseCatalog: courseCatalog.join('\n'),
     }
 
     try {
@@ -70,71 +71,70 @@ export async function generateVacancyContentAction(input: GenerateVacancyContent
     }
 }
 
-async function readImagesFile(): Promise<{ placeholderImages: ImagePlaceholder[] }> {
-    const filePath = path.join(process.cwd(), 'src', 'lib', 'placeholder-images.json');
+
+// JSON file actions
+const getPlaceholderFilePath = () => path.join(process.cwd(), 'src', 'lib', 'placeholder-images.json');
+
+async function readPlaceholderFile(): Promise<{ placeholderImages: ImagePlaceholder[] }> {
     try {
+        const filePath = getPlaceholderFilePath();
         const fileContent = await fs.readFile(filePath, 'utf-8');
         return JSON.parse(fileContent);
     } catch (error) {
-        if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-            return { placeholderImages: [] };
-        }
-        throw error;
+        console.error('Error reading placeholder file:', error);
+        return { placeholderImages: [] };
     }
 }
 
-async function writeImagesFile(data: { placeholderImages: ImagePlaceholder[] }): Promise<void> {
-    const filePath = path.join(process.cwd(), 'src', 'lib', 'placeholder-images.json');
-    const fileContent = JSON.stringify(data, null, 2);
-    await fs.writeFile(filePath, fileContent, 'utf-8');
-    revalidatePath('/dashboard/settings');
-    revalidatePath('/');
-    revalidatePath('/about');
+async function writePlaceholderFile(data: { placeholderImages: ImagePlaceholder[] }): Promise<void> {
+    const filePath = getPlaceholderFilePath();
+    await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
 }
+
 
 export async function addImageAction(image: ImagePlaceholder): Promise<{ success: boolean; message: string }> {
     try {
-        const data = await readImagesFile();
+        const data = await readPlaceholderFile();
         if (data.placeholderImages.some(p => p.id === image.id)) {
             return { success: false, message: 'Já existe um item com este ID.' };
         }
         data.placeholderImages.push(image);
-        await writeImagesFile(data);
+        await writePlaceholderFile(data);
+        revalidatePath('/dashboard/settings');
         return { success: true, message: 'Item adicionado com sucesso!' };
     } catch (error) {
-        const message = error instanceof Error ? error.message : 'Falha ao adicionar item.';
-        return { success: false, message };
+        return { success: false, message: error instanceof Error ? error.message : 'Falha ao adicionar item.' };
     }
 }
 
 export async function updateImageAction(image: ImagePlaceholder): Promise<{ success: boolean; message: string }> {
     try {
-        const data = await readImagesFile();
+        const data = await readPlaceholderFile();
         const index = data.placeholderImages.findIndex(p => p.id === image.id);
         if (index === -1) {
             return { success: false, message: 'Item não encontrado.' };
         }
         data.placeholderImages[index] = image;
-        await writeImagesFile(data);
+        await writePlaceholderFile(data);
+        revalidatePath('/dashboard/settings');
         return { success: true, message: 'Item atualizado com sucesso!' };
     } catch (error) {
-        const message = error instanceof Error ? error.message : 'Falha ao atualizar item.';
-        return { success: false, message };
+        return { success: false, message: error instanceof Error ? error.message : 'Falha ao atualizar item.' };
     }
 }
 
 export async function deleteImageAction(id: string): Promise<{ success: boolean; message: string }> {
     try {
-        const data = await readImagesFile();
+        const data = await readPlaceholderFile();
         const initialLength = data.placeholderImages.length;
         data.placeholderImages = data.placeholderImages.filter(p => p.id !== id);
         if (data.placeholderImages.length === initialLength) {
-            return { success: false, message: 'Item não encontrado para excluir.' };
+            return { success: false, message: 'Item não encontrado para exclusão.' };
         }
-        await writeImagesFile(data);
+        await writePlaceholderFile(data);
+        revalidatePath('/dashboard/settings');
         return { success: true, message: 'Item excluído com sucesso!' };
     } catch (error) {
-        const message = error instanceof Error ? error.message : 'Falha ao excluir item.';
-        return { success: false, message };
+        return { success: false, message: error instanceof Error ? error.message : 'Falha ao excluir item.' };
     }
 }

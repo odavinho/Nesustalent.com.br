@@ -13,9 +13,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Loader2, Wand2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { generateCourseContentAction } from '@/app/actions';
+import { generateCourseContentAction, addCourseAction } from '@/app/actions';
 import type { GenerateCourseContentOutput } from '@/ai/flows/generate-course-content';
 import Image from 'next/image';
+import type { Course } from '@/lib/types';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   courseName: z.string().min(5, { message: 'O nome do curso deve ter pelo menos 5 caracteres.' }),
@@ -28,7 +30,9 @@ type FormValues = z.infer<typeof formSchema>;
 export default function NewCoursePage() {
   const [generatedContent, setGeneratedContent] = useState<GenerateCourseContentOutput | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -54,13 +58,50 @@ export default function NewCoursePage() {
     }
   };
 
-  const handleSaveCourse = () => {
-    // TODO: Implement saving logic to a database
-    toast({
-      title: "Curso salvo!",
-      description: "O curso foi salvo com sucesso (simulação).",
-    });
-  }
+  const handleSaveCourse = async () => {
+    if (!generatedContent || !form.getValues().courseName) {
+      toast({
+        variant: 'destructive',
+        title: 'Faltam dados',
+        description: 'Gere o conteúdo do curso e preencha todos os campos obrigatórios antes de salvar.',
+      });
+      return;
+    }
+    
+    setIsSaving(true);
+    
+    const courseData: Omit<Course, 'id'> = {
+      name: form.getValues().courseName,
+      category: form.getValues().courseCategory,
+      imageId: `course-image-${generatedContent.courseId}`, // Placeholder imageId
+      duration: generatedContent.duration,
+      generalObjective: generatedContent.generalObjective,
+      whatYouWillLearn: generatedContent.whatYouWillLearn,
+      modules: generatedContent.modules,
+    };
+
+    try {
+      const result = await addCourseAction(courseData);
+      if (result.success) {
+        toast({
+          title: "Curso salvo!",
+          description: result.message,
+        });
+        router.push('/dashboard/admin/courses');
+      } else {
+        throw new Error(result.message);
+      }
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao salvar o curso',
+        description: error instanceof Error ? error.message : 'Ocorreu um erro desconhecido.',
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -148,6 +189,13 @@ export default function NewCoursePage() {
             </form>
           </Form>
 
+          {isGenerating && (
+            <div className="mt-8 pt-6 border-t text-center">
+              <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
+              <p className="mt-2 text-muted-foreground">A IA está a criar o seu curso, por favor aguarde...</p>
+            </div>
+          )}
+
           {generatedContent && (
             <div className="mt-8 pt-6 border-t space-y-6">
               <h3 className="font-headline text-2xl">Conteúdo Gerado</h3>
@@ -174,8 +222,8 @@ export default function NewCoursePage() {
                 </div>
               </div>
 
-              <Button onClick={handleSaveCourse} className="w-full bg-green-600 hover:bg-green-700">
-                Salvar Curso
+              <Button onClick={handleSaveCourse} disabled={isSaving} className="w-full bg-green-600 hover:bg-green-700">
+                 {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Salvar Curso'}
               </Button>
             </div>
           )}

@@ -13,8 +13,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Loader2, Wand2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { generateVacancyContentAction } from '@/app/actions';
+import { generateVacancyContentAction, addVacancyAction } from '@/app/actions';
 import type { GenerateVacancyContentOutput } from '@/ai/flows/generate-vacancy-content';
+import { useRouter } from 'next/navigation';
+import type { Vacancy } from '@/lib/types';
+
 
 const formSchema = z.object({
   title: z.string().min(5, { message: 'O título da vaga deve ter pelo menos 5 caracteres.' }),
@@ -28,7 +31,10 @@ type FormValues = z.infer<typeof formSchema>;
 export default function NewVacancyPage() {
   const [generatedContent, setGeneratedContent] = useState<GenerateVacancyContentOutput | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
+
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -56,12 +62,47 @@ export default function NewVacancyPage() {
     }
   };
   
-  const handleSaveVacancy = () => {
-    // TODO: Implement saving logic to a database
-    toast({
-      title: "Vaga salva!",
-      description: "A vaga foi salva com sucesso (simulação).",
-    });
+  const handleSaveVacancy = async () => {
+    if (!generatedContent || !form.formState.isValid) {
+        toast({
+          variant: 'destructive',
+          title: 'Faltam dados',
+          description: 'Gere a descrição e preencha todos os campos obrigatórios antes de salvar.',
+        });
+        return;
+      }
+      setIsSaving(true);
+  
+      const formValues = form.getValues();
+      const vacancyData: Omit<Vacancy, 'id'> = {
+        title: formValues.title,
+        category: formValues.category,
+        location: formValues.location,
+        type: formValues.type,
+        description: generatedContent.description,
+        // responsibilities and requirements could be added to the Vacancy type if needed
+      };
+
+      try {
+        const result = await addVacancyAction(vacancyData);
+        if (result.success) {
+            toast({
+              title: "Vaga salva!",
+              description: result.message,
+            });
+            router.push('/dashboard/admin/vacancies');
+        } else {
+            throw new Error(result.message);
+        }
+      } catch (error) {
+        toast({
+            variant: 'destructive',
+            title: 'Erro ao salvar a vaga',
+            description: error instanceof Error ? error.message : 'Ocorreu um erro desconhecido.',
+          });
+      } finally {
+        setIsSaving(false);
+      }
   }
 
   return (
@@ -170,8 +211,8 @@ export default function NewVacancyPage() {
                     <TextareaWithLabel label="Responsabilidades (separado por nova linha)" defaultValue={generatedContent.responsibilities.join('\n')} rows={6} />
                     <TextareaWithLabel label="Requisitos (separado por nova linha)" defaultValue={generatedContent.requirements.join('\n')} rows={6} />
                   </div>
-                  <Button onClick={handleSaveVacancy} className="w-full bg-green-600 hover:bg-green-700">
-                    Salvar Vaga
+                  <Button onClick={handleSaveVacancy} disabled={isSaving} className="w-full bg-green-600 hover:bg-green-700">
+                    {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Salvar Vaga'}
                   </Button>
                 </div>
               )}

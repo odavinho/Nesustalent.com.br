@@ -30,7 +30,7 @@ export default function AdminDashboardPage() {
                                 <Link href="/dashboard/courses/new">Adicionar Curso</Link>
                             </Button>
                             <Button asChild variant="outline">
-                                <Link href="#">Gerir Cursos</Link>
+                                <Link href="/dashboard/admin/courses">Gerir Cursos</Link>
                             </Button>
                         </CardContent>
                     </Card>
@@ -47,7 +47,7 @@ export default function AdminDashboardPage() {
                                 <Link href="/dashboard/vacancies/new">Adicionar Vaga</Link>
                             </Button>
                             <Button asChild variant="outline">
-                                <Link href="#">Gerir Vagas</Link>
+                                <Link href="/dashboard/admin/vacancies">Gerir Vagas</Link>
                             </Button>
                         </CardContent>
                     </Card>
