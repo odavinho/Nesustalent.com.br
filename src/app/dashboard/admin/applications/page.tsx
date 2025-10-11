@@ -1,11 +1,9 @@
-
 'use client';
 
 import { useMemo, useState } from 'react';
-import { collection, query, orderBy, where, Query } from 'firebase/firestore';
+import { collection, query, orderBy, Query } from 'firebase/firestore';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { FileWarning, Files } from 'lucide-react';
@@ -14,8 +12,15 @@ import { ApplicationCard } from '@/components/admin/application-card';
 
 type ApplicationStatus = 'Recebida' | 'Em análise' | 'Rejeitada';
 
-
-const ApplicationList = ({ applications, isLoading, error }: { applications: Application[] | null, isLoading: boolean, error: Error | null }) => {
+const ApplicationList = ({ 
+  applications, 
+  isLoading, 
+  error 
+}: { 
+  applications: Application[] | null, 
+  isLoading: boolean, 
+  error: Error | null 
+}) => {
     if (isLoading) {
       return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -34,10 +39,10 @@ const ApplicationList = ({ applications, isLoading, error }: { applications: App
     if (error) {
       return (
         <Alert variant="destructive">
-            <FileWarning className="h-4 w-4" />
+          <FileWarning className="h-4 w-4" />
           <AlertTitle>Erro ao Carregar Candidaturas</AlertTitle>
           <AlertDescription>
-            Não foi possível carregar os dados das candidaturas. Verifique as permissões do Firestore.
+            Não foi possível carregar os dados. Verifique as permissões do Firestore e tente novamente.
           </AlertDescription>
         </Alert>
       );
@@ -62,38 +67,31 @@ const ApplicationList = ({ applications, isLoading, error }: { applications: App
             ))}
         </div>
     );
-  };
+};
+
+// Dummy Card components for skeleton loading
+const Card = ({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+    <div className="border rounded-lg bg-card" {...props}>{children}</div>
+);
+const CardHeader = ({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+    <div className="p-6" {...props}>{children}</div>
+);
 
 
 export default function ManageApplicationsPage() {
   const firestore = useFirestore();
-  const [activeTab, setActiveTab] = useState<ApplicationStatus>('Recebida');
   
-  const baseQuery = useMemoFirebase(() => {
+  const applicationsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
-    return collection(firestore, 'applications');
+    return query(collection(firestore, 'applications'), orderBy('applicationDate', 'desc'));
   }, [firestore]);
 
-  const allApplicationsQuery = useMemoFirebase(() => {
-    if (!baseQuery) return null;
-    return query(baseQuery, orderBy('applicationDate', 'desc'));
-  }, [baseQuery]);
+  const { data: allApplications, isLoading, error } = useCollection<Application>(applicationsQuery as Query<Application> | null);
 
-  const interestingApplicationsQuery = useMemoFirebase(() => {
-    if (!baseQuery) return null;
-    return query(baseQuery, where('status', '==', 'Em análise'), orderBy('applicationDate', 'desc'));
-  }, [baseQuery]);
-
-  const rejectedApplicationsQuery = useMemoFirebase(() => {
-    if (!baseQuery) return null;
-    return query(baseQuery, where('status', '==', 'Rejeitada'), orderBy('applicationDate', 'desc'));
-  }, [baseQuery]);
-  
-
-  const { data: allApplications, isLoading: isLoadingAll, error: errorAll } = useCollection<Application>(allApplicationsQuery as Query<Application>);
-  const { data: interestingApplications, isLoading: isLoadingInteresting, error: errorInteresting } = useCollection<Application>(interestingApplicationsQuery as Query<Application>);
-  const { data: rejectedApplications, isLoading: isLoadingRejected, error: errorRejected } = useCollection<Application>(rejectedApplicationsQuery as Query<Application>);
-
+  const filteredApplications = (status: ApplicationStatus | 'all') => {
+    if (status === 'all') return allApplications;
+    return allApplications?.filter(app => app.status === status) ?? null;
+  };
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -110,14 +108,27 @@ export default function ManageApplicationsPage() {
           <TabsTrigger value="interesting" className="h-10">Candidatos Interessantes</TabsTrigger>
           <TabsTrigger value="rejected" className="h-10">Candidatos Rejeitados</TabsTrigger>
         </TabsList>
+
         <TabsContent value="all">
-          <ApplicationList applications={allApplications} isLoading={isLoadingAll} error={errorAll as Error | null} />
+          <ApplicationList 
+            applications={filteredApplications('all')} 
+            isLoading={isLoading} 
+            error={error as Error | null} 
+          />
         </TabsContent>
         <TabsContent value="interesting">
-          <ApplicationList applications={interestingApplications} isLoading={isLoadingInteresting} error={errorInteresting as Error | null} />
+          <ApplicationList 
+            applications={filteredApplications('Em análise')} 
+            isLoading={isLoading} 
+            error={error as Error | null} 
+          />
         </TabsContent>
         <TabsContent value="rejected">
-            <ApplicationList applications={rejectedApplications} isLoading={isLoadingRejected} error={errorRejected as Error | null} />
+            <ApplicationList 
+              applications={filteredApplications('Rejeitada')} 
+              isLoading={isLoading} 
+              error={error as Error | null} 
+            />
         </TabsContent>
       </Tabs>
     </div>
