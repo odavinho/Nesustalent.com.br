@@ -85,13 +85,15 @@ export default function RecruiterDashboardPage() {
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <Users />
-                            Banco de Talentos
+                            Candidatos
                         </CardTitle>
-                         <CardDescription>Pesquise perfis de candidatos e encontre o talento ideal.</CardDescription>
+                         <CardDescription>Pesquise perfis no nosso banco de talentos e encontre o candidato ideal.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                         <p className="text-muted-foreground mb-4">Funcionalidade em desenvolvimento.</p>
-                         <Button variant="outline" disabled>Pesquisar CVs</Button>
+                         <p className="text-muted-foreground mb-4">Filtre por competências, experiência e mais.</p>
+                         <Button asChild variant="outline">
+                            <Link href="/dashboard/recruiter/candidates">Pesquisar CVs</Link>
+                         </Button>
                     </CardContent>
                 </Card>
 
