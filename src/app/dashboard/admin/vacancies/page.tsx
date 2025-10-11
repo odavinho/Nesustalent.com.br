@@ -1,6 +1,6 @@
 'use client';
 
-import { collection, query, orderBy } from 'firebase/firestore';
+import { collection, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -10,18 +10,38 @@ import type { Vacancy } from '@/lib/types';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
 
 export default function ManageVacanciesPage() {
   const firestore = useFirestore();
+  const { toast } = useToast();
   
   const vacanciesQuery = useMemoFirebase(() => {
     if (!firestore) return null;
-    // Assuming vacancies might be best ordered by a creation date if available
-    // For now, ordering by title.
-    return query(collection(firestore, 'vacancies'), orderBy('title', 'asc'));
+    return query(collection(firestore, 'vacancies'), orderBy('postedDate', 'desc'));
   }, [firestore]);
 
   const { data: vacancies, isLoading, error } = useCollection<Vacancy>(vacanciesQuery);
+
+  const handleDelete = async (vacancyId: string) => {
+    if (!firestore) return;
+    if (!confirm('Tem a certeza que deseja excluir esta vaga? Esta ação não pode ser desfeita.')) return;
+
+    try {
+        await deleteDoc(doc(firestore, 'vacancies', vacancyId));
+        toast({
+            title: 'Vaga Excluída!',
+            description: 'A vaga foi removida com sucesso.',
+        });
+    } catch (e) {
+        console.error(e);
+        toast({
+            variant: 'destructive',
+            title: 'Erro ao Excluir',
+            description: 'Não foi possível excluir a vaga. Verifique as permissões.',
+        });
+    }
+  }
 
   const renderContent = () => {
     if (isLoading) {
@@ -86,8 +106,8 @@ export default function ManageVacanciesPage() {
                     <CardContent>
                         <p className="text-sm text-muted-foreground line-clamp-2">{vacancy.description}</p>
                         <div className='mt-4 flex gap-2'>
-                            <Button variant="outline" size="sm">Editar</Button>
-                            <Button variant="destructive" size="sm">Excluir</Button>
+                            <Button variant="outline" size="sm" disabled>Editar</Button>
+                            <Button variant="destructive" size="sm" onClick={() => handleDelete(vacancy.id)}>Excluir</Button>
                         </div>
                     </CardContent>
                 </Card>

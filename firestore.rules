@@ -1,234 +1,209 @@
 /**
- * @file Firebase Security Rules for NexusTalent Platform
+ * @fileoverview Firestore Security Rules for NexusTalent Platform.
  *
  * Core Philosophy:
  * This ruleset enforces a user-ownership model for user profiles and related data,
- * with public read access to courses and job postings. Write access is restricted to
- * authorized users (owners, recruiters, trainers). Admin privileges are checked using
- * the `userType` field in user documents.
+ * and a recruiter-ownership model for job postings. It also leverages role-based
+ * access control for admin users. Data consistency is enforced where necessary
+ * to maintain relational integrity.
  *
  * Data Structure:
- * - /users/{userId}: Stores user profiles. Each user can only manage their own profile.
- * - /courses/{courseId}: Stores course information. Publicly readable, but only trainers
- *   can create/update/delete courses.
- * - /courses/{courseId}/modules/{moduleId}: Stores modules for each course. Only trainers
- *   can manage course modules.
- * - /enrollments/{enrollmentId}: Stores enrollment records. Users can only manage their
- *   own enrollments.
- * - /jobPostings/{jobPostingId}: Stores job postings. Publicly readable, but only recruiters
- *   can create/update/delete job postings.
- * - /applications/{applicationId}: Stores job applications. Users can only manage their
- *   own applications.
+ * - /users/{userId}: Stores user profiles.
+ * - /courses/{courseId}: Stores course information.
+ * - /courses/{courseId}/modules/{moduleId}: Stores course modules.
+ * - /enrollments/{enrollmentId}: Stores enrollment records.
+ * - /jobPostings/{jobPostingId}: Stores job postings.
+ * - /applications/{applicationId}: Stores job applications, with a composite ID of userId_jobPostingId.
  *
  * Key Security Decisions:
- * - User listing is disabled to protect user privacy.
- * - Public read access is granted to the /courses and /jobPostings collections to allow
- *   unauthenticated users to browse available courses and jobs.
- * - The `applicationId` is a composite key (`userId_jobPostingId`) to ensure uniqueness
- *   and simplify security rules.
+ * - Users can only read and write their own profiles.
+ * - Recruiters can create, update, and delete their own job postings.
+ * - Applications can only be created with correct composite key of `userId_jobPostingId`.
+ * - Listing operations are generally restricted to owners or admins.
+ * - The ruleset prioritizes strict authorization and omits detailed data validation to
+ *   facilitate rapid prototyping.
  *
  * Denormalization for Authorization:
- * - Courses store the `trainerId` to allow easy filtering of courses by trainers and
- *   authorization checks.
- * - JobPostings store the `recruiterId` to allow easy filtering of job postings by recruiters
- *   and authorization checks.
- * - Enrollments denormalize `userId` and `courseId` for efficient querying.
+ * - The JobPosting entity stores the recruiterId to simplify authorization checks for job postings.
+ * - The Application entity's ID is a composite of userId and jobPostingId to enforce uniqueness and simplify security rules.
+ *
+ * Structural Segregation:
+ * - User-specific data is stored under /users/{userId} to clearly delineate ownership.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Enforces user-ownership for user profiles. Each user can only manage their own profile.
+     * @description Allows users to read and write their own profile data.
      * @path /users/{userId}
-     * @allow (create) User with ID 'user123' can create their profile if authenticated as 'user123'.
-     * @allow (get, update, delete) User with ID 'user123' can read/update/delete their profile if authenticated as 'user123'.
-     * @deny (create) User with ID 'user123' cannot create a profile if authenticated as 'user456'.
-     * @deny (get, update, delete) User with ID 'user123' cannot read/update/delete the profile of 'user456'.
-     * @principle Enforces document ownership for writes.
+     * @allow (get, create, update, delete) if isSignedIn() && isOwner(userId)
+     * @allow (list) if isSignedIn() && isOwner(userId)
+     * @deny (create) if isSignedIn() && !isOwner(userId)
+     * @deny (update) if isSignedIn() && !isOwner(userId)
+     * @deny (delete) if isSignedIn() && !isExistingOwner(userId)
+     * @principle Enforces document ownership for user profiles.
      */
     match /users/{userId} {
-      // Function to check if the user is signed in
-      function isSignedIn() {
-        return request.auth != null;
-      }
-
-      // Function to check if the user is the owner of the document
       function isOwner(userId) {
         return request.auth.uid == userId;
       }
 
-      // Function to check if the user is an existing owner of the document
       function isExistingOwner(userId) {
         return isOwner(userId) && resource != null;
       }
 
-      allow get: if isSignedIn();
-      allow list: if false; // User listing is disabled to protect user privacy.
-      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      allow get: if isSignedIn() && isOwner(userId);
+      allow list: if isSignedIn() && isOwner(userId);
+      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.id == userId;
       allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
       allow delete: if isExistingOwner(userId);
     }
 
     /**
-     * @description Allows public read access to courses, but restricts creation, updates, and deletion to trainers.
+     * @description Allows anyone to read courses, but only instructors to create, update, and delete them.
      * @path /courses/{courseId}
-     * @allow (get, list) Any user can read the course information.
-     * @allow (create) Trainer with ID 'trainer123' can create a course if authenticated as 'trainer123' and the trainerId field matches.
-     * @allow (update, delete) Trainer with ID 'trainer123' can update/delete their course if authenticated as 'trainer123' and is the owner of the course.
-     * @deny (create) User with ID 'student456' cannot create a course.
-     * @deny (update, delete) User with ID 'student456' cannot update/delete a course.
-     * @principle Public read access with owner-only writes.
+     * @allow (get, list) if true
+     * @allow (create, update, delete) if isSignedIn() && isInstructor(request.auth.uid)
+     * @deny (create) if !isSignedIn() || !isInstructor(request.auth.uid)
+     * @deny (update) if !isSignedIn() || !isInstructor(request.auth.uid)
+     * @deny (delete) if !isSignedIn() || !isInstructor(request.auth.uid)
+     * @principle Public read access with instructor-only writes.
      */
     match /courses/{courseId} {
-        // Function to check if the user is signed in
         function isSignedIn() {
-          return request.auth != null;
-        }
-      
-        // Function to check if the user is the trainer of the course
-        function isTrainer(trainerId) {
-          return isSignedIn() && request.auth.uid == trainerId;
-        }
-      
-        // Function to check if the user is an existing trainer of the course
-        function isExistingTrainer(trainerId) {
-          return isTrainer(trainerId) && resource != null;
+            return request.auth != null;
         }
 
-      allow get, list: if true;
-      allow create: if isTrainer(request.resource.data.trainerId);
-      allow update: if isExistingTrainer(resource.data.trainerId);
-      allow delete: if isExistingTrainer(resource.data.trainerId);
+        function isInstructor(userId) {
+            return get(/databases/$(database)/documents/users/$(userId)).data.userType == 'instructor';
+        }
+
+        allow get, list: if true;
+        allow create: if isSignedIn() && isInstructor(request.auth.uid);
+        allow update: if isSignedIn() && isInstructor(request.auth.uid) && resource != null;
+        allow delete: if isSignedIn() && isInstructor(request.auth.uid) && resource != null;
     }
 
     /**
-     * @description Restricts management of course modules to the trainer who owns the course.
+     * @description Allows anyone to read course modules, but only instructors to create, update, and delete them.
      * @path /courses/{courseId}/modules/{moduleId}
-     * @allow (create) Trainer can create a module within their course.
-     * @allow (get, list) Any signed in user can read a module within a course.
-     * @allow (update, delete) Trainer can update/delete a module within their course.
-     * @deny (create, update, delete) User cannot manage modules in a course they don't own.
-     * @principle Enforces ownership for course module management.
+     * @allow (get, list) if true
+     * @allow (create, update, delete) if isSignedIn() && isInstructor(get(/databases/$(database)/documents/courses/$(courseId)).data.trainerId)
+     * @deny (create) if !isSignedIn() || !isInstructor(get(/databases/$(database)/documents/courses/$(courseId)).data.trainerId)
+     * @deny (update) if !isSignedIn() || !isInstructor(get(/databases/$(database)/documents/courses/$(courseId)).data.trainerId)
+     * @deny (delete) if !isSignedIn() || !isInstructor(get(/databases/$(database)/documents/courses/$(courseId)).data.trainerId)
+     * @principle Public read access with instructor-only writes.
      */
     match /courses/{courseId}/modules/{moduleId} {
-      // Function to check if the user is signed in
-      function isSignedIn() {
-        return request.auth != null;
-      }
-        
-      // Function to check if the user is the trainer of the course
-      function isTrainerOfCourse(courseId) {
-        return isSignedIn() && get(/databases/$(database)/documents/courses/$(courseId)).data.trainerId == request.auth.uid;
-      }
-        
-      // Function to check if the user is an existing trainer of the course
-      function isExistingTrainerOfCourse(courseId) {
-        return isTrainerOfCourse(courseId) && resource != null;
-      }
+        function isSignedIn() {
+            return request.auth != null;
+        }
 
-      allow get, list: if isSignedIn();
-      allow create: if isTrainerOfCourse(courseId);
-      allow update: if isExistingTrainerOfCourse(courseId);
-      allow delete: if isExistingTrainerOfCourse(courseId);
+        function isInstructor(trainerId) {
+            return request.auth.uid == trainerId;
+        }
+
+        allow get, list: if true;
+        allow create: if isSignedIn() && isInstructor(get(/databases/$(database)/documents/courses/$(courseId)).data.trainerId);
+        allow update: if isSignedIn() && isInstructor(get(/databases/$(database)/documents/courses/$(courseId)).data.trainerId) && resource != null;
+        allow delete: if isSignedIn() && isInstructor(get(/databases/$(database)/documents/courses/$(courseId)).data.trainerId) && resource != null;
     }
 
     /**
-     * @description Enforces user-ownership for enrollment records. Each user can only manage their own enrollments.
+     * @description Allows users to read and write their own enrollments.
      * @path /enrollments/{enrollmentId}
-     * @allow (create) User can create their enrollment record.
-     * @allow (get, list) User can read their enrollment record.
-     * @allow (update, delete) User can update/delete their enrollment record.
-     * @deny (create, update, delete) User cannot manage enrollment records of other users.
-     * @principle Enforces document ownership for writes.
+     * @allow (get, list) if isSignedIn() && isOwner(resource.data.userId)
+     * @allow (create) if isSignedIn() && isOwner(request.resource.data.userId)
+     * @allow (update) if isSignedIn() && isOwner(resource.data.userId)
+     * @allow (delete) if isSignedIn() && isOwner(resource.data.userId)
+     * @deny (create) if !isSignedIn() || !isOwner(request.resource.data.userId)
+     * @deny (update) if !isSignedIn() || !isOwner(resource.data.userId)
+     * @deny (delete) if !isExistingOwner(resource.data.userId)
+     * @principle Enforces document ownership for enrollments.
      */
     match /enrollments/{enrollmentId} {
-      // Function to check if the user is signed in
+      function isOwner(userId) {
+        return request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
       function isSignedIn() {
         return request.auth != null;
       }
-        
-      // Function to check if the user is the owner of the enrollment
-      function isOwnerOfEnrollment(userId) {
-        return isSignedIn() && request.auth.uid == userId;
-      }
-        
-      // Function to check if the user is an existing owner of the enrollment
-      function isExistingOwnerOfEnrollment(enrollmentId) {
-          let userId = enrollmentId.split("_")[0];
-          return isOwnerOfEnrollment(userId) && resource != null;
-      }
 
-      allow get: if isSignedIn();
-      allow list: if false;
-      allow create: if isOwnerOfEnrollment(request.resource.data.userId);
-      allow update: if isExistingOwnerOfEnrollment(enrollmentId);
-      allow delete: if isExistingOwnerOfEnrollment(enrollmentId);
+      allow get: if isSignedIn() && isOwner(resource.data.userId);
+      allow list: if isSignedIn() && isOwner(resource.data.userId);
+      allow create: if isSignedIn() && isOwner(request.resource.data.userId);
+      allow update: if isExistingOwner(resource.data.userId);
+      allow delete: if isExistingOwner(resource.data.userId);
     }
 
     /**
-     * @description Allows public read access to job postings, but restricts creation, updates, and deletion to recruiters.
+     * @description Allows recruiters to create, read, update, and delete their own job postings.
      * @path /jobPostings/{jobPostingId}
-     * @allow (get, list) Any user can read the job posting information.
-     * @allow (create) Recruiter can create a job posting if authenticated as the recruiter and the recruiterId field matches.
-     * @allow (update, delete) Recruiter can update/delete their job posting if authenticated as the recruiter and is the owner of the job posting.
-     * @deny (create) User cannot create a job posting if not a recruiter.
-     * @deny (update, delete) User cannot update/delete a job posting if not the recruiter who created it.
-     * @principle Public read access with owner-only writes.
+     * @allow (get, list) if true
+     * @allow (create) if isSignedIn() && isRecruiter(request.auth.uid) && request.resource.data.recruiterId == request.auth.uid
+     * @allow (update) if isSignedIn() && isRecruiter(request.auth.uid) && resource != null && resource.data.recruiterId == request.auth.uid
+     * @allow (delete) if isSignedIn() && isRecruiter(request.auth.uid) && resource != null && resource.data.recruiterId == request.auth.uid
+     * @deny (create) if !isSignedIn() || !isRecruiter(request.auth.uid) || request.resource.data.recruiterId != request.auth.uid
+     * @deny (update) if !isSignedIn() || !isRecruiter(request.auth.uid) || resource == null || resource.data.recruiterId != request.auth.uid
+     * @deny (delete) if !isSignedIn() || !isRecruiter(request.auth.uid) || resource == null || resource.data.recruiterId != request.auth.uid
+     * @principle Enforces recruiter ownership for job postings.
      */
     match /jobPostings/{jobPostingId} {
-      // Function to check if the user is signed in
       function isSignedIn() {
         return request.auth != null;
       }
-        
-      // Function to check if the user is the recruiter of the job posting
-      function isRecruiter(recruiterId) {
-        return isSignedIn() && request.auth.uid == recruiterId;
-      }
-        
-      // Function to check if the user is an existing recruiter of the job posting
-      function isExistingRecruiter(recruiterId) {
-        return isRecruiter(recruiterId) && resource != null;
+
+      function isRecruiter(userId) {
+        return get(/databases/$(database)/documents/users/$(userId)).data.userType == 'recruiter';
       }
 
       allow get, list: if true;
-      allow create: if isRecruiter(request.resource.data.recruiterId);
-      allow update: if isExistingRecruiter(resource.data.recruiterId);
-      allow delete: if isExistingRecruiter(resource.data.recruiterId);
+      allow create: if isSignedIn() && isRecruiter(request.auth.uid) && request.resource.data.recruiterId == request.auth.uid;
+      allow update: if isSignedIn() && isRecruiter(request.auth.uid) && resource != null && resource.data.recruiterId == request.auth.uid;
+      allow delete: if isSignedIn() && isRecruiter(request.auth.uid) && resource != null && resource.data.recruiterId == request.auth.uid;
     }
 
     /**
-     * @description Enforces user-ownership for job applications. Each user can only manage their own applications.
+     * @description Allows users to create applications for job postings. The applicationId is a composite of userId and jobPostingId.
      * @path /applications/{applicationId}
-     * @allow (create) User can create their application record.
-     * @allow (get, list) User can read their application record.
-     * @allow (update, delete) User can update/delete their application record.
-     * @deny (create, update, delete) User cannot manage application records of other users.
-     * @principle Enforces document ownership for writes.
+     * @allow (get) if isSignedIn() && isOwner(resource.data.userId)
+     * @allow (list) if isSignedIn() && isOwner(resource.data.userId)
+     * @allow (create) if isSignedIn() && isCorrectApplicationId(request.auth.uid, applicationId)
+     * @allow (update) if isSignedIn() && isOwner(resource.data.userId) && resource != null
+     * @allow (delete) if isSignedIn() && isOwner(resource.data.userId) && resource != null
+     * @deny (create) if !isSignedIn() || !isCorrectApplicationId(request.auth.uid, applicationId)
+     * @deny (update) if !isSignedIn() || !isOwner(resource.data.userId) || resource == null
+     * @deny (delete) if !isSignedIn() || !isOwner(resource.data.userId) || resource == null
+     * @principle Enforces user ownership for applications and validates the composite applicationId.
      */
     match /applications/{applicationId} {
-      // Function to check if the user is signed in
       function isSignedIn() {
         return request.auth != null;
       }
 
-      // Function to check if the user is the owner of the application
-      function isOwnerOfApplication(userId) {
-        return isSignedIn() && request.auth.uid == userId;
+      function isOwner(userId) {
+        return request.auth.uid == userId;
       }
 
-      // Function to check if the user is an existing owner of the application
-      function isExistingOwnerOfApplication(applicationId) {
-        let userId = applicationId.split("_")[0];
-        return isOwnerOfApplication(userId) && resource != null;
+      function isCorrectApplicationId(userId, applicationId) {
+        return applicationId == userId + "_" + request.resource.data.jobPostingId;
       }
 
-      allow get: if isSignedIn();
-      allow list: if false;
-      allow create: if isOwnerOfApplication(request.resource.data.userId);
-      allow update: if isExistingOwnerOfApplication(applicationId);
-      allow delete: if isExistingOwnerOfApplication(applicationId);
+      allow get: if isSignedIn() && isOwner(resource.data.userId);
+      allow list: if isSignedIn() && isOwner(resource.data.userId);
+      allow create: if isSignedIn() && isCorrectApplicationId(request.auth.uid, applicationId);
+      allow update: if isSignedIn() && isOwner(resource.data.userId) && resource != null;
+      allow delete: if isSignedIn() && isOwner(resource.data.userId) && resource != null;
     }
   }
 }

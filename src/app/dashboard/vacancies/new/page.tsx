@@ -13,10 +13,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Loader2, Wand2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { generateVacancyContentAction, addVacancyAction } from '@/app/actions';
+import { generateVacancyContentAction } from '@/app/actions';
 import type { GenerateVacancyContentOutput } from '@/ai/flows/generate-vacancy-content';
 import { useRouter } from 'next/navigation';
 import type { Vacancy } from '@/lib/types';
+import { useFirestore, useUser, errorEmitter, FirestorePermissionError } from '@/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 
 const formSchema = z.object({
@@ -34,6 +36,8 @@ export default function NewVacancyPage() {
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
+  const firestore = useFirestore();
+  const { user } = useUser();
 
 
   const form = useForm<FormValues>({
@@ -63,53 +67,56 @@ export default function NewVacancyPage() {
   };
   
   const handleSaveVacancy = async () => {
-    if (!generatedContent || !form.formState.isValid) {
+    if (!generatedContent || !form.formState.isValid || !firestore || !user) {
         toast({
           variant: 'destructive',
           title: 'Faltam dados',
-          description: 'Gere a descrição e preencha todos os campos obrigatórios antes de salvar.',
+          description: 'Gere a descrição, preencha todos os campos e certifique-se que está autenticado.',
         });
         return;
       }
       setIsSaving(true);
   
       const formValues = form.getValues();
-      const vacancyData: Omit<Vacancy, 'id'> = {
+      const vacancyData = {
         title: formValues.title,
         category: formValues.category,
         location: formValues.location,
         type: formValues.type,
         description: generatedContent.description,
-        // responsibilities and requirements could be added to the Vacancy type if needed
+        responsibilities: generatedContent.responsibilities,
+        requirements: generatedContent.requirements,
+        recruiterId: user.uid,
+        postedDate: serverTimestamp(),
       };
 
-      try {
-        const result = await addVacancyAction(vacancyData);
-        if (result.success) {
-            toast({
-              title: "Vaga salva!",
-              description: result.message,
-            });
-            router.push('/dashboard/admin/vacancies');
-        } else {
-            throw new Error(result.message);
-        }
-      } catch (error) {
-        toast({
-            variant: 'destructive',
-            title: 'Erro ao salvar a vaga',
-            description: error instanceof Error ? error.message : 'Ocorreu um erro desconhecido.',
+      const vacanciesCollection = collection(firestore, 'vacancies');
+      addDoc(vacanciesCollection, vacancyData)
+        .then(() => {
+          toast({
+            title: "Vaga publicada!",
+            description: "A sua vaga já está visível para os candidatos.",
           });
-      } finally {
-        setIsSaving(false);
-      }
+          router.push('/dashboard/recruiter/vacancies');
+        })
+        .catch(async (error) => {
+            const permissionError = new FirestorePermissionError({
+                path: vacanciesCollection.path,
+                operation: 'create',
+                requestResourceData: vacancyData,
+            });
+            errorEmitter.emit('permission-error', permissionError);
+        })
+        .finally(() => {
+            setIsSaving(false);
+        });
   }
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <Card className="max-w-4xl mx-auto">
         <CardHeader>
-          <CardTitle className="font-headline text-3xl">Adicionar Nova Vaga</CardTitle>
+          <CardTitle className="font-headline text-3xl">Publicar Nova Vaga</CardTitle>
           <CardDescription>
             Preencha as informações básicas e deixe a IA gerar a descrição completa da vaga.
           </CardDescription>
@@ -207,12 +214,12 @@ export default function NewVacancyPage() {
                 <div className="mt-8 pt-6 border-t space-y-6">
                   <h3 className="font-headline text-2xl">Descrição Gerada</h3>
                   <div className="space-y-4">
-                    <TextareaWithLabel label="Descrição Geral" defaultValue={generatedContent.description} rows={4} />
-                    <TextareaWithLabel label="Responsabilidades (separado por nova linha)" defaultValue={generatedContent.responsibilities.join('\n')} rows={6} />
-                    <TextareaWithLabel label="Requisitos (separado por nova linha)" defaultValue={generatedContent.requirements.join('\n')} rows={6} />
+                    <TextareaWithLabel label="Descrição Geral" value={generatedContent.description} onChange={(e) => setGeneratedContent({...generatedContent, description: e.target.value})} rows={4} />
+                    <TextareaWithLabel label="Responsabilidades (separado por nova linha)" value={generatedContent.responsibilities.join('\n')} onChange={(e) => setGeneratedContent({...generatedContent, responsibilities: e.target.value.split('\n')})} rows={6} />
+                    <TextareaWithLabel label="Requisitos (separado por nova linha)" value={generatedContent.requirements.join('\n')} onChange={(e) => setGeneratedContent({...generatedContent, requirements: e.target.value.split('\n')})} rows={6} />
                   </div>
                   <Button onClick={handleSaveVacancy} disabled={isSaving} className="w-full bg-green-600 hover:bg-green-700">
-                    {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Salvar Vaga'}
+                    {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Publicar Vaga'}
                   </Button>
                 </div>
               )}

@@ -1,14 +1,53 @@
+'use client';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Briefcase, Users, FileText, PlusCircle } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useUser, useFirestore, useCollection, useMemoFirebase } from "@/firebase";
+import { collection, query, where } from "firebase/firestore";
+import type { Vacancy } from "@/lib/types";
+import { Skeleton } from "@/components/ui/skeleton";
+
+function VacancyList({ recruiterId }: { recruiterId: string }) {
+    const firestore = useFirestore();
+
+    const vacanciesQuery = useMemoFirebase(() => {
+        if (!firestore) return null;
+        return query(collection(firestore, 'vacancies'), where('recruiterId', '==', recruiterId));
+    }, [firestore, recruiterId]);
+
+    const { data: vacancies, isLoading } = useCollection<Vacancy>(vacanciesQuery);
+
+    if (isLoading) {
+        return (
+            <ul className="space-y-2 mb-4">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+            </ul>
+        )
+    }
+
+    return (
+        <ul className="space-y-2 mb-4">
+            {vacancies && vacancies.length > 0 ? (
+                vacancies.slice(0, 2).map(vacancy => (
+                    <li key={vacancy.id} className="flex justify-between items-center text-sm p-2 bg-secondary rounded-md">
+                        <span className="font-medium">{vacancy.title}</span>
+                        {/* A contagem de candidatos será implementada no futuro */}
+                        {/* <span className="flex items-center gap-2 text-muted-foreground"><Users size={16} /> {vacancy.candidates} candidatos</span> */}
+                    </li>
+                ))
+            ) : (
+                <p className="text-sm text-muted-foreground">Ainda não publicou nenhuma vaga.</p>
+            )}
+        </ul>
+    );
+}
+
 
 export default function RecruiterDashboardPage() {
-    // Mock data
-    const activeVacancies = [
-        { title: 'Desenvolvedor Frontend Sênior', candidates: 45 },
-        { title: 'Gestor de Projetos de TI', candidates: 32 },
-    ];
+    const { user } = useUser();
 
     return (
         <div>
@@ -27,20 +66,18 @@ export default function RecruiterDashboardPage() {
                         <CardDescription>Crie novas vagas e gerencie as existentes.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                         <ul className="space-y-2 mb-4">
-                            {activeVacancies.map(vacancy => (
-                                <li key={vacancy.title} className="flex justify-between items-center text-sm p-2 bg-secondary rounded-md">
-                                    <span className="font-medium">{vacancy.title}</span>
-                                    <span className="flex items-center gap-2 text-muted-foreground"><Users size={16} /> {vacancy.candidates} candidatos</span>
-                                </li>
-                            ))}
-                        </ul>
-                        <Button asChild>
-                            <Link href="/dashboard/vacancies/new">
-                                <PlusCircle className="mr-2 h-4 w-4" />
-                                Publicar Nova Vaga
-                            </Link>
-                        </Button>
+                         {user && <VacancyList recruiterId={user.uid} />}
+                        <div className="flex flex-wrap gap-2">
+                            <Button asChild>
+                                <Link href="/dashboard/vacancies/new">
+                                    <PlusCircle className="mr-2 h-4 w-4" />
+                                    Publicar Nova Vaga
+                                </Link>
+                            </Button>
+                            <Button asChild variant="outline">
+                                <Link href="/dashboard/recruiter/vacancies">Gerir Vagas</Link>
+                            </Button>
+                        </div>
                     </CardContent>
                 </Card>
 
@@ -48,13 +85,13 @@ export default function RecruiterDashboardPage() {
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <Users />
-                            Candidaturas Recebidas
+                            Banco de Talentos
                         </CardTitle>
-                         <CardDescription>Analise e organize os candidatos para as suas vagas.</CardDescription>
+                         <CardDescription>Pesquise perfis de candidatos e encontre o talento ideal.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                         <p className="text-muted-foreground">Nenhuma nova candidatura no momento.</p>
-                         <Button variant="outline" className="mt-4">Ver Todas as Candidaturas</Button>
+                         <p className="text-muted-foreground mb-4">Funcionalidade em desenvolvimento.</p>
+                         <Button variant="outline" disabled>Pesquisar CVs</Button>
                     </CardContent>
                 </Card>
 

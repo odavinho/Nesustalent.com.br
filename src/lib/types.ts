@@ -23,6 +23,10 @@ export interface Course {
     type: 'Full-time' | 'Part-time' | 'Remote';
     category: string;
     description: string;
+    recruiterId: string;
+    postedDate: Timestamp;
+    responsibilities: string[];
+    requirements: string[];
   }
   
   export interface Application {
