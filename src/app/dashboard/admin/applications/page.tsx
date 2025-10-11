@@ -1,8 +1,8 @@
 
 'use client';
 
-import { useMemo } from 'react';
-import { collection, query, orderBy } from 'firebase/firestore';
+import { useMemo, useState } from 'react';
+import { collection, query, orderBy, where, Query } from 'firebase/firestore';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -12,17 +12,10 @@ import { FileWarning, Files } from 'lucide-react';
 import type { Application } from '@/lib/types';
 import { ApplicationCard } from '@/components/admin/application-card';
 
-export default function ManageApplicationsPage() {
-  const firestore = useFirestore();
-  
-  const applicationsQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return query(collection(firestore, 'applications'), orderBy('applicationDate', 'desc'));
-  }, [firestore]);
+type ApplicationStatus = 'Recebida' | 'Em análise' | 'Rejeitada';
 
-  const { data: applications, isLoading, error } = useCollection<Application>(applicationsQuery);
 
-  const renderContent = () => {
+const ApplicationList = ({ applications, isLoading, error }: { applications: Application[] | null, isLoading: boolean, error: Error | null }) => {
     if (isLoading) {
       return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -56,7 +49,7 @@ export default function ManageApplicationsPage() {
           <Files className="mx-auto h-12 w-12 text-muted-foreground" />
           <h3 className="mt-4 text-lg font-medium">Nenhuma candidatura encontrada</h3>
           <p className="mt-1 text-sm text-muted-foreground">
-            Ainda não há candidaturas para as vagas publicadas.
+            Ainda não há candidaturas com este status.
           </p>
         </div>
       );
@@ -70,6 +63,37 @@ export default function ManageApplicationsPage() {
         </div>
     );
   };
+
+
+export default function ManageApplicationsPage() {
+  const firestore = useFirestore();
+  const [activeTab, setActiveTab] = useState<ApplicationStatus>('Recebida');
+  
+  const baseQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return collection(firestore, 'applications');
+  }, [firestore]);
+
+  const allApplicationsQuery = useMemoFirebase(() => {
+    if (!baseQuery) return null;
+    return query(baseQuery, orderBy('applicationDate', 'desc'));
+  }, [baseQuery]);
+
+  const interestingApplicationsQuery = useMemoFirebase(() => {
+    if (!baseQuery) return null;
+    return query(baseQuery, where('status', '==', 'Em análise'), orderBy('applicationDate', 'desc'));
+  }, [baseQuery]);
+
+  const rejectedApplicationsQuery = useMemoFirebase(() => {
+    if (!baseQuery) return null;
+    return query(baseQuery, where('status', '==', 'Rejeitada'), orderBy('applicationDate', 'desc'));
+  }, [baseQuery]);
+  
+
+  const { data: allApplications, isLoading: isLoadingAll, error: errorAll } = useCollection<Application>(allApplicationsQuery as Query<Application>);
+  const { data: interestingApplications, isLoading: isLoadingInteresting, error: errorInteresting } = useCollection<Application>(interestingApplicationsQuery as Query<Application>);
+  const { data: rejectedApplications, isLoading: isLoadingRejected, error: errorRejected } = useCollection<Application>(rejectedApplicationsQuery as Query<Application>);
+
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -87,13 +111,13 @@ export default function ManageApplicationsPage() {
           <TabsTrigger value="rejected" className="h-10">Candidatos Rejeitados</TabsTrigger>
         </TabsList>
         <TabsContent value="all">
-          {renderContent()}
+          <ApplicationList applications={allApplications} isLoading={isLoadingAll} error={errorAll as Error | null} />
         </TabsContent>
         <TabsContent value="interesting">
-          {renderContent()}
+          <ApplicationList applications={interestingApplications} isLoading={isLoadingInteresting} error={errorInteresting as Error | null} />
         </TabsContent>
         <TabsContent value="rejected">
-          {renderContent()}
+            <ApplicationList applications={rejectedApplications} isLoading={isLoadingRejected} error={errorRejected as Error | null} />
         </TabsContent>
       </Tabs>
     </div>
