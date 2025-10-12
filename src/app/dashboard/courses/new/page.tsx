@@ -326,6 +326,7 @@ function ModuleField({ moduleIndex, form, onRemove }: { moduleIndex: number; for
 function ModuleAssessmentGenerator({ moduleTitle, topics }: { moduleTitle: string, topics: string[] }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [hasGenerated, setHasGenerated] = useState(false);
   const { toast } = useToast();
 
   const assessmentForm = useForm<ModuleAssessmentFormValues>({
@@ -366,9 +367,10 @@ function ModuleAssessmentGenerator({ moduleTitle, topics }: { moduleTitle: strin
           options: q.options ? q.options.map(opt => ({ value: opt })) : [],
         }));
         assessmentForm.reset({ questions: questionsForForm });
+        setHasGenerated(true);
         toast({
-            title: "Teste Gerado!",
-            description: "Pode agora editar o teste e guardá-lo."
+            title: "Pré-visualização do Teste Gerada!",
+            description: "Pode agora rever, editar e guardar o teste."
         });
     } catch (error) {
         toast({
@@ -427,7 +429,7 @@ function ModuleAssessmentGenerator({ moduleTitle, topics }: { moduleTitle: strin
                         <FormField control={configForm.control} name="level" render={({ field }) => ( <FormItem><FormLabel>Nível</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent><SelectItem value="Fácil">Fácil</SelectItem><SelectItem value="Médio">Médio</SelectItem><SelectItem value="Difícil">Difícil</SelectItem></SelectContent></Select></FormItem> )} />
                          <Button type="submit" disabled={isGenerating} className="w-full">
                             {isGenerating ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Wand2 className="mr-2 h-4 w-4"/>}
-                            {assessmentForm.getValues('questions').length > 0 ? 'Gerar Novamente' : 'Gerar Teste com IA'}
+                            {hasGenerated ? 'Gerar Novamente' : 'Gerar Teste com IA'}
                         </Button>
                     </form>
                  </Form>
@@ -435,78 +437,80 @@ function ModuleAssessmentGenerator({ moduleTitle, topics }: { moduleTitle: strin
             
             {/* Coluna de Edição */}
             <div className='lg:col-span-2 overflow-y-auto pr-2 flex flex-col'>
-              <h4 className='font-semibold mb-4'>2. Rever e Editar Teste</h4>
+              <h4 className='font-semibold mb-4'>2. Pré-visualizar e Editar Teste</h4>
               {isGenerating && <div className="flex items-center justify-center h-full"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}
               
-              {!isGenerating && fields.length === 0 && (
+              {!isGenerating && !hasGenerated && (
                 <div className="flex items-center justify-center h-full text-center text-muted-foreground border-2 border-dashed rounded-lg">
                     <p>Gere um teste com IA ou adicione perguntas manualmente.</p>
                 </div>
               )}
 
-              <Form {...assessmentForm}>
-                 <form onSubmit={assessmentForm.handleSubmit(handleSaveTest)} className="space-y-4">
-                    {fields.map((item, index) => (
-                      <div key={item.id} className="p-4 border rounded-md relative bg-background">
-                         <Button type="button" variant="ghost" size="icon" className="absolute top-2 right-2" onClick={() => remove(index)}><Trash2 className="h-4 w-4 text-destructive"/></Button>
-                         <FormField control={assessmentForm.control} name={`questions.${index}.question`} render={({ field }) => ( <FormItem><FormLabel>Pergunta {index + 1}</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage/></FormItem> )} />
-                         
-                         {item.type === 'multiple-choice' && (
-                          <div className='mt-4 space-y-2'>
-                            <FormLabel>Opções (Marque a correta)</FormLabel>
-                             <Controller
-                                control={assessmentForm.control}
-                                name={`questions.${index}.correctAnswerIndex`}
-                                render={({ field: radioField }) => (
-                                    <RadioGroup
-                                        onValueChange={radioField.onChange}
-                                        defaultValue={radioField.value?.toString()}
-                                        className="space-y-1"
-                                    >
-                                        <div className='space-y-2'>
-                                            {Array.from({length: 4}).map((_, optionIndex) => (
-                                                <FormField
-                                                  key={`${item.id}-opt-${optionIndex}`}
-                                                  control={assessmentForm.control}
-                                                  name={`questions.${index}.options.${optionIndex}.value`}
-                                                  render={({ field }) => (
-                                                    <FormItem className='flex items-center gap-2 space-y-0'>
-                                                      <FormControl>
-                                                         <RadioGroupItem value={optionIndex.toString()} />
-                                                      </FormControl>
-                                                      <Input {...field} placeholder={`Opção ${optionIndex + 1}`} className="flex-1"/>
-                                                    </FormItem>
-                                                  )}
-                                                />
-                                            ))}
-                                        </div>
-                                    </RadioGroup>
-                                )}
-                            />
-                          </div>
-                         )}
+              {hasGenerated && (
+                  <Form {...assessmentForm}>
+                    <form onSubmit={assessmentForm.handleSubmit(handleSaveTest)} className="space-y-4">
+                        {fields.map((item, index) => (
+                        <div key={item.id} className="p-4 border rounded-md relative bg-background">
+                            <Button type="button" variant="ghost" size="icon" className="absolute top-2 right-2" onClick={() => remove(index)}><Trash2 className="h-4 w-4 text-destructive"/></Button>
+                            <FormField control={assessmentForm.control} name={`questions.${index}.question`} render={({ field }) => ( <FormItem><FormLabel>Pergunta {index + 1}</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage/></FormItem> )} />
+                            
+                            {item.type === 'multiple-choice' && (
+                            <div className='mt-4 space-y-2'>
+                                <FormLabel>Opções (Marque a correta)</FormLabel>
+                                <Controller
+                                    control={assessmentForm.control}
+                                    name={`questions.${index}.correctAnswerIndex`}
+                                    render={({ field: radioField }) => (
+                                        <RadioGroup
+                                            onValueChange={(value) => radioField.onChange(parseInt(value))}
+                                            value={radioField.value?.toString()}
+                                            className="space-y-1"
+                                        >
+                                            <div className='space-y-2'>
+                                                {Array.from({length: 4}).map((_, optionIndex) => (
+                                                    <FormField
+                                                    key={`${item.id}-opt-${optionIndex}`}
+                                                    control={assessmentForm.control}
+                                                    name={`questions.${index}.options.${optionIndex}.value`}
+                                                    render={({ field }) => (
+                                                        <FormItem className='flex items-center gap-2 space-y-0'>
+                                                        <FormControl>
+                                                            <RadioGroupItem value={optionIndex.toString()} />
+                                                        </FormControl>
+                                                        <Input {...field} placeholder={`Opção ${optionIndex + 1}`} className="flex-1"/>
+                                                        </FormItem>
+                                                    )}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </RadioGroup>
+                                    )}
+                                />
+                            </div>
+                            )}
 
-                         {item.type === 'short-answer' && (
-                           <FormField control={assessmentForm.control} name={`questions.${index}.shortAnswer`} render={({ field }) => ( <FormItem className='mt-2'><FormLabel>Resposta Ideal</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage/></FormItem> )} />
-                         )}
+                            {item.type === 'short-answer' && (
+                            <FormField control={assessmentForm.control} name={`questions.${index}.shortAnswer`} render={({ field }) => ( <FormItem className='mt-2'><FormLabel>Resposta Ideal</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage/></FormItem> )} />
+                            )}
 
-                      </div>
-                    ))}
-                    
-                    <Separator />
-                    
-                    <div className="flex gap-2">
-                        <Button type="button" variant="outline" onClick={() => addNewQuestion('multiple-choice')}><PlusCircle className="mr-2 h-4 w-4"/> Adicionar Múltipla Escolha</Button>
-                        <Button type="button" variant="outline" onClick={() => addNewQuestion('short-answer')}><PlusCircle className="mr-2 h-4 w-4"/> Adicionar Resposta Curta</Button>
-                    </div>
+                        </div>
+                        ))}
+                        
+                        <Separator />
+                        
+                        <div className="flex gap-2">
+                            <Button type="button" variant="outline" onClick={() => addNewQuestion('multiple-choice')}><PlusCircle className="mr-2 h-4 w-4"/> Adicionar Múltipla Escolha</Button>
+                            <Button type="button" variant="outline" onClick={() => addNewQuestion('short-answer')}><PlusCircle className="mr-2 h-4 w-4"/> Adicionar Resposta Curta</Button>
+                        </div>
 
-                    <DialogFooter className="pt-4 !justify-end">
-                      <Button type="submit" disabled={fields.length === 0}>
-                         <Save className="mr-2 h-4 w-4" /> Guardar Teste no Módulo
-                      </Button>
-                    </DialogFooter>
-                 </form>
-              </Form>
+                        <DialogFooter className="pt-4 !justify-end">
+                        <Button type="submit" disabled={fields.length === 0} size="lg">
+                            <Save className="mr-2 h-4 w-4" /> Guardar Teste no Módulo
+                        </Button>
+                        </DialogFooter>
+                    </form>
+                  </Form>
+                )}
 
             </div>
           </div>
