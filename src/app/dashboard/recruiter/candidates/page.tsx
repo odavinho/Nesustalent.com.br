@@ -9,13 +9,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Search, MapPin, Briefcase, BookOpen, Globe, User, Filter, SlidersHorizontal, Users } from 'lucide-react';
+import { Search, MapPin, Briefcase, BookOpen, Globe, User, Filter, SlidersHorizontal, Users, ArrowLeft } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 
 const CandidateCard = ({ candidate }: { candidate: UserProfile }) => {
@@ -41,7 +43,9 @@ const CandidateCard = ({ candidate }: { candidate: UserProfile }) => {
                 <div className="flex flex-wrap gap-2 mb-4">
                     {candidate.skills?.slice(0, 5).map(skill => <Badge key={skill} variant="secondary">{skill}</Badge>)}
                 </div>
-                <Button className="w-full">Ver Perfil Completo</Button>
+                <Button asChild className="w-full">
+                    <Link href={`/dashboard/recruiter/candidates/${candidate.id}`}>Ver Perfil Completo</Link>
+                </Button>
             </CardContent>
         </Card>
     );
@@ -77,6 +81,7 @@ export default function CandidatesPage() {
         nationality: '',
     });
     const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState(false);
+    const router = useRouter();
     
     // Use mock data directly
     const allCandidates = useMemo(() => mockUsers.filter(u => u.userType === 'student'), []);
@@ -111,6 +116,10 @@ export default function CandidatesPage() {
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <Button variant="outline" onClick={() => router.back()} className="mb-6">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Voltar
+            </Button>
             <div className="mb-8">
                 <h1 className="font-headline text-4xl font-bold">Banco de Talentos</h1>
                 <p className="text-muted-foreground mt-2">
@@ -127,7 +136,7 @@ export default function CandidatesPage() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                     {/* Filters Sidebar */}
-                    <CollapsibleContent asChild className="lg:col-span-1">
+                    <CollapsibleContent asChild className="lg:col-span-1 data-[state=closed]:hidden lg:data-[state=closed]:block">
                         <div>
                             <Card className="sticky top-24">
                                 <CardHeader>
@@ -211,7 +220,7 @@ export default function CandidatesPage() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-24 border-2 border-dashed rounded-lg">
+                             <div className="text-center py-24 border-2 border-dashed rounded-lg">
                                 <Users className="mx-auto h-12 w-12 text-muted-foreground" />
                                 <h3 className="mt-4 text-lg font-medium">Nenhum candidato encontrado</h3>
                                 <p className="mt-1 text-sm text-muted-foreground">
