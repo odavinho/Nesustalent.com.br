@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/shared/logo";
 import Link from "next/link";
 import { useAuth } from '@/firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
@@ -66,6 +66,41 @@ export default function LoginPage() {
     }
   };
 
+  const handlePasswordReset = async () => {
+    if (!email) {
+      toast({
+        variant: 'destructive',
+        title: 'Email em falta',
+        description: 'Por favor, insira o seu endereço de email no campo respetivo para redefinir a palavra-passe.',
+      });
+      return;
+    }
+    setIsLoading(true);
+    try {
+      await sendPasswordResetEmail(auth, email);
+      toast({
+        title: 'Email de recuperação enviado!',
+        description: `Verifique o seu email (${email}) para obter as instruções de redefinição da palavra-passe.`,
+      });
+    } catch (error: any) {
+      console.error("Password Reset Error:", error);
+      let description = 'Não foi possível enviar o email de recuperação. Tente novamente.';
+      if (error.code === 'auth/invalid-email') {
+        description = 'O endereço de email fornecido é inválido.';
+      } else if (error.code === 'auth/user-not-found') {
+        description = 'Não foi encontrada nenhuma conta com este endereço de email.';
+      }
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao Recuperar Palavra-passe',
+        description: description,
+      });
+    } finally {
+        setIsLoading(false);
+    }
+  };
+
+
   return (
     <>
       <Header />
@@ -99,9 +134,9 @@ export default function LoginPage() {
                   <div className="space-y-2">
                       <div className="flex items-center justify-between">
                           <Label htmlFor="password">Senha</Label>
-                          <Link href="#" className="text-sm font-medium text-primary hover:underline">
-                              Esqueceu sua senha?
-                          </Link>
+                          <button type="button" onClick={handlePasswordReset} className="text-sm font-medium text-primary hover:underline">
+                            Esqueceu sua senha?
+                          </button>
                       </div>
                       <Input id="password" type="password" required value={password} onChange={e => setPassword(e.target.value)} />
                   </div>
