@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Briefcase, FileWarning, PlusCircle, ArrowLeft } from 'lucide-react';
+import { Briefcase, FileWarning, PlusCircle, ArrowLeft, ArrowRight } from 'lucide-react';
 import type { Vacancy } from '@/lib/types';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,8 @@ import { useUser } from '@/firebase';
 import { getVacancies, deleteVacancy } from '@/lib/vacancy-service';
 import { useRouter } from 'next/navigation';
 
+const VACANCIES_PER_PAGE = 10;
+
 export default function RecruiterVacanciesPage() {
   const { user } = useUser();
   const { toast } = useToast();
@@ -22,10 +24,10 @@ export default function RecruiterVacanciesPage() {
   const [vacancies, setVacancies] = useState<Vacancy[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     if (user) {
-      // Filter mock data instead of querying Firestore
       const allVacancies = getVacancies();
       const userVacancies = allVacancies.filter(v => v.recruiterId === user.uid);
       setVacancies(userVacancies);
@@ -37,7 +39,6 @@ export default function RecruiterVacanciesPage() {
     if (!confirm('Tem a certeza que deseja excluir esta vaga? Esta ação não pode ser desfeita.')) return;
 
     deleteVacancy(vacancyId);
-    // Re-fetch or filter the vacancies to update the UI
     const updatedVacancies = getVacancies().filter(v => v.recruiterId === user?.uid);
     setVacancies(updatedVacancies);
     
@@ -46,6 +47,24 @@ export default function RecruiterVacanciesPage() {
         description: 'A sua vaga foi removida com sucesso (nesta sessão).',
     });
   };
+
+  // Pagination Logic
+  const totalPages = Math.ceil(vacancies.length / VACANCIES_PER_PAGE);
+
+  const paginatedVacancies = useMemo(() => {
+    const startIndex = (currentPage - 1) * VACANCIES_PER_PAGE;
+    const endIndex = startIndex + VACANCIES_PER_PAGE;
+    return vacancies.slice(startIndex, endIndex);
+  }, [vacancies, currentPage]);
+
+  const handlePreviousPage = () => {
+    setCurrentPage(prev => Math.max(prev - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage(prev => Math.min(prev + 1, totalPages));
+  };
+
 
   const renderContent = () => {
     if (isLoading) {
@@ -79,7 +98,7 @@ export default function RecruiterVacanciesPage() {
       );
     }
 
-    if (!vacancies || vacancies.length === 0) {
+    if (!paginatedVacancies || paginatedVacancies.length === 0) {
       return (
         <div className="text-center py-16 border-2 border-dashed rounded-lg">
           <Briefcase className="mx-auto h-12 w-12 text-muted-foreground" />
@@ -98,33 +117,48 @@ export default function RecruiterVacanciesPage() {
     }
 
     return (
-      <div className="space-y-6">
-        {vacancies.map(vacancy => (
-          <Card key={vacancy.id}>
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <div>
-                  <CardTitle>{vacancy.title}</CardTitle>
-                  <CardDescription>{vacancy.location} &middot; {vacancy.category}</CardDescription>
+        <>
+            <div className="space-y-6">
+                {paginatedVacancies.map(vacancy => (
+                <Card key={vacancy.id}>
+                    <CardHeader>
+                    <div className="flex justify-between items-start">
+                        <div>
+                        <CardTitle>{vacancy.title}</CardTitle>
+                        <CardDescription>{vacancy.location} &middot; {vacancy.category}</CardDescription>
+                        </div>
+                        <Badge>{vacancy.type}</Badge>
+                    </div>
+                    </CardHeader>
+                    <CardContent>
+                    <p className="text-sm text-muted-foreground line-clamp-2">{vacancy.description}</p>
+                    <div className="mt-4 flex gap-2">
+                        <Button variant="outline" size="sm" asChild>
+                        <Link href={`/dashboard/recruiter/vacancies/${vacancy.id}/edit`}>Editar</Link>
+                        </Button>
+                        <Button variant="destructive" size="sm" onClick={() => handleDelete(vacancy.id)}>Excluir</Button>
+                        <Button variant="secondary" size="sm" asChild>
+                            <Link href={`/dashboard/recruiter/vacancies/${vacancy.id}/applications`}>Ver Candidatos</Link>
+                        </Button>
+                    </div>
+                    </CardContent>
+                </Card>
+                ))}
+            </div>
+            {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-4 mt-12">
+                    <Button onClick={handlePreviousPage} disabled={currentPage === 1} variant="outline">
+                        <ArrowLeft className="mr-2 h-4 w-4" /> Anterior
+                    </Button>
+                    <span className="text-sm font-medium">
+                        Página {currentPage} de {totalPages}
+                    </span>
+                    <Button onClick={handleNextPage} disabled={currentPage === totalPages} variant="outline">
+                        Próximo <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
                 </div>
-                <Badge>{vacancy.type}</Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground line-clamp-2">{vacancy.description}</p>
-              <div className="mt-4 flex gap-2">
-                <Button variant="outline" size="sm" asChild>
-                  <Link href={`/dashboard/recruiter/vacancies/${vacancy.id}/edit`}>Editar</Link>
-                </Button>
-                <Button variant="destructive" size="sm" onClick={() => handleDelete(vacancy.id)}>Excluir</Button>
-                 <Button variant="secondary" size="sm" asChild>
-                    <Link href={`/dashboard/recruiter/vacancies/${vacancy.id}/applications`}>Ver Candidatos</Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+            )}
+       </>
     );
   };
 

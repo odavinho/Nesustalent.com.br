@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Search, SlidersHorizontal, Users, ArrowLeft, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { Search, SlidersHorizontal, Users, ArrowLeft, ArrowRight, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CandidateCard } from '@/components/recruitment/candidate-card';
@@ -20,6 +20,8 @@ const initialCandidates = mockUsers
     .map(c => ({ ...c, status: 'neutro' as CandidateStatus }));
 
 const educationLevels: EducationLevel[] = ['Ensino Primário', 'Ensino Médio', 'Frequência Universitária', 'Licenciatura', 'Mestrado', 'Doutoramento'];
+
+const CANDIDATES_PER_PAGE = 10;
 
 export default function CandidatesPage() {
     const [searchTerm, setSearchTerm] = useState('');
@@ -35,7 +37,9 @@ export default function CandidatesPage() {
     const router = useRouter();
     
     const [allCandidates, setAllCandidates] = useState(initialCandidates);
-    const [isLoading, setIsLoading] = useState(false); 
+    const [isLoading, setIsLoading] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+
 
     const handleStatusChange = (candidateId: string, newStatus: CandidateStatus) => {
         setAllCandidates(prev => 
@@ -76,6 +80,29 @@ export default function CandidatesPage() {
         });
     }, [allCandidates, searchTerm, filters]);
     
+    // Pagination Logic
+    const totalPages = Math.ceil(filteredCandidates.length / CANDIDATES_PER_PAGE);
+
+    const paginatedCandidates = useMemo(() => {
+        const startIndex = (currentPage - 1) * CANDIDATES_PER_PAGE;
+        const endIndex = startIndex + CANDIDATES_PER_PAGE;
+        return filteredCandidates.slice(startIndex, endIndex);
+    }, [filteredCandidates, currentPage]);
+
+    const handlePreviousPage = () => {
+        setCurrentPage(prev => Math.max(prev - 1, 1));
+    };
+    
+    const handleNextPage = () => {
+        setCurrentPage(prev => Math.min(prev + 1, totalPages));
+    };
+
+    // Reset to page 1 when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, filters]);
+
+
     const generateFilterOptions = (key: keyof UserProfile): FilterOption[] => {
         const counts: { [key: string]: number } = {};
     
@@ -112,7 +139,7 @@ export default function CandidatesPage() {
     const interestingCandidates = useMemo(() => filteredCandidates.filter(c => c.status === 'interessante'), [filteredCandidates]);
     const rejectedCandidates = useMemo(() => filteredCandidates.filter(c => c.status === 'rejeitado'), [filteredCandidates]);
 
-    const renderCandidateList = (candidates: typeof allCandidates) => {
+    const renderCandidateList = (candidates: typeof paginatedCandidates) => {
         if (isLoading) {
             return <p>A carregar...</p>;
         }
@@ -177,7 +204,7 @@ export default function CandidatesPage() {
                 </aside>
 
                 <div className="lg:col-span-3">
-                    <p className="text-sm text-muted-foreground mb-4">A mostrar <span className="font-bold text-foreground">{filteredCandidates.length}</span> de <span className="font-bold text-foreground">{allCandidates.length}</span> candidatos.</p>
+                    <p className="text-sm text-muted-foreground mb-4">A mostrar <span className="font-bold text-foreground">{paginatedCandidates.length}</span> de <span className="font-bold text-foreground">{filteredCandidates.length}</span> candidatos.</p>
                     <Tabs defaultValue="all" className="w-full">
                         <TabsList className="grid w-full grid-cols-3 max-w-xl mx-auto h-12 mb-8">
                             <TabsTrigger value="all" className="h-10">Todos ({filteredCandidates.length})</TabsTrigger>
@@ -185,15 +212,28 @@ export default function CandidatesPage() {
                             <TabsTrigger value="rejected" className="h-10 text-red-600">Rejeitados ({rejectedCandidates.length})</TabsTrigger>
                         </TabsList>
                         <TabsContent value="all">
-                            {renderCandidateList(filteredCandidates)}
+                            {renderCandidateList(paginatedCandidates)}
                         </TabsContent>
                         <TabsContent value="interesting">
-                            {renderCandidateList(interestingCandidates)}
+                            {renderCandidateList(interestingCandidates.filter(c => paginatedCandidates.some(pc => pc.id === c.id)))}
                         </TabsContent>
                         <TabsContent value="rejected">
-                            {renderCandidateList(rejectedCandidates)}
+                            {renderCandidateList(rejectedCandidates.filter(c => paginatedCandidates.some(pc => pc.id === c.id)))}
                         </TabsContent>
                     </Tabs>
+                    {totalPages > 1 && (
+                        <div className="flex items-center justify-center gap-4 mt-12">
+                            <Button onClick={handlePreviousPage} disabled={currentPage === 1} variant="outline">
+                                <ArrowLeft className="mr-2 h-4 w-4" /> Anterior
+                            </Button>
+                            <span className="text-sm font-medium">
+                                Página {currentPage} de {totalPages}
+                            </span>
+                            <Button onClick={handleNextPage} disabled={currentPage === totalPages} variant="outline">
+                                Próximo <ArrowRight className="ml-2 h-4 w-4" />
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
