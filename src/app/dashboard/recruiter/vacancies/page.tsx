@@ -113,7 +113,9 @@ export default function RecruiterVacanciesPage() {
             <CardContent>
               <p className="text-sm text-muted-foreground line-clamp-2">{vacancy.description}</p>
               <div className="mt-4 flex gap-2">
-                <Button variant="outline" size="sm" disabled>Editar</Button>
+                <Button variant="outline" size="sm" asChild>
+                  <Link href={`/dashboard/recruiter/vacancies/${vacancy.id}/edit`}>Editar</Link>
+                </Button>
                 <Button variant="destructive" size="sm" onClick={() => handleDelete(vacancy.id)}>Excluir</Button>
                  <Button variant="secondary" size="sm" asChild>
                     <Link href={`/dashboard/recruiter/vacancies/${vacancy.id}/applications`}>Ver Candidatos</Link>

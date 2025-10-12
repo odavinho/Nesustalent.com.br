@@ -34,6 +34,23 @@ export const addVacancy = (vacancyData: Omit<Vacancy, 'id' | 'postedDate'>): Vac
     return newVacancy;
 };
 
+// Function to update an existing vacancy
+export const updateVacancy = (id: string, updatedData: Partial<Omit<Vacancy, 'id' | 'postedDate'>>): Vacancy | null => {
+    const vacancyIndex = vacancies.findIndex(v => v.id === id);
+    if (vacancyIndex === -1) {
+        return null; // Vacancy not found
+    }
+
+    const updatedVacancy = {
+        ...vacancies[vacancyIndex],
+        ...updatedData,
+    };
+    
+    vacancies[vacancyIndex] = updatedVacancy;
+    
+    return updatedVacancy;
+}
+
 // Function to delete a vacancy
 export const deleteVacancy = (id: string): void => {
     vacancies = vacancies.filter(v => v.id !== id);
