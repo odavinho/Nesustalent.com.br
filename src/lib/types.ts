@@ -75,6 +75,7 @@ export interface Course {
     firstName: string;
     lastName: string;
     email: string;
+    phoneNumber?: string;
     userType: 'student' | 'instructor' | 'admin' | 'recruiter';
     profilePictureUrl?: string;
     summary?: string;

@@ -6,7 +6,7 @@ import { users } from "@/lib/users";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, User, Briefcase, GraduationCap, Award, FileText, Download, ThumbsUp, ThumbsDown, MessageSquare, Building, MapPin, Cake, Languages, Book, ChevronRight } from "lucide-react";
+import { ArrowLeft, User, Briefcase, GraduationCap, Award, FileText, Download, ThumbsUp, ThumbsDown, MessageSquare, Building, MapPin, Cake, Languages, Book, ChevronRight, Phone } from "lucide-react";
 import type { UserProfile } from "@/lib/types";
 import Link from "next/link";
 import React from 'react';
@@ -125,7 +125,11 @@ function ProfileView({ profile }: { profile: UserProfile }) {
                             <div className="flex justify-between"><span className="text-muted-foreground">Data de Nasc.:</span> <span className="font-medium">{formattedDate}</span></div>
                             <div className="flex justify-between"><span className="text-muted-foreground">Nacionalidade:</span> <span className="font-medium">{profile.nationality || 'Não informado'}</span></div>
                             <div className="flex justify-between"><span className="text-muted-foreground">Reside em:</span> <span className="font-medium">{profile.cidade || 'Não informado'}</span></div>
-                            <div className="flex justify-between"><span className="text-muted-foreground">Email:</span> <span className="font-medium text-primary">{profile.email}</span></div>
+                             <div className="mt-4 pt-4 border-t space-y-3">
+                                <h4 className="font-semibold text-base mb-2">Dados de Contacto</h4>
+                                <div className="flex justify-between items-center"><span className="text-muted-foreground">Email:</span> <span className="font-medium text-primary">{profile.email}</span></div>
+                                <div className="flex justify-between items-center"><span className="text-muted-foreground">Telefone:</span> <span className="font-medium">{profile.phoneNumber || 'Não informado'}</span></div>
+                            </div>
                         </CardContent>
                     </Card>
 
