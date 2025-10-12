@@ -240,65 +240,65 @@ export default function NewCoursePage() {
                   <><Wand2 className="mr-2 h-4 w-4" /> Gerar Conteúdo com IA</>
                 )}
               </Button>
-            </form>
-          </Form>
-
-          {isGenerating && (
-            <div className="mt-8 pt-6 border-t text-center">
-              <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
-              <p className="mt-2 text-muted-foreground">A IA está a criar o seu curso, por favor aguarde...</p>
-            </div>
-          )}
-
-          {generatedContent && (
-            <div className="mt-8 pt-6 border-t space-y-6">
-              <h3 className="font-headline text-2xl">Conteúdo Gerado e Editável</h3>
               
-              {generatedContent.imageDataUri && (
-                <div className="relative w-full h-64 rounded-lg overflow-hidden shadow-lg">
-                    <Image src={generatedContent.imageDataUri} alt="Imagem gerada para o curso" fill className="object-cover" />
+              {isGenerating && (
+                <div className="mt-8 pt-6 border-t text-center">
+                  <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
+                  <p className="mt-2 text-muted-foreground">A IA está a criar o seu curso, por favor aguarde...</p>
                 </div>
               )}
-
-              <div className="space-y-4">
-                <InputWithLabel label="ID do Curso" defaultValue={generatedContent.courseId} readOnly />
-                <InputWithLabel label="Duração" defaultValue={generatedContent.duration} />
-                <TextareaWithLabel label="Objetivo Geral" defaultValue={generatedContent.generalObjective} rows={4} />
-                <TextareaWithLabel label="O que vai aprender (separado por nova linha)" defaultValue={generatedContent.whatYouWillLearn.join('\n')} rows={5} />
-
-                <div>
-                  <h4 className="font-semibold mb-2">Módulos</h4>
+    
+              {generatedContent && (
+                <div className="mt-8 pt-6 border-t space-y-6">
+                  <h3 className="font-headline text-2xl">Conteúdo Gerado e Editável</h3>
+                  
+                  {generatedContent.imageDataUri && (
+                    <div className="relative w-full h-64 rounded-lg overflow-hidden shadow-lg">
+                        <Image src={generatedContent.imageDataUri} alt="Imagem gerada para o curso" fill className="object-cover" />
+                    </div>
+                  )}
+    
                   <div className="space-y-4">
-                    {generatedContent.modules.map((module, index) => (
-                      <div key={module.id} className="p-4 border rounded-md">
-                        <InputWithLabel label={`Título do Módulo ${index + 1}`} defaultValue={module.title} />
-                        <TextareaWithLabel className="mt-2" label={`Tópicos (separados por vírgula)`} defaultValue={module.topics.join(', ')} />
-
-                        {(form.getValues().courseFormat === 'Online' || form.getValues().courseFormat === 'Híbrido') && (
-                           <div className='mt-4'>
-                             <FormLabel>URL da Videoaula</FormLabel>
-                             <div className="relative">
-                               <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                               <Input 
-                                 placeholder="https://www.youtube.com/watch?v=..." 
-                                 className="pl-9" 
-                                 value={module.videoUrl || ''}
-                                 onChange={(e) => handleVideoUrlChange(index, e.target.value)}
-                               />
-                             </div>
-                           </div>
-                        )}
+                    <InputWithLabel label="ID do Curso" defaultValue={generatedContent.courseId} readOnly />
+                    <InputWithLabel label="Duração" defaultValue={generatedContent.duration} />
+                    <TextareaWithLabel label="Objetivo Geral" defaultValue={generatedContent.generalObjective} rows={4} />
+                    <TextareaWithLabel label="O que vai aprender (separado por nova linha)" defaultValue={generatedContent.whatYouWillLearn.join('\n')} rows={5} />
+    
+                    <div>
+                      <h4 className="font-semibold mb-2">Módulos</h4>
+                      <div className="space-y-4">
+                        {generatedContent.modules.map((module, index) => (
+                          <div key={module.id} className="p-4 border rounded-md">
+                            <InputWithLabel label={`Título do Módulo ${index + 1}`} defaultValue={module.title} />
+                            <TextareaWithLabel className="mt-2" label={`Tópicos (separados por vírgula)`} defaultValue={module.topics.join(', ')} />
+    
+                            {(form.getValues().courseFormat === 'Online' || form.getValues().courseFormat === 'Híbrido') && (
+                               <div className='mt-4'>
+                                 <FormLabel>URL da Videoaula</FormLabel>
+                                 <div className="relative">
+                                   <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                   <Input 
+                                     placeholder="https://www.youtube.com/watch?v=..." 
+                                     className="pl-9" 
+                                     value={module.videoUrl || ''}
+                                     onChange={(e) => handleVideoUrlChange(index, e.target.value)}
+                                   />
+                                 </div>
+                               </div>
+                            )}
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    </div>
                   </div>
+    
+                  <Button onClick={handleSaveCourse} disabled={isSaving} className="w-full bg-green-600 hover:bg-green-700">
+                     {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Salvar Curso'}
+                  </Button>
                 </div>
-              </div>
-
-              <Button onClick={handleSaveCourse} disabled={isSaving} className="w-full bg-green-600 hover:bg-green-700">
-                 {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Salvar Curso'}
-              </Button>
-            </div>
-          )}
+              )}
+            </form>
+          </Form>
         </CardContent>
       </Card>
     </div>
