@@ -16,9 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 import { generateVacancyContentAction } from '@/app/actions';
 import type { GenerateVacancyContentOutput } from '@/ai/flows/generate-vacancy-content';
 import { useRouter } from 'next/navigation';
-import type { Vacancy } from '@/lib/types';
-import { useFirestore, useUser, errorEmitter, FirestorePermissionError } from '@/firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { useUser } from '@/firebase';
 
 
 const formSchema = z.object({
@@ -36,7 +34,6 @@ export default function NewVacancyPage() {
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
-  const firestore = useFirestore();
   const { user } = useUser();
 
 
@@ -67,7 +64,7 @@ export default function NewVacancyPage() {
   };
   
   const handleSaveVacancy = async () => {
-    if (!generatedContent || !form.formState.isValid || !firestore || !user) {
+    if (!generatedContent || !form.formState.isValid || !user) {
         toast({
           variant: 'destructive',
           title: 'Faltam dados',
@@ -77,39 +74,17 @@ export default function NewVacancyPage() {
       }
       setIsSaving(true);
   
-      const formValues = form.getValues();
-      const vacancyData = {
-        title: formValues.title,
-        category: formValues.category,
-        location: formValues.location,
-        type: formValues.type,
-        description: generatedContent.description,
-        responsibilities: generatedContent.responsibilities,
-        requirements: generatedContent.requirements,
-        recruiterId: user.uid,
-        postedDate: serverTimestamp(),
-      };
-
-      const vacanciesCollection = collection(firestore, 'vacancies');
-      addDoc(vacanciesCollection, vacancyData)
-        .then(() => {
-          toast({
-            title: "Vaga publicada!",
-            description: "A sua vaga já está visível para os candidatos.",
+      // In a real app, this would save to a database.
+      // Here, we just simulate the process.
+      setTimeout(() => {
+        toast({
+            title: "Vaga publicada! (Simulação)",
+            description: "A sua vaga seria publicada e já estaria visível para os candidatos.",
           });
+          setIsSaving(false);
+          // Redirect to a page where the recruiter can see their vacancies.
           router.push('/dashboard/recruiter/vacancies');
-        })
-        .catch(async (error) => {
-            const permissionError = new FirestorePermissionError({
-                path: vacanciesCollection.path,
-                operation: 'create',
-                requestResourceData: vacancyData,
-            });
-            errorEmitter.emit('permission-error', permissionError);
-        })
-        .finally(() => {
-            setIsSaving(false);
-        });
+      }, 1000);
   }
 
   return (

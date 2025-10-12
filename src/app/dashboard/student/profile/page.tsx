@@ -1,8 +1,6 @@
 'use client';
 
-import { useUser, useFirestore, useMemoFirebase, useDoc, errorEmitter, FirestorePermissionError, useStorage } from '@/firebase';
-import { doc, setDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { useUser } from '@/firebase';
 import { useForm, SubmitHandler, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -19,6 +17,7 @@ import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import { extractProfileFromResumeAction } from '@/app/actions';
 import { Badge } from '@/components/ui/badge';
+import { users } from '@/lib/users'; // Using mock user data
 
 const fileToDataUri = (file: File) => new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
@@ -53,19 +52,14 @@ type ProfileFormValues = z.infer<typeof profileSchema>;
 
 export default function ProfilePage() {
     const { user, isUserLoading } = useUser();
-    const firestore = useFirestore();
-    const storage = useStorage();
     const { toast } = useToast();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [cvFile, setCvFile] = useState<File | null>(null);
 
-    const userProfileRef = useMemoFirebase(() => {
-        if (!firestore || !user) return null;
-        return doc(firestore, 'users', user.uid);
-    }, [firestore, user]);
-
-    const { data: userProfile, isLoading: isProfileLoading, error } = useDoc<UserProfile>(userProfileRef);
+    // Use local state for profile data instead of Firestore
+    const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+    const [isProfileLoading, setIsProfileLoading] = useState(true);
 
     const form = useForm<ProfileFormValues>({
         resolver: zodResolver(profileSchema),
@@ -75,6 +69,15 @@ export default function ProfilePage() {
             academicHistory: [], workExperience: [],
         }
     });
+
+    useEffect(() => {
+        if (user) {
+            // Find a mock user profile. In a real app, you'd fetch this.
+            const mockUserProfile = users.find(u => u.userType === 'student'); 
+            setUserProfile(mockUserProfile || null);
+        }
+        setIsProfileLoading(false);
+    }, [user]);
 
     useEffect(() => {
         if (userProfile) {
@@ -95,68 +98,36 @@ export default function ProfilePage() {
     }, [userProfile, form, user]);
 
     const onSubmit: SubmitHandler<ProfileFormValues> = async (data) => {
-        if (!user || !firestore) {
+        if (!user) {
             toast({ variant: 'destructive', title: 'Erro', description: 'Utilizador não autenticado.' });
             return;
         }
         setIsSubmitting(true);
-
-        let resumeUrl = data.resumeUrl;
-
-        if (cvFile) {
-            try {
-                const storageRef = ref(storage, `resumes/${user.uid}/${cvFile.name}`);
-                const uploadResult = await uploadBytes(storageRef, cvFile);
-                resumeUrl = await getDownloadURL(uploadResult.ref);
-                toast({ title: 'Sucesso!', description: 'O seu CV foi carregado.' });
-            } catch (storageError) {
-                console.error("Storage Error:", storageError);
-                toast({ variant: 'destructive', title: 'Erro de Upload', description: 'Não foi possível guardar o seu CV.' });
-                setIsSubmitting(false);
-                return;
-            }
-        }
-        
-        const userDocRef = doc(firestore, 'users', user.uid);
         
         const finalData = {
             ...data,
             skills: data.skills ? data.skills.split(',').map(s => s.trim()).filter(s => s) : [],
-            resumeUrl: resumeUrl,
         };
 
         const profileToSave: UserProfile = {
             ...userProfile, 
             ...finalData,   
-            id: user.uid,
+            id: user.id,
             email: user.email!,
             userType: userProfile?.userType || 'student',
         };
 
-        setDoc(userDocRef, profileToSave, { merge: true })
-            .then(() => {
-                toast({ title: 'Sucesso!', description: 'O seu perfil foi atualizado.' });
-                setIsEditing(false);
-            })
-            .catch(async (error) => {
-                const permissionError = new FirestorePermissionError({
-                    path: userDocRef.path,
-                    operation: 'update',
-                    requestResourceData: profileToSave,
-                });
-                errorEmitter.emit('permission-error', permissionError);
-            })
-            .finally(() => {
-                setIsSubmitting(false);
-            });
+        // Simulate saving
+        setTimeout(() => {
+            setUserProfile(profileToSave); // Update local state
+            toast({ title: 'Sucesso!', description: 'O seu perfil foi atualizado (nesta sessão).' });
+            setIsEditing(false);
+            setIsSubmitting(false);
+        }, 1000);
     };
     
     if (isUserLoading || isProfileLoading) {
         return <ProfileSkeleton />;
-    }
-
-    if(error){
-        return <div>Error loading profile...</div>
     }
 
     if (!isEditing && userProfile) {
@@ -266,7 +237,6 @@ function ProfileForm({ form, onSubmit, isSubmitting, onCancel, setCvFile }: { fo
     };
 
     const handleAnalyzeAndFill = async () => {
-        const cvFile = form.getValues('cvFile');
          if (!cvFile) {
             toast({ variant: 'destructive', title: 'Nenhum ficheiro selecionado', description: 'Por favor, carregue o seu CV em formato PDF ou DOCX.' });
             return;

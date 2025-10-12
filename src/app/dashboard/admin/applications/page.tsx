@@ -1,25 +1,23 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { collection, query, orderBy, Query } from 'firebase/firestore';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { FileWarning, Files } from 'lucide-react';
 import type { Application } from '@/lib/types';
 import { ApplicationCard } from '@/components/admin/application-card';
+import { applications as mockApplications } from '@/lib/applications';
 
 type ApplicationStatus = 'Recebida' | 'Em análise' | 'Rejeitada';
 
-const ApplicationList = ({ 
-  applications, 
-  isLoading, 
-  error 
-}: { 
-  applications: Application[] | null, 
-  isLoading: boolean, 
-  error: Error | null 
+const ApplicationList = ({
+  applications,
+  isLoading,
+  error
+}: {
+  applications: Application[] | null,
+  isLoading: boolean,
+  error: Error | null
 }) => {
     if (isLoading) {
       return (
@@ -27,8 +25,8 @@ const ApplicationList = ({
           {Array.from({ length: 6 }).map((_, i) => (
             <Card key={i}>
                 <CardHeader>
-                    <Skeleton className="h-5 w-3/4 mb-2" />
-                    <Skeleton className="h-4 w-1/2" />
+                    <div className="h-5 w-3/4 mb-2 bg-muted animate-pulse rounded-md" />
+                    <div className="h-4 w-1/2 bg-muted animate-pulse rounded-md" />
                 </CardHeader>
             </Card>
           ))}
@@ -42,7 +40,7 @@ const ApplicationList = ({
           <FileWarning className="h-4 w-4" />
           <AlertTitle>Erro ao Carregar Candidaturas</AlertTitle>
           <AlertDescription>
-            Não foi possível carregar os dados. Verifique as permissões do Firestore e tente novamente.
+            Não foi possível carregar os dados. Tente novamente.
           </AlertDescription>
         </Alert>
       );
@@ -77,21 +75,26 @@ const CardHeader = ({ children, ...props }: React.HTMLAttributes<HTMLDivElement>
     <div className="p-6" {...props}>{children}</div>
 );
 
-
 export default function ManageApplicationsPage() {
-  const firestore = useFirestore();
-  
-  const applicationsQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return query(collection(firestore, 'applications'), orderBy('applicationDate', 'desc'));
-  }, [firestore]);
+  const [allApplications, setAllApplications] = useState<Application[]>(mockApplications);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
 
-  const { data: allApplications, isLoading, error } = useCollection<Application>(applicationsQuery as Query<Application> | null);
+  const handleStatusUpdate = (appId: string, newStatus: ApplicationStatus) => {
+    setAllApplications(prevApps => 
+        prevApps.map(app => 
+            app.id === appId ? { ...app, status: newStatus } : app
+        )
+    );
+  };
 
   const filteredApplications = (status: ApplicationStatus | 'all') => {
     if (status === 'all') return allApplications;
     return allApplications?.filter(app => app.status === status) ?? null;
   };
+
+  const interestingApplications = useMemo(() => filteredApplications('Em análise'), [allApplications]);
+  const rejectedApplications = useMemo(() => filteredApplications('Rejeitada'), [allApplications]);
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -110,25 +113,25 @@ export default function ManageApplicationsPage() {
         </TabsList>
 
         <TabsContent value="all">
-          <ApplicationList 
-            applications={filteredApplications('all')} 
-            isLoading={isLoading} 
-            error={error as Error | null} 
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {allApplications.map(app => (
+                <ApplicationCard key={app.id} application={app} onStatusChange={handleStatusUpdate} />
+            ))}
+          </div>
         </TabsContent>
         <TabsContent value="interesting">
-          <ApplicationList 
-            applications={filteredApplications('Em análise')} 
-            isLoading={isLoading} 
-            error={error as Error | null} 
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {interestingApplications.map(app => (
+                <ApplicationCard key={app.id} application={app} onStatusChange={handleStatusUpdate} />
+            ))}
+          </div>
         </TabsContent>
         <TabsContent value="rejected">
-            <ApplicationList 
-              applications={filteredApplications('Rejeitada')} 
-              isLoading={isLoading} 
-              error={error as Error | null} 
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {rejectedApplications.map(app => (
+                  <ApplicationCard key={app.id} application={app} onStatusChange={handleStatusUpdate} />
+              ))}
+            </div>
         </TabsContent>
       </Tabs>
     </div>

@@ -24,7 +24,7 @@ export interface Course {
     category: string;
     description: string;
     recruiterId: string;
-    postedDate: Timestamp;
+    postedDate: Timestamp | Date; // Allow Date for mock data
     responsibilities: string[];
     requirements: string[];
   }
@@ -33,8 +33,8 @@ export interface Course {
     id: string;
     userId: string;
     jobPostingId: string;
-    applicationDate: Timestamp;
-    status: 'Recebida' | 'Em análise' | 'Entrevistando' | 'Oferta' | 'Rejeitada';
+    applicationDate: Timestamp | Date; // Allow Date for mock data
+    status: 'Recebida' | 'Em análise' | 'Rejeitada';
     notes?: string;
   }
 

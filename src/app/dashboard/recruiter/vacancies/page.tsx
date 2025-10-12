@@ -1,7 +1,6 @@
 'use client';
 
-import { collection, query, where, orderBy, doc, deleteDoc } from 'firebase/firestore';
-import { useFirestore, useUser, useCollection, useMemoFirebase } from '@/firebase';
+import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -11,41 +10,35 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
+import { useUser } from '@/firebase'; // Keep for user context
+import { vacancies as mockVacancies } from '@/lib/vacancies'; // Import mock data
 
 export default function RecruiterVacanciesPage() {
-  const firestore = useFirestore();
   const { user } = useUser();
   const { toast } = useToast();
 
-  const vacanciesQuery = useMemoFirebase(() => {
-    if (!firestore || !user) return null;
-    return query(
-      collection(firestore, 'vacancies'),
-      where('recruiterId', '==', user.uid),
-      orderBy('postedDate', 'desc')
-    );
-  }, [firestore, user]);
+  const [vacancies, setVacancies] = useState<Vacancy[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-  const { data: vacancies, isLoading, error } = useCollection<Vacancy>(vacanciesQuery);
+  useEffect(() => {
+    if (user) {
+      // Filter mock data instead of querying Firestore
+      const userVacancies = mockVacancies.filter(v => v.recruiterId === user.uid);
+      setVacancies(userVacancies);
+    }
+    setIsLoading(false);
+  }, [user]);
 
-  const handleDelete = async (vacancyId: string) => {
-    if (!firestore) return;
+  const handleDelete = (vacancyId: string) => {
     if (!confirm('Tem a certeza que deseja excluir esta vaga? Esta ação não pode ser desfeita.')) return;
 
-    try {
-        await deleteDoc(doc(firestore, 'vacancies', vacancyId));
-        toast({
-            title: 'Vaga Excluída!',
-            description: 'A sua vaga foi removida com sucesso.',
-        });
-    } catch (e) {
-        console.error(e);
-        toast({
-            variant: 'destructive',
-            title: 'Erro ao Excluir',
-            description: 'Não foi possível excluir a vaga. Verifique as permissões.',
-        });
-    }
+    setVacancies(prevVacancies => prevVacancies.filter(v => v.id !== vacancyId));
+    
+    toast({
+        title: 'Vaga Excluída!',
+        description: 'A sua vaga foi removida com sucesso (nesta sessão).',
+    });
   };
 
   const renderContent = () => {
@@ -74,7 +67,7 @@ export default function RecruiterVacanciesPage() {
           <FileWarning className="h-4 w-4" />
           <AlertTitle>Erro ao Carregar Vagas</AlertTitle>
           <AlertDescription>
-            Não foi possível carregar as suas vagas. Verifique as permissões do Firestore e tente novamente.
+            Não foi possível carregar as suas vagas. Tente novamente mais tarde.
           </AlertDescription>
         </Alert>
       );

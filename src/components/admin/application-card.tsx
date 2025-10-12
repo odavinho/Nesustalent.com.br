@@ -1,11 +1,7 @@
-
 'use client';
 
 import type { Application, Vacancy, UserProfile } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useDoc, useMemoFirebase } from '@/firebase';
-import { doc, updateDoc } from 'firebase/firestore';
-import { useFirestore } from '@/firebase';
 import { Skeleton } from '../ui/skeleton';
 import { Badge } from '../ui/badge';
 import { Briefcase, User, Calendar, Download, ThumbsUp, ThumbsDown } from 'lucide-react';
@@ -14,19 +10,27 @@ import { formatDistanceToNow } from 'date-fns';
 import { pt } from 'date-fns/locale';
 import { Button } from '../ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { users } from '@/lib/users'; // Using mock users
 
 interface ApplicationCardProps {
     application: Application;
+    onStatusChange: (applicationId: string, newStatus: 'Em análise' | 'Rejeitada') => void;
 }
 
 const UserInfo = ({ userId, onUserLoad }: { userId: string, onUserLoad: (user: UserProfile) => void }) => {
-    const firestore = useFirestore();
-    const userRef = useMemoFirebase(() => {
-        if (!firestore || !userId) return null;
-        return doc(firestore, 'users', userId);
-    }, [firestore, userId]);
-    const { data: user, isLoading } = useDoc<UserProfile>(userRef);
+    const [user, setUser] = useState<UserProfile | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    
+    useEffect(() => {
+        const foundUser = users.find(u => u.id === userId);
+        setUser(foundUser || null);
+        if (foundUser) {
+            onUserLoad(foundUser);
+        }
+        setIsLoading(false);
+    }, [userId, onUserLoad]);
+
 
     if (isLoading) {
         return <Skeleton className="h-5 w-3/4" />;
@@ -35,39 +39,28 @@ const UserInfo = ({ userId, onUserLoad }: { userId: string, onUserLoad: (user: U
     if (!user) {
         return <p className="text-sm text-destructive">Utilizador não encontrado</p>;
     }
-    
-    onUserLoad(user);
 
     return (
         <CardTitle className="font-headline text-xl">{user.firstName} {user.lastName}</CardTitle>
     );
 };
 
-export function ApplicationCard({ application }: ApplicationCardProps) {
+export function ApplicationCard({ application, onStatusChange }: ApplicationCardProps) {
     const vacancy = vacancies.find(v => v.id === application.jobPostingId);
-    const firestore = useFirestore();
     const { toast } = useToast();
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
-    const applicationDate = application.applicationDate?.toDate();
+    // Mock application date if it's a Timestamp object for display
+    const applicationDate = application.applicationDate instanceof Date 
+        ? application.applicationDate 
+        : new Date(); // Fallback for mock data
 
-    const handleStatusChange = async (newStatus: 'Em análise' | 'Rejeitada') => {
-        if (!firestore) return;
-        const appRef = doc(firestore, 'applications', application.id);
-        try {
-            await updateDoc(appRef, { status: newStatus });
-            toast({
-                title: "Status Atualizado!",
-                description: `A candidatura foi movida para '${newStatus}'.`
-            });
-        } catch (error) {
-            console.error(error);
-            toast({
-                variant: 'destructive',
-                title: "Erro ao atualizar",
-                description: "Não foi possível alterar o status da candidatura."
-            });
-        }
+    const handleStatusChange = (newStatus: 'Em análise' | 'Rejeitada') => {
+        onStatusChange(application.id, newStatus);
+        toast({
+            title: "Status Atualizado!",
+            description: `A candidatura foi movida para '${newStatus}'.`
+        });
     };
 
 
