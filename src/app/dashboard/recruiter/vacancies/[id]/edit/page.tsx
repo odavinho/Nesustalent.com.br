@@ -60,6 +60,21 @@ const toDate = (date: any): Date | undefined => {
   return new Date(date);
 }
 
+// Helper component
+const TextareaWithLabel = (props: React.ComponentProps<typeof Textarea> & { label: string }) => {
+    const { label, ...rest } = props;
+    return (
+        <FormItem>
+            <FormLabel>{label}</FormLabel>
+            <FormControl>
+                <Textarea {...rest} />
+            </FormControl>
+            <FormMessage />
+        </FormItem>
+    );
+};
+
+
 export default function EditVacancyPage() {
   const router = useRouter();
   const params = useParams();
@@ -209,14 +224,3 @@ export default function EditVacancyPage() {
     </div>
   );
 }
-
-// Helper component
-const TextareaWithLabel = ({ label, ...props }: React.ComponentProps<typeof Textarea> & { label: string }) => (
-    <FormItem>
-      <FormLabel>{label}</FormLabel>
-      <FormControl>
-        <Textarea {...props} />
-      </FormControl>
-      <FormMessage />
-    </FormItem>
-  );
