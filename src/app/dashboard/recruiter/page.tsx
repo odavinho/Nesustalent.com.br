@@ -14,7 +14,7 @@ function VacancyList({ recruiterId }: { recruiterId: string }) {
 
     const vacanciesQuery = useMemoFirebase(() => {
         if (!firestore) return null;
-        return query(collection(firestore, 'vacancies'), where('recruiterId', '==', recruiterId));
+        return query(collection(firestore, 'jobPostings'), where('recruiterId', '==', recruiterId));
     }, [firestore, recruiterId]);
 
     const { data: vacancies, isLoading } = useCollection<Vacancy>(vacanciesQuery);
