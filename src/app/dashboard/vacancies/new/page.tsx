@@ -96,40 +96,52 @@ export default function NewVacancyPage() {
   };
   
   const handleSaveVacancy = async () => {
-    // Trigger form validation manually
     const isValid = await form.trigger();
-
     if (!isValid) {
-        toast({
-            variant: 'destructive',
-            title: 'Campos em falta',
-            description: 'Por favor, preencha todos os campos obrigatórios do formulário.',
-        });
-        return;
+      toast({
+        variant: 'destructive',
+        title: 'Campos em falta',
+        description: 'Por favor, preencha todos os campos obrigatórios do formulário.',
+      });
+      return;
     }
 
     if (!generatedContent) {
-        toast({
-          variant: 'destructive',
-          title: 'Faltam dados',
-          description: 'Gere a descrição da vaga com a IA antes de tentar publicar.',
-        });
-        return;
-      }
-      setIsSaving(true);
-  
-      // In a real app, this would save to a database.
-      // Here, we just simulate the process.
-      setTimeout(() => {
-        toast({
-            title: "Vaga publicada! (Simulação)",
-            description: "A sua vaga seria publicada e já estaria visível para os candidatos.",
-          });
-          setIsSaving(false);
-          // Redirect to a page where the recruiter can see their vacancies.
-          router.push('/dashboard/recruiter/vacancies');
-      }, 1000);
-  }
+      toast({
+        variant: 'destructive',
+        title: 'Faltam dados',
+        description: 'Gere a descrição da vaga com a IA antes de tentar publicar.',
+      });
+      return;
+    }
+
+    setIsSaving(true);
+    const formValues = form.getValues();
+
+    const vacancyData = {
+        ...formValues,
+        ...generatedContent,
+    };
+
+    if (formValues.hideEmployerData) {
+        vacancyData.employerName = `Empresa líder no setor de ${formValues.industry}`;
+        vacancyData.aboutEmployer = `Oportunidade confidencial numa empresa de referência no setor de ${formValues.industry}.`;
+    }
+
+    // In a real app, this would save to a database (e.g., addVacancyAction(vacancyData)).
+    // Here, we just simulate the process.
+    console.log("Vacancy data to be published:", vacancyData);
+    
+    setTimeout(() => {
+      toast({
+        title: "Vaga publicada! (Simulação)",
+        description: "A sua vaga seria publicada e já estaria visível para os candidatos.",
+      });
+      setIsSaving(false);
+      // Redirect to a page where the recruiter can see their vacancies.
+      router.push('/dashboard/recruiter/vacancies');
+    }, 1000);
+  };
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
