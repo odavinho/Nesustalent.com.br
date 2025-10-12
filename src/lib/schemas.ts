@@ -23,6 +23,7 @@ export const GenerateCourseContentOutputSchema = z.object({
 export const GenerateVacancyContentInputSchema = z.object({
     title: z.string().describe("The title of the job vacancy."),
     category: z.string().describe("The category of the job."),
+    industry: z.string().describe("The industry for the job."),
 });
 
 export const GenerateVacancyContentOutputSchema = z.object({

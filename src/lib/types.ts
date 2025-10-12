@@ -27,6 +27,12 @@ export interface Course {
     postedDate: Timestamp | Date; // Allow Date for mock data
     responsibilities: string[];
     requirements: string[];
+    industry?: string;
+    numberOfVacancies?: number;
+    requiredNationality?: string;
+    employerName?: string;
+    aboutEmployer?: string;
+    hideEmployerData?: boolean;
   }
   
   export interface Application {

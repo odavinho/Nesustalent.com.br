@@ -7,7 +7,7 @@ import * as z from 'zod';
 import { courseCategories } from '@/lib/courses';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
@@ -17,16 +17,29 @@ import { generateVacancyContentAction } from '@/app/actions';
 import type { GenerateVacancyContentOutput } from '@/ai/flows/generate-vacancy-content';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/firebase';
+import { Switch } from '@/components/ui/switch';
 
 
 const formSchema = z.object({
   title: z.string().min(5, { message: 'O título da vaga deve ter pelo menos 5 caracteres.' }),
   category: z.string({ required_error: 'Selecione uma categoria.' }),
+  industry: z.string().min(3, { message: 'A indústria é obrigatória.' }),
   location: z.string().min(3, { message: 'A localização é obrigatória.' }),
   type: z.enum(['Full-time', 'Part-time', 'Remote']),
+  numberOfVacancies: z.coerce.number().min(1, 'Deve haver pelo menos uma vaga.'),
+  requiredNationality: z.string().optional(),
+  employerName: z.string().min(1, 'O nome do empregador é obrigatório.'),
+  aboutEmployer: z.string().min(10, 'A descrição sobre o empregador é obrigatória.'),
+  hideEmployerData: z.boolean().default(false),
 });
 
 type FormValues = z.infer<typeof formSchema>;
+
+// Mock recruiter company data
+const recruiterProfile = {
+    companyName: 'NexusTalent Corp',
+    companyDescription: 'A NexusTalent é uma empresa líder em soluções de recrutamento e formação, conectando os melhores talentos às oportunidades mais desafiadoras do mercado.'
+}
 
 export default function NewVacancyPage() {
   const [generatedContent, setGeneratedContent] = useState<GenerateVacancyContentOutput | null>(null);
@@ -42,7 +55,13 @@ export default function NewVacancyPage() {
     defaultValues: {
       title: '',
       location: 'Luanda, Angola',
-      type: 'Full-time'
+      type: 'Full-time',
+      industry: '',
+      numberOfVacancies: 1,
+      requiredNationality: 'Angolana',
+      employerName: recruiterProfile.companyName,
+      aboutEmployer: recruiterProfile.companyDescription,
+      hideEmployerData: false,
     },
   });
 
@@ -50,7 +69,7 @@ export default function NewVacancyPage() {
     setIsGenerating(true);
     setGeneratedContent(null);
     try {
-      const result = await generateVacancyContentAction({title: data.title, category: data.category});
+      const result = await generateVacancyContentAction({title: data.title, category: data.category, industry: data.industry});
       setGeneratedContent(result);
     } catch (error) {
       toast({
@@ -113,7 +132,7 @@ export default function NewVacancyPage() {
                     </FormItem>
                   )}
                 />
-                <FormField
+                 <FormField
                   control={form.control}
                   name="category"
                   render={({ field }) => (
@@ -139,7 +158,21 @@ export default function NewVacancyPage() {
                 />
               </div>
 
-              <div className="grid md:grid-cols-2 gap-6">
+               <FormField
+                    control={form.control}
+                    name="industry"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Indústria</FormLabel>
+                        <FormControl>
+                            <Input placeholder="Ex: Tecnologia, Petróleo e Gás, Banca" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <FormField
                     control={form.control}
                     name="location"
@@ -175,7 +208,70 @@ export default function NewVacancyPage() {
                     </FormItem>
                   )}
                 />
+                 <FormField
+                    control={form.control}
+                    name="numberOfVacancies"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Nº de Vagas</FormLabel>
+                        <FormControl>
+                            <Input type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
               </div>
+
+              <div className="border-t pt-6 space-y-6">
+                <FormField
+                    control={form.control}
+                    name="employerName"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Nome do Empregador</FormLabel>
+                        <FormControl>
+                            <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                 <FormField
+                    control={form.control}
+                    name="aboutEmployer"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Sobre a Empresa</FormLabel>
+                        <FormControl>
+                            <Textarea rows={4} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="hideEmployerData"
+                    render={({ field }) => (
+                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                            <div className="space-y-0.5">
+                                <FormLabel>Confidencial</FormLabel>
+                                <FormDescription>
+                                Ocultar dados da empresa recrutadora na publicação da vaga.
+                                </FormDescription>
+                            </div>
+                            <FormControl>
+                                <Switch
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                                />
+                            </FormControl>
+                        </FormItem>
+                    )}
+                />
+              </div>
+
 
               <Button type="submit" disabled={isGenerating} className="w-full">
                 {isGenerating ? (
