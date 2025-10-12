@@ -97,8 +97,8 @@ export default function EditVacancyPage() {
 
         form.reset({
           ...foundVacancy,
-          minExperience: '', // This seems to be for the AI generation part, keeping it empty for edit
-          demandLevel: '', // This seems to be for the AI generation part, keeping it empty for edit
+          minExperience: '', // This is for AI generation, not editing.
+          demandLevel: '', // This is for AI generation, not editing.
           closingDate: closingDateValue,
           languages: foundVacancy.languages?.join(', ') || '',
           responsibilities: foundVacancy.responsibilities.join('\n'),
@@ -112,7 +112,7 @@ export default function EditVacancyPage() {
   const handleUpdateVacancy: SubmitHandler<FormValues> = async (data) => {
     setIsSubmitting(true);
     
-    let vacancyDataToUpdate: Partial<Vacancy> = {
+    const vacancyDataToUpdate: Partial<Vacancy> = {
         ...data,
         responsibilities: data.responsibilities.split('\n').filter(r => r.trim() !== ''),
         requirements: data.requirements.split('\n').filter(q => q.trim() !== ''),
