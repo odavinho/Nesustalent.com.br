@@ -154,10 +154,10 @@ export default function EditVacancyPage() {
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <Button variant="outline" onClick={() => router.back()} className="mb-6">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Voltar
-        </Button>
+      <Button variant="outline" onClick={() => router.back()} className="mb-6">
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Voltar
+      </Button>
       <Card className="max-w-4xl mx-auto">
         <CardHeader>
           <CardTitle className="font-headline text-3xl">Editar Vaga</CardTitle>
@@ -168,74 +168,73 @@ export default function EditVacancyPage() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleUpdateVacancy)} className="space-y-6">
-                <FormField
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Título da Vaga</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ex: Desenvolvedor Frontend Sênior" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
                   control={form.control}
-                  name="title"
+                  name="description"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Título da Vaga</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Ex: Desenvolvedor Frontend Sênior" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                      <FormItem>
+                          <FormLabel>Descrição Geral</FormLabel>
+                          <FormControl>
+                              <Textarea rows={4} {...field} />
+                          </FormControl>
+                          <FormMessage />
+                      </FormItem>
                   )}
-                />
+              />
+               <FormField
+                  control={form.control}
+                  name="responsibilities"
+                  render={({ field }) => (
+                      <FormItem>
+                          <FormLabel>Responsabilidades (uma por linha)</FormLabel>
+                          <FormControl>
+                              <Textarea rows={5} {...field} />
+                          </FormControl>
+                          <FormMessage />
+                      </FormItem>
+                  )}
+              />
+               <FormField
+                  control={form.control}
+                  name="requirements"
+                  render={({ field }) => (
+                     <FormItem>
+                          <FormLabel>Requisitos (um por linha)</FormLabel>
+                          <FormControl>
+                              <Textarea rows={5} {...field} />
+                          </FormControl>
+                          <FormMessage />
+                      </FormItem>
+                  )}
+              />
+               <FormField
+                  control={form.control}
+                  name="screeningQuestions"
+                  render={({ field }) => (
+                      <FormItem>
+                          <FormLabel>Perguntas de Triagem (uma por linha)</FormLabel>
+                          <FormControl>
+                              <Textarea rows={4} {...field} />
+                          </FormControl>
+                          <FormMessage />
+                      </FormItem>
+                  )}
+              />
 
-                <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Descrição Geral</FormLabel>
-                            <FormControl>
-                                <Textarea rows={4} {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                 <FormField
-                    control={form.control}
-                    name="responsibilities"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Responsabilidades (uma por linha)</FormLabel>
-                            <FormControl>
-                                <Textarea rows={5} {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                 <FormField
-                    control={form.control}
-                    name="requirements"
-                    render={({ field }) => (
-                       <FormItem>
-                            <FormLabel>Requisitos (um por linha)</FormLabel>
-                            <FormControl>
-                                <Textarea rows={5} {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                 <FormField
-                    control={form.control}
-                    name="screeningQuestions"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Perguntas de Triagem (uma por linha)</FormLabel>
-                            <FormControl>
-                                <Textarea rows={4} {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-              {/* Other form fields */}
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <FormField control={form.control} name="location" render={({ field }) => (<FormItem><FormLabel>Localização</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="type" render={({ field }) => (<FormItem><FormLabel>Tipo de Contrato</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl><SelectContent><SelectItem value="Full-time">Full-time</SelectItem><SelectItem value="Part-time">Part-time</SelectItem><SelectItem value="Remote">Remoto</SelectItem></SelectContent></Select><FormMessage /></FormItem>)} />
