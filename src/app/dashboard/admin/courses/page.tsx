@@ -27,17 +27,20 @@ export default function ManageCoursesPage() {
 
   useEffect(() => {
     try {
-      const allCourses = getCourses();
-      const allCategories = getCourseCategories();
-      setCourses(allCourses);
-      setCategories(allCategories);
+      // Use a timeout to ensure localStorage is available on client
+      setTimeout(() => {
+        const allCourses = getCourses();
+        const allCategories = getCourseCategories();
+        setCourses(allCourses);
+        setCategories(allCategories);
+        setIsLoading(false);
+      }, 0);
     } catch (e) {
         if (e instanceof Error) {
             setError(e);
         } else {
             setError(new Error("An unknown error occurred."));
         }
-    } finally {
         setIsLoading(false);
     }
   }, []);

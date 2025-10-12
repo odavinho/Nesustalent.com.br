@@ -7,10 +7,7 @@ import { generateVacancyContent } from "@/ai/flows/generate-vacancy-content";
 import { extractProfileFromResume, ExtractProfileFromResumeInput, ExtractProfileFromResumeOutput } from "@/ai/flows/extract-profile-from-resume";
 import { generateAssessmentTest } from "@/ai/flows/generate-assessment-test";
 import { generateModuleAssessment } from "@/ai/flows/generate-module-assessment";
-
-import { GenerateCourseContentInputSchema, GenerateCourseContentOutputSchema, GenerateVacancyContentInputSchema, GenerateVacancyContentOutputSchema, GenerateAssessmentTestInputSchema, GenerateAssessmentTestOutputSchema, GenerateModuleAssessmentInputSchema, GenerateModuleAssessmentOutputSchema } from "@/lib/schemas";
 import type { Course, GenerateCourseContentInput, GenerateCourseContentOutput, GenerateVacancyContentInput, GenerateVacancyContentOutput, GenerateAssessmentTestInput, GenerateAssessmentTestOutput, GenerateModuleAssessmentInput, GenerateModuleAssessmentOutput } from "@/lib/types";
-
 
 import { revalidatePath } from "next/cache";
 import type { ImagePlaceholder } from "@/lib/placeholder-images";
