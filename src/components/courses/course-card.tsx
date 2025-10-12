@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import type { Course } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
-import { courseCategories } from '@/lib/courses';
+import { getCourseCategories } from '@/lib/course-service';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Badge } from '@/components/ui/badge';
 import { ArrowRight } from 'lucide-react';
@@ -12,20 +12,22 @@ interface CourseCardProps {
 }
 
 export function CourseCard({ course }: CourseCardProps) {
+  const courseCategories = getCourseCategories();
   const category = courseCategories.find(c => c.id === course.category);
-  const image = PlaceHolderImages.find(p => p.id === category?.imageId);
+  const image = PlaceHolderImages.find(p => p.id === course.imageId);
+  const imageSrc = course.imageDataUri || image?.imageUrl;
 
   return (
     <Link href={`/courses/${course.id}`} className="group">
       <Card className="h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col">
         <div className="relative w-full h-40">
-          {image ? (
+          {imageSrc ? (
             <Image
-              src={image.imageUrl}
-              alt={image.description}
+              src={imageSrc}
+              alt={image?.description || course.name}
               fill
               className="object-cover"
-              data-ai-hint={image.imageHint}
+              data-ai-hint={image?.imageHint}
             />
           ) : (
             <div className="w-full h-full bg-secondary"></div>

@@ -27,7 +27,7 @@ export function RecruitmentSection() {
                                 <div>
                                     <h3 className="text-lg font-semibold font-headline">Para Empresas</h3>
                                     <p className="text-muted-foreground mt-1">
-                                        Publique vagas e use nossa IA para analisar currículos e encontrar o match perfeito para sua equipe.
+                                        Anuncie vagas e use nossa IA para analisar currículos e encontrar o match perfeito para sua equipe.
                                     </p>
                                 </div>
                             </div>
@@ -46,7 +46,7 @@ export function RecruitmentSection() {
                         <div className="mt-10">
                             <Button size="lg" asChild>
                                 <Link href="/recruitment">
-                                    Acessar Plataforma de Recrutamento
+                                    Ver Vagas Abertas
                                 </Link>
                             </Button>
                         </div>

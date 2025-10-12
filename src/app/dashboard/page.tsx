@@ -1,57 +1,54 @@
-import { CourseRecommendations } from "@/components/dashboard/course-recommendations";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookMarked, User } from "lucide-react";
+'use client';
+import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import Loading from './loading';
+import { doc } from 'firebase/firestore';
+import type { UserProfile } from '@/lib/types';
 
-export default function DashboardPage() {
-    // Mock data for enrolled courses
-    const enrolledCourses = [
-        { name: 'Técnicas de Apresentação', progress: 75 },
-        { name: 'Gestão de Conflitos', progress: 40 },
-        { name: 'Excel Avançado', progress: 100 },
-    ];
-  
-    return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="flex items-center gap-4 mb-8">
-        <User className="w-10 h-10 text-primary" />
-        <div>
-          <h1 className="font-headline text-4xl font-bold">Meu Dashboard</h1>
-          <p className="text-muted-foreground">Bem-vindo de volta, Usuário!</p>
-        </div>
-      </div>
-      
-      <div className="grid lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
-            <CourseRecommendations />
-        </div>
+export default function DashboardRedirectPage() {
+    const { user, isUserLoading } = useUser();
+    const router = useRouter();
+    const firestore = useFirestore();
 
-        <div className="lg:col-span-1">
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <BookMarked />
-                        Meus Cursos
-                    </CardTitle>
-                    <CardDescription>Seu progresso de aprendizado.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="space-y-4">
-                        {enrolledCourses.map(course => (
-                            <div key={course.name}>
-                                <div className="flex justify-between items-center mb-1">
-                                    <h4 className="font-medium text-sm">{course.name}</h4>
-                                    <span className="text-sm font-semibold text-primary">{course.progress}%</span>
-                                </div>
-                                <div className="w-full bg-secondary rounded-full h-2.5">
-                                    <div className="bg-primary h-2.5 rounded-full" style={{width: `${course.progress}%`}}></div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </CardContent>
-            </Card>
-        </div>
-      </div>
-    </div>
-  );
+    const userDocRef = useMemoFirebase(() => {
+        if (!user || !firestore) return null;
+        return doc(firestore, `users/${user.uid}`);
+    }, [user, firestore]);
+    
+    const { data: userProfile, isLoading: isProfileLoading } = useDoc<UserProfile>(userDocRef);
+
+    useEffect(() => {
+        // Wait until both user and profile loading is complete
+        if (isUserLoading || isProfileLoading) {
+            return;
+        }
+
+        // If not logged in after loading, redirect to login
+        if (!user) {
+            router.replace('/login');
+            return;
+        }
+
+        // Special override for admin user
+        if (user.email === 'admin@nexustalent.com') {
+            router.replace('/dashboard/admin');
+            return;
+        }
+
+        // Redirect based on the role from the Firestore profile
+        const role = userProfile?.userType;
+
+        if (role) {
+            router.replace(`/dashboard/${role}`);
+        } else {
+            // Fallback to student dashboard if profile/role is somehow missing after loading
+            console.warn("User profile or userType not found, defaulting to student dashboard.");
+            router.replace('/dashboard/student');
+        }
+
+    }, [user, isUserLoading, userProfile, isProfileLoading, router, firestore]);
+
+    // Display a loading screen while authentication and profile fetching are in progress.
+    return <Loading />;
 }

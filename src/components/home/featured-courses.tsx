@@ -1,18 +1,32 @@
-import { courses } from '@/lib/courses';
+'use client';
+import { getCourses } from '@/lib/course-service';
 import { CourseCard } from '@/components/courses/course-card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import type { Course } from '@/lib/types';
 
-export function FeaturedCourses() {
-  const featuredCourseIds = ['TA-001', 'LMP-006', 'EN-427', 'NE-74'];
-  const featured = courses.filter(course => featuredCourseIds.includes(course.id));
+interface FeaturedCoursesProps {
+    title?: string;
+}
+
+export function FeaturedCourses({ title = "Cursos em Destaque" }: FeaturedCoursesProps) {
+  const [featured, setFeatured] = useState<Course[]>([]);
+
+  useEffect(() => {
+    const allCourses = getCourses();
+    const featuredCourseIds = ['TA-001', 'LMP-006', 'EN-427', 'NE-74'];
+    const featuredCourses = allCourses.filter(course => featuredCourseIds.includes(course.id));
+    setFeatured(featuredCourses);
+  }, []);
+
 
   return (
     <section className="py-16 sm:py-24 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="font-headline text-3xl sm:text-4xl font-bold text-foreground">Cursos em Destaque</h2>
+          <h2 className="font-headline text-3xl sm:text-4xl font-bold text-foreground">{title}</h2>
           <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
             Comece sua jornada de aprendizado com nossos cursos mais populares.
           </p>

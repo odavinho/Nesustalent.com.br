@@ -1,0 +1,154 @@
+'use client';
+
+import { useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Logo } from "@/components/shared/logo";
+import Link from "next/link";
+import { useAuth } from '@/firebase';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
+import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
+import { Loader2 } from 'lucide-react';
+import { Header } from '@/components/layout/header';
+import { Footer } from '@/components/layout/footer';
+
+export default function LoginPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+  const router = useRouter();
+  const auth = useAuth();
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      
+      toast({
+        title: 'Login bem-sucedido!',
+        description: 'Redirecionando para o seu painel.',
+      });
+
+      router.push('/dashboard');
+
+    } catch (error: any) {
+      console.error("Firebase Login Error:", error);
+      let description = 'Ocorreu um erro inesperado. Verifique a consola para mais detalhes.';
+      
+      switch (error.code) {
+        case 'auth/user-not-found':
+        case 'auth/wrong-password':
+        case 'auth/invalid-credential':
+          description = 'E-mail ou senha inválidos. Por favor, verifique os seus dados ou crie uma conta se ainda não tiver uma.';
+          break;
+        case 'auth/invalid-email':
+          description = 'O formato do e-mail é inválido.';
+          break;
+        case 'auth/too-many-requests':
+          description = 'O acesso a esta conta foi temporariamente desativado devido a muitas tentativas de login falhadas. Tente novamente mais tarde.';
+          break;
+        default:
+          description = error.message || 'Não foi possível fazer login. Por favor, tente novamente.';
+      }
+      
+      toast({
+        variant: 'destructive',
+        title: 'Erro no Login',
+        description: description,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePasswordReset = async () => {
+    if (!email) {
+      toast({
+        variant: 'destructive',
+        title: 'Email em falta',
+        description: 'Por favor, insira o seu endereço de email no campo respetivo para redefinir a palavra-passe.',
+      });
+      return;
+    }
+    setIsLoading(true);
+    try {
+      await sendPasswordResetEmail(auth, email);
+      toast({
+        title: 'Email de recuperação enviado!',
+        description: `Verifique o seu email (${email}) para obter as instruções de redefinição da palavra-passe.`,
+      });
+    } catch (error: any) {
+      console.error("Password Reset Error:", error);
+      let description = 'Não foi possível enviar o email de recuperação. Tente novamente.';
+      if (error.code === 'auth/invalid-email') {
+        description = 'O endereço de email fornecido é inválido.';
+      } else if (error.code === 'auth/user-not-found') {
+        description = 'Não foi encontrada nenhuma conta com este endereço de email.';
+      }
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao Recuperar Palavra-passe',
+        description: description,
+      });
+    } finally {
+        setIsLoading(false);
+    }
+  };
+
+
+  return (
+    <>
+      <Header />
+      <main className="flex items-center justify-center flex-grow py-12 px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-md space-y-8">
+          <div className="text-center">
+              <Link href="/" className="inline-block">
+                  <Logo />
+              </Link>
+            <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-foreground font-headline">
+              Acesse sua conta
+            </h2>
+            <p className="mt-2 text-center text-sm text-muted-foreground">
+              Ou{' '}
+              <Link href="/signup" className="font-medium text-primary hover:text-primary/90">
+                crie uma conta agora
+              </Link>
+            </p>
+          </div>
+          <Card>
+              <CardHeader>
+                  <CardTitle>Entrar</CardTitle>
+                  <CardDescription>Use as credenciais da conta que você criou na página de registo.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleLogin} className="space-y-4">
+                  <div className="space-y-2">
+                      <Label htmlFor="email">E-mail</Label>
+                      <Input id="email" type="email" placeholder="seu@email.com" required value={email} onChange={e => setEmail(e.target.value)} />
+                  </div>
+                  <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                          <Label htmlFor="password">Senha</Label>
+                          <button type="button" onClick={handlePasswordReset} className="text-sm font-medium text-primary hover:underline">
+                            Esqueceu sua senha?
+                          </button>
+                      </div>
+                      <Input id="password" type="password" required value={password} onChange={e => setPassword(e.target.value)} />
+                  </div>
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Entrar'}
+                  </Button>
+                </form>
+              </CardContent>
+          </Card>
+        </div>
+      </main>
+      <Footer />
+    </>
+  );
+}
