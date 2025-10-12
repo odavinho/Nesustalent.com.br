@@ -16,6 +16,10 @@ export const vacancies: Vacancy[] = [
         description: 'Estamos procurando um Desenvolvedor Frontend Sênior experiente para se juntar à nossa equipe. O candidato ideal tem forte conhecimento em React, Next.js e TypeScript.',
         recruiterId: 'recruiter1', // Mock recruiter ID
         postedDate: createTimestamp('2024-07-28T10:00:00Z'),
+        closingDate: createTimestamp('2024-08-28T23:59:59Z'),
+        salaryRange: 'R$ 8.000 - R$ 12.000',
+        showSalary: true,
+        languages: ['Português', 'Inglês'],
         responsibilities: [
             'Desenvolver e manter aplicações web de alta qualidade.',
             'Colaborar com equipes multifuncionais para definir, projetar e enviar novos recursos.',
@@ -36,6 +40,11 @@ export const vacancies: Vacancy[] = [
         description: 'Buscamos um Analista de RH com experiência em todo o ciclo de recrutamento e seleção, endomarketing e gestão de benefícios. Forte habilidade de comunicação é essencial.',
         recruiterId: 'recruiter1', // Mock recruiter ID
         postedDate: createTimestamp('2024-07-27T14:30:00Z'),
+        closingDate: createTimestamp('2024-08-20T23:59:59Z'),
+        salaryRange: 'A combinar',
+        showSalary: false,
+        languages: ['Português'],
+        requiredNationality: 'Angolana',
         responsibilities: [
             'Conduzir processos de recrutamento e seleção de ponta a ponta.',
             'Desenvolver ações de endomarketing e clima organizacional.',
@@ -56,6 +65,10 @@ export const vacancies: Vacancy[] = [
         description: 'Vaga para Gestor de Projetos de TI com experiência em metodologias ágeis (Scrum/Kanban) para coordenar equipes de desenvolvimento de software em projetos internacionais.',
         recruiterId: 'recruiter2', // Mock recruiter ID
         postedDate: createTimestamp('2024-07-26T09:00:00Z'),
+        closingDate: createTimestamp('2024-09-01T23:59:59Z'),
+        salaryRange: '€40.000 - €55.000 anuais',
+        showSalary: true,
+        languages: ['Português', 'Inglês (fluente)'],
         responsibilities: [
             'Planear, executar e finalizar projetos de acordo com prazos e orçamentos.',
             'Gerir a equipe do projeto e as partes interessadas.',
@@ -96,6 +109,8 @@ export const vacancies: Vacancy[] = [
         description: 'Procuramos um especialista em Marketing Digital para gerenciar nossas campanhas de SEO, SEM e redes sociais. Experiência com Google Analytics e Ads é um diferencial.',
         recruiterId: 'recruiter1', // Mock recruiter ID
         postedDate: createTimestamp('2024-07-24T12:00:00Z'),
+        salaryRange: 'A combinar',
+        showSalary: false,
         responsibilities: [
             'Gerir campanhas de Google Ads e Facebook Ads.',
             'Otimizar o conteúdo do site para SEO.',

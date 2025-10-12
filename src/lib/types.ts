@@ -25,11 +25,15 @@ export interface Course {
     description: string;
     recruiterId: string;
     postedDate: Timestamp | Date; // Allow Date for mock data
+    closingDate?: Timestamp | Date;
     responsibilities: string[];
     requirements: string[];
     industry?: string;
     numberOfVacancies?: number;
     requiredNationality?: string;
+    languages?: string[];
+    salaryRange?: string;
+    showSalary?: boolean;
     employerName?: string;
     aboutEmployer?: string;
     hideEmployerData?: boolean;
