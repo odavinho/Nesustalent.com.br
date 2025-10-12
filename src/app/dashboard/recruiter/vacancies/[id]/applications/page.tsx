@@ -28,7 +28,7 @@ export default function VacancyApplicationsPage() {
     const router = useRouter();
     const vacancyId = params.id as string;
 
-    const [vacancy, setVacancy] = useState<Vacancy | null>(null);
+    const [vacancy, setVacancy] = useState<Vacancy | null | undefined>(undefined);
     const [applications, setApplications] = useState<Application[]>([]);
     const [candidates, setCandidates] = useState<UserProfile[]>([]);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -37,8 +37,9 @@ export default function VacancyApplicationsPage() {
     
     useEffect(() => {
         const foundVacancy = getVacancyById(vacancyId);
+        setVacancy(foundVacancy); // This will be the vacancy or undefined
+        
         if (foundVacancy) {
-            setVacancy(foundVacancy);
             const vacancyApps = allApplications.filter(app => app.jobPostingId === vacancyId);
             setApplications(vacancyApps);
             
@@ -48,6 +49,10 @@ export default function VacancyApplicationsPage() {
         }
     }, [vacancyId]);
     
+    if (vacancy === undefined) {
+        return <div className="flex justify-center items-center h-screen"><Loader2 className="h-8 w-8 animate-spin" /></div>;
+    }
+
     if (!vacancy) {
         return notFound();
     }
