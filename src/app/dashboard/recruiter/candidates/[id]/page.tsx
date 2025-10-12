@@ -6,8 +6,9 @@ import { users } from "@/lib/users";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Edit, User, Briefcase, GraduationCap, Award, FileText, Download, ThumbsUp, ThumbsDown } from "lucide-react";
+import { ArrowLeft, User, Briefcase, GraduationCap, Award, FileText, Download, ThumbsUp, ThumbsDown, MessageSquare } from "lucide-react";
 import type { UserProfile } from "@/lib/types";
+import Link from "next/link";
 
 function ProfileView({ profile }: { profile: UserProfile }) {
     const router = useRouter();
@@ -32,9 +33,9 @@ function ProfileView({ profile }: { profile: UserProfile }) {
                         <ThumbsDown className={`h-5 w-5 text-red-500`} />
                     </Button>
                     <Button asChild>
-                        <a href={`mailto:${profile.email}`}>
-                            <User className="mr-2 h-4 w-4" /> Contactar Candidato
-                        </a>
+                        <Link href={`/dashboard/recruiter/conversations?start_chat_with=${profile.id}`}>
+                            <MessageSquare className="mr-2 h-4 w-4" /> Iniciar Conversa
+                        </Link>
                     </Button>
                 </div>
             </div>
