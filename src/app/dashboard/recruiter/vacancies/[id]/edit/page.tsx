@@ -61,13 +61,16 @@ const toDate = (date: any): Date | undefined => {
 };
 
 // Helper component
-const TextareaWithLabel = (props: React.ComponentProps<typeof Textarea> & { label: string }) => {
-    const { label, ...rest } = props;
+interface TextareaWithLabelProps extends React.ComponentProps<typeof Textarea> {
+    label: string;
+}
+
+const TextareaWithLabel = ({ label, ...props }: TextareaWithLabelProps) => {
     return (
         <FormItem>
             <FormLabel>{label}</FormLabel>
             <FormControl>
-                <Textarea {...rest} />
+                <Textarea {...props} />
             </FormControl>
             <FormMessage />
         </FormItem>
