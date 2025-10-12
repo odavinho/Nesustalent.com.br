@@ -83,11 +83,14 @@ export default function NewVacancyPage() {
   };
   
   const handleSaveVacancy = async () => {
-    if (!generatedContent || !form.formState.isValid || !user) {
+    // Trigger form validation manually
+    const isValid = await form.trigger();
+
+    if (!generatedContent || !isValid || !user) {
         toast({
           variant: 'destructive',
           title: 'Faltam dados',
-          description: 'Gere a descrição, preencha todos os campos e certifique-se que está autenticado.',
+          description: 'Gere a descrição e preencha todos os campos obrigatórios antes de publicar a vaga.',
         });
         return;
       }
@@ -137,11 +140,11 @@ export default function NewVacancyPage() {
                   name="category"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Categoria</FormLabel>
+                      <FormLabel>Área Funcional (Categoria)</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Selecione uma categoria" />
+                            <SelectValue placeholder="Selecione uma área" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
