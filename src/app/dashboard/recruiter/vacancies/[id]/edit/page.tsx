@@ -112,7 +112,7 @@ export default function EditVacancyPage() {
   const handleUpdateVacancy: SubmitHandler<FormValues> = async (data) => {
     setIsSubmitting(true);
     
-    const vacancyDataToUpdate = {
+    let vacancyDataToUpdate: Partial<Vacancy> = {
         ...data,
         responsibilities: data.responsibilities.split('\n').filter(r => r.trim() !== ''),
         requirements: data.requirements.split('\n').filter(q => q.trim() !== ''),
@@ -259,5 +259,3 @@ export default function EditVacancyPage() {
     </div>
   );
 }
-
-    
