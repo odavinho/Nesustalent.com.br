@@ -10,24 +10,28 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input";
 import { Logo } from "@/components/shared/logo";
 import Link from "next/link";
-import { useAuth } from '@/firebase/provider';
+import { useAuth, useFirestore, errorEmitter, FirestorePermissionError } from '@/firebase';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { setDoc, doc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import type { UserProfile } from '@/lib/types';
+
 
 const formSchema = z.object({
-  role: z.enum(['student', 'instructor', 'recruiter'], { required_error: 'Por favor, selecione um papel.' }),
-  name: z.string().min(2, 'O nome deve ter pelo menos 2 caracteres.'),
+  userType: z.enum(['student', 'instructor', 'recruiter'], { required_error: 'Por favor, selecione um papel.' }),
+  firstName: z.string().min(2, 'O nome deve ter pelo menos 2 caracteres.'),
+  lastName: z.string().min(2, 'O apelido deve ter pelo menos 2 caracteres.'),
   email: z.string().email('Por favor, insira um e-mail válido.'),
   password: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres.'),
   companyName: z.string().optional(),
   specialization: z.string().optional(),
 }).refine(data => {
-    if (data.role === 'recruiter' && (!data.companyName || data.companyName.trim() === '')) {
+    if (data.userType === 'recruiter' && (!data.companyName || data.companyName.trim() === '')) {
         return false;
     }
     return true;
@@ -35,7 +39,7 @@ const formSchema = z.object({
     message: 'O nome da empresa é obrigatório para recrutadores.',
     path: ['companyName'],
 }).refine(data => {
-    if (data.role === 'instructor' && (!data.specialization || data.specialization.trim() === '')) {
+    if (data.userType === 'instructor' && (!data.specialization || data.specialization.trim() === '')) {
         return false;
     }
     return true;
@@ -53,12 +57,14 @@ export default function SignupPage() {
   const { toast } = useToast();
   const router = useRouter();
   const auth = useAuth();
+  const firestore = useFirestore();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      role: 'student',
-      name: '',
+      userType: 'student',
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
       companyName: '',
@@ -66,33 +72,58 @@ export default function SignupPage() {
     }
   });
 
-  const selectedRole = form.watch('role');
+  const selectedRole = form.watch('userType');
 
   const handleSignup: SubmitHandler<FormValues> = async (data) => {
     setIsLoading(true);
     try {
+      // 1. Create user in Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
-      if (userCredential.user) {
-        await updateProfile(userCredential.user, { displayName: data.name });
-        // Em uma aplicação real, aqui você salvaria os dados adicionais (role, companyName, etc.)
-        // no Firestore ou Realtime Database associado ao UID do usuário.
-      }
+      const user = userCredential.user;
+      
+      // 2. Update Auth user profile (displayName)
+      await updateProfile(user, { displayName: `${data.firstName} ${data.lastName}` });
+
+      // 3. Create user document in Firestore
+      const userDocRef = doc(firestore, 'users', user.uid);
+      
+      const newUserProfile: UserProfile = {
+        id: user.uid,
+        email: data.email,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        userType: data.userType,
+        // Add other fields as necessary, potentially empty initially
+        academicTitle: data.userType === 'instructor' ? data.specialization : undefined,
+      };
+
+      await setDoc(userDocRef, newUserProfile);
+
       toast({
         title: 'Conta criada com sucesso!',
         description: `Bem-vindo(a)! Você já pode fazer o login.`,
       });
       router.push('/login');
+
     } catch (error: any) {
-      console.error(error);
-      let description = 'Ocorreu um erro. Tente novamente.';
-      if (error.code === 'auth/email-already-in-use') {
-        description = 'Este endereço de e-mail já está a ser utilizado por outra conta.';
-      }
-      toast({
-        variant: 'destructive',
-        title: 'Erro ao criar conta',
-        description: description,
-      });
+        console.error("Signup Error:", error);
+        let description = 'Ocorreu um erro. Tente novamente.';
+        if (error.code === 'auth/email-already-in-use') {
+            description = 'Este endereço de e-mail já está a ser utilizado por outra conta.';
+        } else if (error.code === 'permission-denied') {
+             const permissionError = new FirestorePermissionError({
+                path: `users/${auth.currentUser?.uid || 'new_user'}`,
+                operation: 'create',
+             });
+             errorEmitter.emit('permission-error', permissionError);
+             return; 
+        }
+
+        toast({
+            variant: 'destructive',
+            title: 'Erro ao criar conta',
+            description: description,
+        });
     } finally {
       setIsLoading(false);
     }
@@ -127,7 +158,7 @@ export default function SignupPage() {
                     <form onSubmit={form.handleSubmit(handleSignup)} className="space-y-4">
                         <FormField
                             control={form.control}
-                            name="role"
+                            name="userType"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Eu sou um...</FormLabel>
@@ -162,19 +193,35 @@ export default function SignupPage() {
                             />
                         )}
 
-                        <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Nome Completo</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="O seu nome" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        <div className="grid grid-cols-2 gap-4">
+                            <FormField
+                                control={form.control}
+                                name="firstName"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Nome</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="O seu nome" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                             <FormField
+                                control={form.control}
+                                name="lastName"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Apelido</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="O seu apelido" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
 
                         {selectedRole === 'instructor' && (
                              <FormField
