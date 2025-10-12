@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { vacancies } from '@/lib/vacancies';
+import { useState, useMemo, useEffect } from 'react';
+import { getVacancies } from '@/lib/vacancy-service';
 import { courseCategories } from '@/lib/courses';
 import { Input } from '@/components/ui/input';
-import { Search, MapPin, Briefcase, Clock } from 'lucide-react';
+import { Search, MapPin, Briefcase } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -16,22 +16,29 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import Link from 'next/link';
+import type { Vacancy } from '@/lib/types';
+
 
 export function VacancyList() {
+  const [allVacancies, setAllVacancies] = useState<Vacancy[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('all');
 
-  const locations = useMemo(() => ['all', ...new Set(vacancies.map(v => v.location))], []);
+  useEffect(() => {
+    setAllVacancies(getVacancies());
+  }, []);
+
+  const locations = useMemo(() => ['all', ...new Set(allVacancies.map(v => v.location))], [allVacancies]);
 
   const filteredVacancies = useMemo(() => {
-    return vacancies.filter(vacancy => {
+    return allVacancies.filter(vacancy => {
       const matchesCategory = selectedCategory === 'all' || vacancy.category === selectedCategory;
       const matchesLocation = selectedLocation === 'all' || vacancy.location === selectedLocation;
       const matchesSearch = vacancy.title.toLowerCase().includes(searchTerm.toLowerCase()) || vacancy.description.toLowerCase().includes(searchTerm.toLowerCase());
       return matchesCategory && matchesSearch && matchesLocation;
     });
-  }, [searchTerm, selectedCategory, selectedLocation]);
+  }, [allVacancies, searchTerm, selectedCategory, selectedLocation]);
 
   return (
     <div>
@@ -54,7 +61,7 @@ export function VacancyList() {
             <SelectContent>
                 <SelectItem value="all">Todas as Categorias</SelectItem>
                 {courseCategories.map(category => (
-                <SelectItem key={category.id} value={category.id}>
+                <SelectItem key={category.id} value={category.name}>
                     {category.name}
                 </SelectItem>
                 ))}
@@ -80,7 +87,7 @@ export function VacancyList() {
       {filteredVacancies.length > 0 ? (
         <div className="space-y-6">
           {filteredVacancies.map(vacancy => {
-              const category = courseCategories.find(c => c.id === vacancy.category);
+              const category = courseCategories.find(c => c.name === vacancy.category);
               return (
                 <Card key={vacancy.id} className="transition-shadow hover:shadow-md">
                     <CardHeader>

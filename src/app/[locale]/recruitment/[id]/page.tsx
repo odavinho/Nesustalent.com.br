@@ -1,6 +1,6 @@
 'use client';
 
-import { vacancies } from "@/lib/vacancies";
+import { getVacancyById } from "@/lib/vacancy-service";
 import { notFound, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Briefcase, Clock, MapPin, Share2, Loader2 } from "lucide-react";
@@ -13,12 +13,18 @@ import { Footer } from "@/components/layout/footer";
 import { useUser, useFirestore, errorEmitter, FirestorePermissionError, useDoc, useMemoFirebase } from "@/firebase";
 import { doc, setDoc, serverTimestamp, getDoc } from "firebase/firestore";
 import { useToast } from "@/hooks/use-toast";
-import React, { useState } from "react";
-import type { UserProfile } from "@/lib/types";
+import React, { useState, useEffect } from "react";
+import type { UserProfile, Vacancy } from "@/lib/types";
 
 export default function VacancyDetailPage({ params }: { params: { id: string } }) {
-  const resolvedParams = React.use(params);
-  const vacancy = vacancies.find(v => v.id === resolvedParams.id);
+  const [vacancy, setVacancy] = useState<Vacancy | null | undefined>(undefined);
+
+  useEffect(() => {
+    const foundVacancy = getVacancyById(params.id);
+    setVacancy(foundVacancy);
+  }, [params.id]);
+
+
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   const { toast } = useToast();
@@ -32,6 +38,11 @@ export default function VacancyDetailPage({ params }: { params: { id: string } }
 
   const { data: userProfile } = useDoc<UserProfile>(userProfileRef);
 
+  if (vacancy === undefined) {
+    // Still loading
+    return <div>Loading...</div>;
+  }
+  
   if (!vacancy) {
     notFound();
   }
@@ -115,7 +126,7 @@ export default function VacancyDetailPage({ params }: { params: { id: string } }
       });
   };
 
-  const category = courseCategories.find(c => c.id === vacancy.category);
+  const category = courseCategories.find(c => c.name === vacancy.category);
 
   return (
     <>
@@ -132,20 +143,24 @@ export default function VacancyDetailPage({ params }: { params: { id: string } }
               
               <div className="mt-6 prose prose-lg max-w-none text-foreground/90">
                   <p>{vacancy.description}</p>
-                  <h3 className="font-headline">Responsabilidades:</h3>
-                  <ul>
-                      <li>Desenvolver e manter aplicações web de alta qualidade.</li>
-                      <li>Colaborar com equipes multifuncionais para definir, projetar e enviar novos recursos.</li>
-                      <li>Garantir o desempenho, a qualidade e a capacidade de resposta dos aplicativos.</li>
-                      <li>Identificar e corrigir gargalos e corrigir bugs.</li>
-                  </ul>
-                  <h3 className="font-headline">Requisitos:</h3>
-                  <ul>
-                      <li>Experiência comprovada em desenvolvimento de software.</li>
-                      <li>Forte conhecimento das tecnologias relevantes para a vaga.</li>
-                      <li>Capacidade de trabalhar em um ambiente de equipe ágil.</li>
-                      <li>Excelentes habilidades de comunicação e resolução de problemas.</li>
-                  </ul>
+                  
+                  {vacancy.responsibilities && vacancy.responsibilities.length > 0 && (
+                    <>
+                      <h3 className="font-headline">Responsabilidades:</h3>
+                      <ul>
+                        {vacancy.responsibilities.map((item, index) => <li key={index}>{item}</li>)}
+                      </ul>
+                    </>
+                  )}
+
+                  {vacancy.requirements && vacancy.requirements.length > 0 && (
+                    <>
+                      <h3 className="font-headline">Requisitos:</h3>
+                      <ul>
+                        {vacancy.requirements.map((item, index) => <li key={index}>{item}</li>)}
+                      </ul>
+                    </>
+                  )}
               </div>
             </div>
             <div className="lg:col-span-1">

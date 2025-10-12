@@ -10,8 +10,8 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { useUser } from '@/firebase'; // Keep for user context
-import { vacancies as mockVacancies } from '@/lib/vacancies'; // Import mock data
+import { useUser } from '@/firebase';
+import { getVacancies, deleteVacancy } from '@/lib/vacancy-service';
 
 export default function RecruiterVacanciesPage() {
   const { user } = useUser();
@@ -24,7 +24,8 @@ export default function RecruiterVacanciesPage() {
   useEffect(() => {
     if (user) {
       // Filter mock data instead of querying Firestore
-      const userVacancies = mockVacancies.filter(v => v.recruiterId === user.uid);
+      const allVacancies = getVacancies();
+      const userVacancies = allVacancies.filter(v => v.recruiterId === user.uid);
       setVacancies(userVacancies);
     }
     setIsLoading(false);
@@ -33,7 +34,10 @@ export default function RecruiterVacanciesPage() {
   const handleDelete = (vacancyId: string) => {
     if (!confirm('Tem a certeza que deseja excluir esta vaga? Esta ação não pode ser desfeita.')) return;
 
-    setVacancies(prevVacancies => prevVacancies.filter(v => v.id !== vacancyId));
+    deleteVacancy(vacancyId);
+    // Re-fetch or filter the vacancies to update the UI
+    const updatedVacancies = getVacancies().filter(v => v.recruiterId === user?.uid);
+    setVacancies(updatedVacancies);
     
     toast({
         title: 'Vaga Excluída!',

@@ -23,6 +23,9 @@ import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { pt } from 'date-fns/locale';
+import { addVacancy } from '@/lib/vacancy-service';
+import type { Vacancy } from '@/lib/types';
+
 
 const formSchema = z.object({
   title: z.string().min(5, { message: 'O título da vaga deve ter pelo menos 5 caracteres.' }),
@@ -115,32 +118,42 @@ export default function NewVacancyPage() {
       return;
     }
 
+    if (!user) {
+        toast({ variant: "destructive", title: "Erro", description: "Utilizador recrutador não encontrado." });
+        return;
+    }
+
     setIsSaving(true);
     const formValues = form.getValues();
 
-    const vacancyData = {
+    const newVacancy: Omit<Vacancy, 'id' | 'postedDate'> = {
         ...formValues,
         ...generatedContent,
+        recruiterId: user.uid,
+        languages: formValues.languages?.split(',').map(l => l.trim()).filter(l => l) || [],
     };
 
     if (formValues.hideEmployerData) {
-        vacancyData.employerName = `Empresa líder no setor de ${formValues.industry}`;
-        vacancyData.aboutEmployer = `Oportunidade confidencial numa empresa de referência no setor de ${formValues.industry}.`;
+        newVacancy.employerName = `Empresa líder no setor de ${formValues.industry}`;
+        newVacancy.aboutEmployer = `Oportunidade confidencial numa empresa de referência no setor de ${formValues.industry}.`;
     }
 
-    // In a real app, this would save to a database (e.g., addVacancyAction(vacancyData)).
-    // Here, we just simulate the process.
-    console.log("Vacancy data to be published:", vacancyData);
-    
-    setTimeout(() => {
-      toast({
-        title: "Vaga publicada! (Simulação)",
-        description: "A sua vaga seria publicada e já estaria visível para os candidatos.",
-      });
-      setIsSaving(false);
-      // Redirect to a page where the recruiter can see their vacancies.
-      router.push('/dashboard/recruiter/vacancies');
-    }, 1000);
+    try {
+        addVacancy(newVacancy);
+        toast({
+          title: "Vaga publicada!",
+          description: "A sua vaga foi publicada e já está visível para os candidatos.",
+        });
+        router.push('/dashboard/recruiter/vacancies');
+    } catch (error) {
+        toast({
+            variant: "destructive",
+            title: "Erro ao Publicar",
+            description: "Não foi possível publicar a vaga. Tente novamente.",
+        });
+    } finally {
+        setIsSaving(false);
+    }
   };
 
   return (
