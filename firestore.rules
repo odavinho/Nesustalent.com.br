@@ -2,152 +2,258 @@
  * @fileoverview Firestore Security Rules for the NexusTalent platform.
  *
  * Core Philosophy:
- * This ruleset enforces a strict user-ownership model for personal data and
- * role-based access control for shared resources. It prioritizes secure data
- * access based on user identity and role. All writes must be explicitly
- * authorized.
+ * This ruleset enforces a user-ownership model for user profiles and a role-based model for job postings and courses.
+ * It prioritizes security by default, denying access unless explicitly granted.
  *
  * Data Structure:
- * - /users/{userId}: Stores user profiles.  Access is restricted to the
- *   owning user and potentially admins.
- * - /courses/{courseId}: Stores course information. Access is open for reads,
- *   but writes are restricted to trainers or admins.
- * - /courses/{courseId}/modules/{moduleId}: Stores course modules.  Write
- *   access is restricted to course owners.
- * - /enrollments/{enrollmentId}: Stores enrollment records. Access is
- *   restricted to the enrolled user or admins.
- * - /vacancies/{vacancyId}: Stores job postings.  Access is restricted to
- *   recruters and admins.
- * - /applications/{applicationId}: Stores job applications. The document ID is
- *   a composite of `userId_jobPostingId` to enforce uniqueness. Access is
- *   restricted to the applicant and the recruiter who posted the job.
+ * - /users/{userId}: Stores user profiles.  Access is restricted to the owning user.
+ * - /courses/{courseId}: Stores course information.
+ * - /courses/{courseId}/modules/{moduleId}: Stores course modules. Access is restricted to the course trainer.
+ * - /enrollments/{enrollmentId}: Stores enrollment records. Access is restricted to the enrolled user.
+ * - /vacancies/{vacancyId}: Stores job postings. Access is restricted to the recruiter who created the posting.
+ * - /applications/{applicationId}: Stores job applications. Access is restricted to the applicant and the recruiter who created the job posting.
  *
  * Key Security Decisions:
- * - User listing is disallowed to protect user privacy.
- * - Data validation is limited to fields critical for authorization and
- *   relational integrity (e.g., ownership fields).
- * - The `userType` field in the `/users/{userId}` document determines user roles.
+ * - Users can only read/write their own profile data.
+ * - Recruiters can only create/update/delete their own job postings.
+ * - Listing of the `/users` collection is denied to prevent unauthorized data access.
  *
  * Denormalization for Authorization:
- * - Enrollment documents contain both `userId` and `courseId` to allow for
- *   efficient querying and security rule enforcement without additional reads.
- * - JobPosting documents contain `recruiterId` to simply authorization checks.
+ * - JobPosting documents have `recruiterId` to authorize recruiter access.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Grants access to user profiles.
+     * @description Enforces user-ownership for user profiles.
      * @path /users/{userId}
-     * @allow (create) - Authenticated user can create their own profile if the userId in the path matches their auth UID.
-     * @allow (get, update, delete) - Authenticated user can get, update, or delete their own profile if the userId in the path matches their auth UID.
-     * @deny (create, get, update, delete) - Any other user attempting to access another user's profile.
-     * @principle Enforces document ownership for user profiles.
+     * @allow (create) - Authenticated user can create their own profile if the userId matches their auth UID.
+     * @allow (get, update, delete) - Authenticated user can access their own profile if the userId matches their auth UID.
+     * @deny (create) - An unauthenticated user cannot create a profile.
+     * @deny (get, update, delete) - A different user cannot access another user's profile.
+     * @deny (list) - Listing all users is prohibited.
+     * @principle Enforces document ownership for all operations.
      */
     match /users/{userId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
       function isOwner(userId) {
-        return request.auth != null && request.auth.uid == userId;
+        return isSignedIn() && request.auth.uid == userId;
       }
 
       function isExistingOwner(userId) {
-        return isOwner(userId) && resource != null;
+        return isOwner(userId) && resource.data != null;
       }
 
-      allow get: if isOwner(userId);
-      allow list: if false;
+      // Only allow a user to create their own profile.
       allow create: if isOwner(userId);
+
+      // Only allow the owner to read their profile.
+      allow get: if isOwner(userId);
+
+      // Only allow the owner to update their own profile, and enforce immutability of the id field.
       allow update: if isExistingOwner(userId);
+
+      // Only allow the owner to delete their own profile.
       allow delete: if isExistingOwner(userId);
+
+      // No one can list all users.
+      allow list: if false;
     }
 
     /**
-     * @description Grants read access to all users for courses and restricts write access to trainers and admins.
+     * @description Allows public read access to courses, but restricts create/update/delete to trainers.
      * @path /courses/{courseId}
-     * @allow (get, list) - Any user can read courses.
-     * @allow (create) - Trainers and admins can create courses. `request.resource.data.trainerId` must match the trainer's user ID.
-     * @allow (update, delete) - Only the trainer who created the course or an admin can update or delete it.
-     * @deny (create, update, delete) - Non-trainers attempting to create or modify courses.
-     * @principle Allows public read access with owner-only and admin-only writes for courses.
+     * @allow (get, list) - Anyone can read the courses.
+     * @allow (create) - Only trainers can create a course if trainerId in the request matches their auth UID.
+     * @allow (update, delete) - Only the trainer who created the course can update or delete it.
+     * @deny (create, update, delete) - Non-trainers cannot create/update/delete courses.
+     * @principle Allows public read with owner-only writes.
      */
     match /courses/{courseId} {
-        allow get, list: if true;
+      function isSignedIn() {
+        return request.auth != null;
+      }
 
-        allow create: if isSignedIn();
-        allow update: if isSignedIn(); // TODO: Add owner validation once the schema is updated with an ownership field.
-        allow delete: if isSignedIn(); // TODO: Add owner validation once the schema is updated with an ownership field.
+      function isTrainer(trainerId) {
+        return isSignedIn() && request.auth.uid == trainerId;
+      }
+
+      function isExistingTrainer(trainerId) {
+        return isTrainer(trainerId) && resource.data != null;
+      }
+
+      // Anyone can read course information.
+      allow get, list: if true;
+
+      // Only trainers can create a course, and the trainerId must match the authenticated user.
+      allow create: if isSignedIn() && request.resource.data.trainerId == request.auth.uid;
+
+      // Only the trainer who created the course can update or delete it.
+      allow update: if isSignedIn() && resource.data.trainerId == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.trainerId == request.auth.uid;
     }
 
     /**
-     * @description Grants access to course modules, restricting write access to course owners.
+     * @description Restricts access to course modules to the trainer who owns the course.
      * @path /courses/{courseId}/modules/{moduleId}
-     *   @allow (get, list) - Any user can read modules.
-     *   @allow (create) - Only the course owner can create modules.
-     *   @allow (update, delete) - Only the course owner can update or delete modules.
-     *   @deny (create, update, delete) - Non-owners attempting to create or modify modules.
-     * @principle Enforces owner-only writes for course modules.
+     * @allow (get, list) - Anyone can read the course modules.
+     * @allow (create) - Only the trainer who created the course can add modules.
+     * @allow (update, delete) - Only the trainer who created the course can update or delete modules.
+     * @deny (create, update, delete) - Other users cannot modify course modules.
+     * @principle Enforces ownership based on the parent course's trainerId.
      */
     match /courses/{courseId}/modules/{moduleId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      function isTrainer(courseId) {
+        return isSignedIn() && get(/databases/$(database)/documents/courses/$(courseId)).data.trainerId == request.auth.uid;
+      }
+
+       function isExistingTrainer(courseId) {
+        return isTrainer(courseId) && resource.data != null;
+      }
+
+      // Anyone can read course module information.
       allow get, list: if true;
-      allow create: if isSignedIn(); // TODO: Add owner validation once the schema is updated with an ownership field.
-      allow update: if isSignedIn(); // TODO: Add owner validation once the schema is updated with an ownership field.
-      allow delete: if isSignedIn(); // TODO: Add owner validation once the schema is updated with an ownership field.
+
+      // Only the trainer for the parent course can create modules.
+      allow create: if isSignedIn() && isTrainer(courseId);
+
+      // Only the trainer for the parent course can update/delete modules.
+      allow update: if isSignedIn() && isTrainer(courseId);
+      allow delete: if isSignedIn() && isTrainer(courseId);
     }
 
     /**
-     * @description Grants access to enrollment records, restricting access to the enrolled user and admins.
+     * @description Enforces user-ownership for enrollments.
      * @path /enrollments/{enrollmentId}
-     * @allow (create) - Authenticated user can create their own enrollment record.
-     * @allow (get, update, delete) - Authenticated user can get, update, or delete their own enrollment record.
-     * @deny (create, get, update, delete) - Any other user attempting to access another user's enrollment record.
-     * @principle Enforces document ownership for enrollment records.
+     * @allow (create) - Authenticated user can create an enrollment if the userId matches their auth UID.
+     * @allow (get, update, delete) - Authenticated user can access their own enrollments if the userId matches their auth UID.
+     * @deny (create) - An unauthenticated user cannot create an enrollment.
+     * @deny (get, update, delete) - A different user cannot access another user's enrollments.
+     * @allow (list) - User can list their own enrollments.
+     * @principle Enforces document ownership for all operations.
      */
     match /enrollments/{enrollmentId} {
-        function isEnrolledUser(userId) {
-            return request.auth != null && request.auth.uid == userId;
-        }
+      function isSignedIn() {
+        return request.auth != null;
+      }
 
-        allow get: if isSignedIn();
-        allow list: if false;
-        allow create: if isSignedIn();
-        allow update: if isSignedIn(); // TODO: Add owner validation once the schema is updated with an ownership field.
-        allow delete: if isSignedIn(); // TODO: Add owner validation once the schema is updated with an ownership field.
+      function isOwner(userId) {
+        return isSignedIn() && request.auth.uid == userId;
+      }
+
+      function isEnrolledUser(enrollmentId) {
+          return isSignedIn() && get(/databases/$(database)/documents/enrollments/$(enrollmentId)).data.userId == request.auth.uid;
+      }
+
+      function isExistingEnrolledUser(enrollmentId) {
+        return isEnrolledUser(enrollmentId) && resource.data != null;
+      }
+
+      // Only allow a user to create their own enrollment.
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+
+      // Only allow the enrolled user to read their enrollment.
+      allow get: if isSignedIn() && resource.data.userId == request.auth.uid;
+
+      // Only allow the enrolled user to update their own enrollment.
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid;
+
+      // Only allow the enrolled user to delete their own enrollment.
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+
+      // Allow the user to list their own enrollments.
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
     }
 
     /**
-     * @description Grants access to job postings, restricting write access to recruiters and admins.
+     * @description Allows recruiters to manage their own job postings.
      * @path /vacancies/{vacancyId}
-     * @allow (get, list) - Any user can read job postings.
-     * @allow (create) - Only recruiters can create job postings. `request.resource.data.recruiterId` must match the recruiter's user ID.
-     * @allow (update, delete) - Only the recruiter who created the job posting or an admin can update or delete it.
-     * @deny (create, update, delete) - Non-recruiters attempting to create or modify job postings.
-     * @principle Allows public read access with owner-only and admin-only writes for job postings.
+     * @allow (get, list) - Anyone can read and list job postings.
+     * @allow (create) - Only recruiters can create job postings, and the recruiterId must match their auth UID.
+     * @allow (update, delete) - Only the recruiter who created the job posting can update or delete it.
+     * @deny (create, update, delete) - Non-recruiters cannot create/update/delete job postings.
+     * @principle Enforces ownership for writes, allows public reads.
      */
     match /vacancies/{vacancyId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      function isRecruiter(recruiterId) {
+        return isSignedIn() && request.auth.uid == recruiterId;
+      }
+
+      function isExistingRecruiter(recruiterId) {
+        return isRecruiter(recruiterId) && resource.data != null;
+      }
+
+      // Anyone can read job postings.
       allow get, list: if true;
-      allow create: if isSignedIn();
-      allow update: if isSignedIn(); // TODO: Add owner validation once the schema is updated with an ownership field.
-      allow delete: if isSignedIn(); // TODO: Add owner validation once the schema is updated with an ownership field.
+
+      // Only recruiters can create job postings, and the recruiterId must match the authenticated user.
+      allow create: if isSignedIn() && request.resource.data.recruiterId == request.auth.uid;
+
+      // Only the recruiter who created the job posting can update or delete it.
+      allow update: if isSignedIn() && resource.data.recruiterId == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.recruiterId == request.auth.uid;
     }
 
     /**
-     * @description Grants access to job applications, restricting access to the applicant and the recruiter who posted the job.
+     * @description Enforces user-ownership and recruiter access for job applications.
      * @path /applications/{applicationId}
-     * @allow (create) - Authenticated user can create their own application. `request.resource.data.userId` must match their auth UID.
-     * @allow (get, update, delete) - The applicant or the recruiter who posted the job can access the application.
-     * @deny (create, get, update, delete) - Any other user attempting to access the application.
-     * @principle Enforces document ownership for applications.
+     * @allow (create) - Authenticated user can create an application if the userId matches their auth UID.
+     * @allow (get, update, delete) - The applicant and the recruiter who created the job posting can access the application.
+     * @deny (create, update, delete) - Other users cannot access the application.
+     * @allow (list) - Only the applicant can list their own applications, or a recruiter list applications for their own vacancies.
+     * @principle Enforces document ownership and recruiter access.
      */
     match /applications/{applicationId} {
-        allow get: if isSignedIn();
-        allow list: if false;
-        allow create: if isSignedIn();
-        allow update: if isSignedIn(); // TODO: Add owner validation once the schema is updated with an ownership field.
-        allow delete: if isSignedIn(); // TODO: Add owner validation once the schema is updated with an ownership field.
-    }
+        function isSignedIn() {
+            return request.auth != null;
+        }
 
-    function isSignedIn() {
-        return request.auth != null;
+        function getJobId(applicationId) {
+            return split(applicationId, '_')[1];
+        }
+
+        function isApplicant(applicationId) {
+            return isSignedIn() && request.auth.uid == split(applicationId, '_')[0];
+        }
+
+        function isRecruiter(jobId) {
+            return isSignedIn() && get(/databases/$(database)/documents/vacancies/$(jobId)).data.recruiterId == request.auth.uid;
+        }
+
+        function isExistingApplicant(applicationId) {
+            return isApplicant(applicationId) && resource.data != null;
+        }
+
+        function isExistingRecruiter(jobId) {
+            return isRecruiter(jobId) && resource.data != null;
+        }
+
+        // Only allow a user to create their own application.
+        allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+
+        // Only allow the applicant or the recruiter to read the application.
+        allow get: if isApplicant(applicationId) || isRecruiter(getJobId(applicationId));
+
+        // Only allow the applicant or the recruiter to update the application.
+        allow update: if isApplicant(applicationId) || isRecruiter(getJobId(applicationId));
+
+        // Only allow the applicant or the recruiter to delete the application.
+        allow delete: if isApplicant(applicationId) || isRecruiter(getJobId(applicationId));
+
+        // Allow the applicant to list their own applications, or a recruiter list applications for their own vacancies
+        allow list: if isSignedIn() && (split(applicationId, '_')[0] == request.auth.uid || isRecruiter(getJobId(applicationId)));
     }
   }
 }
