@@ -8,6 +8,7 @@ export default getRequestConfig(async ({locale}) => {
   // It will render a 404 page if a locale is requested that doesn't have a corresponding messages file.
   try {
     return {
+      locale,
       messages: (await import(`../messages/${locale}.json`)).default
     };
   } catch (error) {
