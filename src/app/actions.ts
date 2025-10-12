@@ -19,7 +19,11 @@ export async function analyzeResumeAction(input: AIResumeAnalysisInput): Promise
     return output;
   } catch (error) {
     console.error("Error in analyzeResumeAction:", error);
-    throw new Error("Failed to analyze resume. Please try again.");
+    // Simulating a more detailed error message for demonstration
+    if (error instanceof Error && error.message.includes('API key not valid')) {
+        throw new Error("A chave de API para o serviço de IA não é válida. Por favor, verifique as configurações.");
+    }
+    throw new Error("Falha ao analisar o currículo. Tente novamente mais tarde.");
   }
 }
 
