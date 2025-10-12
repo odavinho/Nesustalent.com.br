@@ -1,13 +1,21 @@
 import { vacancies as initialVacancies } from './vacancies';
 import type { Vacancy } from './types';
+import { Timestamp } from 'firebase/firestore';
 
 // In-memory store for vacancies
 let vacancies: Vacancy[] = [...initialVacancies];
 
+const toDate = (date: Timestamp | Date): Date => {
+    if (date instanceof Timestamp) {
+        return date.toDate();
+    }
+    return date;
+}
+
 // Function to get all vacancies
 export const getVacancies = (): Vacancy[] => {
     // Return a copy to prevent direct modification of the in-memory array
-    return [...vacancies].sort((a, b) => (b.postedDate as Date).getTime() - (a.postedDate as Date).getTime());
+    return [...vacancies].sort((a, b) => toDate(b.postedDate).getTime() - toDate(a.postedDate).getTime());
 };
 
 // Function to find a single vacancy by ID
