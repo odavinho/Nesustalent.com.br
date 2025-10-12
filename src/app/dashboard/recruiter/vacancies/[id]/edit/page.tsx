@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, type ComponentProps } from 'react';
+import { useState, useEffect, type ComponentProps, forwardRef } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -29,8 +29,8 @@ const formSchema = z.object({
   title: z.string().min(5, { message: 'O título da vaga deve ter pelo menos 5 caracteres.' }),
   category: z.string({ required_error: 'Selecione uma área funcional.' }),
   industry: z.string().min(3, { message: 'A indústria é obrigatória.' }),
-  minExperience: z.string({ required_error: 'Selecione a experiência mínima.' }),
-  demandLevel: z.string({ required_error: 'Selecione o grau de exigência.' }),
+  minExperience: z.string(), // Removed .optional()
+  demandLevel: z.string(), // Removed .optional()
   location: z.string().min(3, { message: 'A localização é obrigatória.' }),
   type: z.enum(['Full-time', 'Part-time', 'Remote']),
   numberOfVacancies: z.coerce.number().min(1, 'Deve haver pelo menos uma vaga.'),
@@ -83,8 +83,8 @@ export default function EditVacancyPage() {
       responsibilities: '',
       requirements: '',
       screeningQuestions: '',
-      minExperience: undefined,
-      demandLevel: undefined,
+      minExperience: '',
+      demandLevel: '',
       languages: '',
       requiredNationality: '',
       salaryRange: '',
@@ -98,8 +98,8 @@ export default function EditVacancyPage() {
       if (foundVacancy) {
         form.reset({
           ...foundVacancy,
-          minExperience: '', // This field is for AI generation, not part of vacancy data
-          demandLevel: '', // This field is for AI generation, not part of vacancy data
+          minExperience: '', 
+          demandLevel: '',
           closingDate: toDate(foundVacancy.closingDate),
           languages: foundVacancy.languages?.join(', '),
           responsibilities: foundVacancy.responsibilities.join('\n'),
