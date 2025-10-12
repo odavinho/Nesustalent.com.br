@@ -24,11 +24,14 @@ const prompt = ai.definePrompt({
   name: 'generateVacancyContentPrompt',
   input: {schema: GenerateVacancyContentInputSchema},
   output: {schema: GenerateVacancyContentOutputSchema},
-  prompt: `You are an expert recruiter. Based on the job title and category, generate a detailed job description in Portuguese. 
+  prompt: `You are an expert recruiter. Based on the job title, category, industry, minimum experience, and demand level, generate a detailed job description in Portuguese. 
 The description should include a general summary, a list of key responsibilities, and a list of required qualifications and skills.
 
 Job Title: {{{title}}}
 Category: {{{category}}}
+Industry: {{{industry}}}
+Minimum Experience: {{{minExperience}}}
+Demand Level: {{{demandLevel}}}
 `,
 });
 

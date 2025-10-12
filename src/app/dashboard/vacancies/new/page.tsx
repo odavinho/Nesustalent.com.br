@@ -24,6 +24,8 @@ const formSchema = z.object({
   title: z.string().min(5, { message: 'O título da vaga deve ter pelo menos 5 caracteres.' }),
   category: z.string({ required_error: 'Selecione uma categoria.' }),
   industry: z.string().min(3, { message: 'A indústria é obrigatória.' }),
+  minExperience: z.string({ required_error: 'Selecione a experiência mínima.' }),
+  demandLevel: z.string({ required_error: 'Selecione o grau de exigência.' }),
   location: z.string().min(3, { message: 'A localização é obrigatória.' }),
   type: z.enum(['Full-time', 'Part-time', 'Remote']),
   numberOfVacancies: z.coerce.number().min(1, 'Deve haver pelo menos uma vaga.'),
@@ -69,7 +71,7 @@ export default function NewVacancyPage() {
     setIsGenerating(true);
     setGeneratedContent(null);
     try {
-      const result = await generateVacancyContentAction({title: data.title, category: data.category, industry: data.industry});
+      const result = await generateVacancyContentAction({title: data.title, category: data.category, industry: data.industry, minExperience: data.minExperience, demandLevel: data.demandLevel });
       setGeneratedContent(result);
     } catch (error) {
       toast({
@@ -86,11 +88,20 @@ export default function NewVacancyPage() {
     // Trigger form validation manually
     const isValid = await form.trigger();
 
-    if (!generatedContent || !isValid || !user) {
+    if (!isValid) {
+        toast({
+            variant: 'destructive',
+            title: 'Campos em falta',
+            description: 'Por favor, preencha todos os campos obrigatórios do formulário.',
+        });
+        return;
+    }
+
+    if (!generatedContent) {
         toast({
           variant: 'destructive',
           title: 'Faltam dados',
-          description: 'Gere a descrição e preencha todos os campos obrigatórios antes de publicar a vaga.',
+          description: 'Gere a descrição da vaga com a IA antes de tentar publicar.',
         });
         return;
       }
@@ -159,6 +170,48 @@ export default function NewVacancyPage() {
                     </FormItem>
                   )}
                 />
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                  <FormField
+                      control={form.control}
+                      name="minExperience"
+                      render={({ field }) => (
+                          <FormItem>
+                          <FormLabel>Experiência Mínima</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl><SelectTrigger><SelectValue placeholder="Selecione os anos" /></SelectTrigger></FormControl>
+                              <SelectContent>
+                                  <SelectItem value="0-1 ano">0-1 ano</SelectItem>
+                                  <SelectItem value="1-3 anos">1-3 anos</SelectItem>
+                                  <SelectItem value="3-5 anos">3-5 anos</SelectItem>
+                                  <SelectItem value="5+ anos">5+ anos</SelectItem>
+                                  <SelectItem value="10+ anos">10+ anos</SelectItem>
+                              </SelectContent>
+                          </Select>
+                          <FormMessage />
+                          </FormItem>
+                      )}
+                  />
+                  <FormField
+                      control={form.control}
+                      name="demandLevel"
+                      render={({ field }) => (
+                          <FormItem>
+                          <FormLabel>Grau de Exigência</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl><SelectTrigger><SelectValue placeholder="Selecione o nível" /></SelectTrigger></FormControl>
+                              <SelectContent>
+                                  <SelectItem value="Estagiário / Júnior">Estagiário / Júnior</SelectItem>
+                                  <SelectItem value="Pleno">Pleno</SelectItem>
+                                  <SelectItem value="Sénior">Sénior</SelectItem>
+                                  <SelectItem value="Especialista / Liderança">Especialista / Liderança</SelectItem>
+                              </SelectContent>
+                          </Select>
+                          <FormMessage />
+                          </FormItem>
+                      )}
+                  />
               </div>
 
                <FormField

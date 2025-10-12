@@ -24,6 +24,8 @@ export const GenerateVacancyContentInputSchema = z.object({
     title: z.string().describe("The title of the job vacancy."),
     category: z.string().describe("The category of the job."),
     industry: z.string().describe("The industry for the job."),
+    minExperience: z.string().describe("The minimum experience required for the job (e.g., 0-1 ano, 3-5 anos)."),
+    demandLevel: z.string().describe("The seniority or demand level for the job (e.g., Júnior, Pleno, Sénior)."),
 });
 
 export const GenerateVacancyContentOutputSchema = z.object({
