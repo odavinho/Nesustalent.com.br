@@ -8,7 +8,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {z}from 'genkit';
 import { GenerateCourseContentInputSchema, GenerateCourseContentOutputSchema } from '@/lib/schemas';
 
 export type GenerateCourseContentInput = z.infer<typeof GenerateCourseContentInputSchema>;
@@ -57,14 +57,23 @@ const generateCourseContentFlow = ai.defineFlow(
         throw new Error("Failed to generate course content text.");
     }
     
-    const { media } = await ai.generate({
-        model: 'googleai/imagen-4.0-fast-generate-001',
-        prompt: await imagePrompt.render({input: {imageHint: textOutput.imageHint}}),
-      });
+    let imageDataUri: string | undefined = undefined;
+
+    try {
+      const { media } = await ai.generate({
+          model: 'googleai/imagen-4.0-fast-generate-001',
+          prompt: await imagePrompt.render({input: {imageHint: textOutput.imageHint}}),
+        });
+      imageDataUri = media.url;
+    } catch (error) {
+      console.error("Image generation failed, but continuing without it:", error);
+      // Opcional: pode-se adicionar um log ou notificação aqui
+      // A imagem não será adicionada, mas o resto do conteúdo do curso será retornado.
+    }
 
     return {
       ...textOutput,
-      imageDataUri: media.url
+      imageDataUri: imageDataUri
     };
   }
 );
