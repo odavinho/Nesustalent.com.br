@@ -33,6 +33,10 @@
           "description": "URL to the user's profile picture.",
           "format": "uri"
         },
+        "summary": {
+            "type": "string",
+            "description": "A brief professional summary about the user."
+        },
         "resumeUrl": {
           "type": "string",
           "description": "URL to the user's resume/CV.",
@@ -45,6 +49,10 @@
         "nationality": {
           "type": "string",
           "description": "The user's nationality."
+        },
+        "cidade": {
+            "type": "string",
+            "description": "The city where the user resides."
         },
         "dateOfBirth": {
           "type": "string",
@@ -99,6 +107,19 @@
                     "description": {"type": "string"}
                 },
                 "required": ["company", "role", "period"]
+            }
+        },
+        "certifications": {
+            "type": "array",
+            "description": "A list of the user's certifications.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string"},
+                    "issuingOrganization": {"type": "string"},
+                    "year": {"type": "string"}
+                },
+                "required": ["name", "issuingOrganization", "year"]
             }
         }
       },

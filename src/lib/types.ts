@@ -62,6 +62,12 @@ export interface Course {
     description?: string;
   }
 
+  export interface Certification {
+    name: string;
+    issuingOrganization: string;
+    year: string;
+  }
+
   export type EducationLevel = 'Ensino Primário' | 'Ensino Médio' | 'Frequência Universitária' | 'Licenciatura' | 'Mestrado' | 'Doutoramento';
 
   export interface UserProfile {
@@ -71,6 +77,7 @@ export interface Course {
     email: string;
     userType: 'student' | 'instructor' | 'admin' | 'recruiter';
     profilePictureUrl?: string;
+    summary?: string;
     resumeUrl?: string;
     academicTitle?: string;
     nationality?: string;
@@ -83,8 +90,9 @@ export interface Course {
     functionalArea?: string;
     subFunctionalArea?: string;
     skills?: string[];
-    professionalLevel?: string;
+    professionalLevel?: 'Estagiário / Júnior' | 'Pleno' | 'Sénior' | 'Especialista / Liderança';
     academicHistory?: AcademicHistory[];
     workExperience?: WorkExperience[];
+    certifications?: Certification[];
   }
   
