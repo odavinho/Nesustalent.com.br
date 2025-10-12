@@ -179,24 +179,49 @@ export default function EditVacancyPage() {
                   )}
                 />
 
-                <TextareaWithLabel
-                    label="Descrição Geral"
-                    {...form.register("description")}
+                <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                        <TextareaWithLabel
+                            label="Descrição Geral"
+                            rows={4}
+                            {...field}
+                        />
+                    )}
                 />
-                 <TextareaWithLabel
-                    label="Responsabilidades (uma por linha)"
-                    rows={5}
-                    {...form.register("responsibilities")}
+                 <FormField
+                    control={form.control}
+                    name="responsibilities"
+                    render={({ field }) => (
+                        <TextareaWithLabel
+                            label="Responsabilidades (uma por linha)"
+                            rows={5}
+                            {...field}
+                        />
+                    )}
                 />
-                 <TextareaWithLabel
-                    label="Requisitos (um por linha)"
-                    rows={5}
-                    {...form.register("requirements")}
+                 <FormField
+                    control={form.control}
+                    name="requirements"
+                    render={({ field }) => (
+                        <TextareaWithLabel
+                            label="Requisitos (um por linha)"
+                            rows={5}
+                            {...field}
+                        />
+                    )}
                 />
-                 <TextareaWithLabel
-                    label="Perguntas de Triagem (uma por linha)"
-                    rows={4}
-                    {...form.register("screeningQuestions")}
+                 <FormField
+                    control={form.control}
+                    name="screeningQuestions"
+                    render={({ field }) => (
+                        <TextareaWithLabel
+                            label="Perguntas de Triagem (uma por linha)"
+                            rows={4}
+                            {...field}
+                        />
+                    )}
                 />
 
               {/* Other form fields */}
