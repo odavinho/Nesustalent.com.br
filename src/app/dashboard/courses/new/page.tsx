@@ -14,7 +14,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Loader2, Wand2, ArrowLeft, Link as LinkIcon, PlusCircle, Trash2, Save, Bot } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { addCourseAction, generateCourseContentAction, generateModuleAssessmentAction } from '@/app/actions';
-import type { GenerateCourseContentOutput, ModuleAssessmentFormValues } from '@/lib/types';
 import Image from 'next/image';
 import type { Course } from '@/lib/types';
 import { useRouter } from 'next/navigation';
@@ -28,7 +27,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { ModuleAssessmentFormSchema } from '@/lib/schemas';
+import { ModuleAssessmentFormSchema, GenerateModuleAssessmentInput, GenerateModuleAssessmentOutput } from '@/lib/schemas';
 import { Separator } from '@/components/ui/separator';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
@@ -52,6 +51,8 @@ const formSchema = z.object({
 });
 
 type FormValues = z.infer<typeof formSchema>;
+type ModuleAssessmentFormValues = z.infer<typeof ModuleAssessmentFormSchema>;
+
 
 export default function NewCoursePage() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -361,13 +362,14 @@ function ModuleAssessmentGenerator({ moduleTitle, topics }: { moduleTitle: strin
     setIsGenerating(true);
     assessmentForm.reset({ questions: [] });
     try {
-        const result = await generateModuleAssessmentAction({ 
+        const input: GenerateModuleAssessmentInput = {
             moduleTitle, 
             topics: topics.filter(t => t), 
             numMultipleChoice: configData.numMultipleChoice,
             numShortAnswer: configData.numShortAnswer,
             level: configData.level
-        });
+        };
+        const result = await generateModuleAssessmentAction(input);
         const questionsForForm = result.questions.map(q => ({
           ...q,
           options: q.options ? q.options.map(opt => ({ value: opt })) : [],
