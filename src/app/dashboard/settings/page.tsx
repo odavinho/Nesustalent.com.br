@@ -1,11 +1,13 @@
-
+'use client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { courses } from "@/lib/courses";
-import { vacancies } from "@/lib/vacancies";
+import { getCourses } from "@/lib/course-service";
+import { getVacancies } from "@/lib/vacancy-service";
 import { PlaceHolderImages, type ImagePlaceholder } from "@/lib/placeholder-images";
 import { BookOpen, Briefcase, Star, Building, Award } from "lucide-react";
 import { CodeBlock } from "@/components/dashboard/code-block";
 import { EditableImageGrid } from "@/components/dashboard/settings/editable-image-grid";
+import { useEffect, useState } from "react";
+import type { Course, Vacancy } from "@/lib/types";
 
 
 const stats = [
@@ -18,6 +20,13 @@ const stats = [
 export default function SettingsPage() {
   const partners = PlaceHolderImages.filter(p => p.id.startsWith('partner-'));
   const certifications = PlaceHolderImages.filter(p => p.id.startsWith('cert-'));
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [vacancies, setVacancies] = useState<Vacancy[]>([]);
+
+  useEffect(() => {
+    setCourses(getCourses());
+    setVacancies(getVacancies());
+  }, []);
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
