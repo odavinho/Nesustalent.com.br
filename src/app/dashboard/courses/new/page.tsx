@@ -349,7 +349,7 @@ function ModuleAssessmentGenerator({ moduleTitle, topics }: { moduleTitle: strin
     },
   });
 
-  const handleGenerate = async (configData: any) => {
+  const handleGenerate = async (configData: { numMultipleChoice: number, numShortAnswer: number, level: 'Fácil' | 'Médio' | 'Difícil' }) => {
     if (!moduleTitle || topics.length === 0 || topics.every(t => !t)) {
         toast({
             variant: "destructive",
@@ -361,12 +361,17 @@ function ModuleAssessmentGenerator({ moduleTitle, topics }: { moduleTitle: strin
     setIsGenerating(true);
     assessmentForm.reset({ questions: [] });
     try {
-        const result = await generateModuleAssessmentAction({ moduleTitle, topics: topics.filter(t => t), ...configData });
+        const result = await generateModuleAssessmentAction({ 
+            moduleTitle, 
+            topics: topics.filter(t => t), 
+            numMultipleChoice: configData.numMultipleChoice,
+            numShortAnswer: configData.numShortAnswer,
+            level: configData.level
+        });
         const questionsForForm = result.questions.map(q => ({
           ...q,
           options: q.options ? q.options.map(opt => ({ value: opt })) : [],
         }));
-        // Use reset para substituir completamente o array de questões
         assessmentForm.reset({ questions: questionsForForm });
         setHasGenerated(true);
         toast({
