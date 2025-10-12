@@ -59,8 +59,8 @@ export const GenerateAssessmentTestOutputSchema = z.object({
 export const GenerateModuleAssessmentInputSchema = z.object({
     moduleTitle: z.string().describe('The title of the course module.'),
     topics: z.array(z.string()).describe('A list of topics covered in the module.'),
-    numMultipleChoice: z.coerce.number().describe('The number of multiple-choice questions.'),
-    numShortAnswer: z.coerce.number().describe('The number of short-answer questions.'),
+    numMultipleChoice: z.coerce.number().int().describe('The number of multiple-choice questions.'),
+    numShortAnswer: z.coerce.number().int().describe('The number of short-answer questions.'),
     level: z.enum(['Fácil', 'Médio', 'Difícil']).describe('The difficulty level of the test.'),
 });
 

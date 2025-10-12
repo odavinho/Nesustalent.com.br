@@ -365,15 +365,21 @@ function ModuleAssessmentGenerator({ moduleTitle, topics }: { moduleTitle: strin
         const input: GenerateModuleAssessmentInput = {
             moduleTitle, 
             topics: topics.filter(t => t), 
-            numMultipleChoice: configData.numMultipleChoice,
-            numShortAnswer: configData.numShortAnswer,
+            numMultipleChoice: Number(configData.numMultipleChoice),
+            numShortAnswer: Number(configData.numShortAnswer),
             level: configData.level
         };
         const result = await generateModuleAssessmentAction(input);
+        
+        if (!result || !result.questions) {
+            throw new Error("A resposta da IA não continha as perguntas esperadas.");
+        }
+
         const questionsForForm = result.questions.map(q => ({
           ...q,
           options: q.options ? q.options.map(opt => ({ value: opt })) : [],
         }));
+
         assessmentForm.reset({ questions: questionsForForm });
         setHasGenerated(true);
         toast({
@@ -433,8 +439,8 @@ function ModuleAssessmentGenerator({ moduleTitle, topics }: { moduleTitle: strin
                 <h4 className='font-semibold mb-4'>1. Configurar e Gerar</h4>
                  <Form {...configForm}>
                     <form onSubmit={configForm.handleSubmit(handleGenerate)} className="space-y-4">
-                        <FormField control={configForm.control} name="numMultipleChoice" render={({ field }) => ( <FormItem><FormLabel>Nº de Múltipla Escolha</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem> )} />
-                        <FormField control={configForm.control} name="numShortAnswer" render={({ field }) => ( <FormItem><FormLabel>Nº de Resposta Curta</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem> )} />
+                        <FormField control={configForm.control} name="numMultipleChoice" render={({ field }) => ( <FormItem><FormLabel>Nº de Múltipla Escolha</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value, 10) || 0)} /></FormControl></FormItem> )} />
+                        <FormField control={configForm.control} name="numShortAnswer" render={({ field }) => ( <FormItem><FormLabel>Nº de Resposta Curta</FormLabel><FormControl><Input type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value, 10) || 0)} /></FormControl></FormItem> )} />
                         <FormField control={configForm.control} name="level" render={({ field }) => ( <FormItem><FormLabel>Nível</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent><SelectItem value="Fácil">Fácil</SelectItem><SelectItem value="Médio">Médio</SelectItem><SelectItem value="Difícil">Difícil</SelectItem></SelectContent></Select></FormItem> )} />
                          <Button type="submit" disabled={isGenerating} className="w-full">
                             {isGenerating ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Wand2 className="mr-2 h-4 w-4"/>}
