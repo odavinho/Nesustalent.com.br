@@ -1,7 +1,7 @@
 
 'use client';
 
-import { notFound, useRouter } from "next/navigation";
+import { notFound, useRouter, useParams } from "next/navigation";
 import { users } from "@/lib/users";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, User, Briefcase, GraduationCap, Award, FileText, Download, ThumbsUp, ThumbsDown, MessageSquare } from "lucide-react";
 import type { UserProfile } from "@/lib/types";
 import Link from "next/link";
+import React from 'react';
 
 function ProfileView({ profile }: { profile: UserProfile }) {
     const router = useRouter();
@@ -109,8 +110,10 @@ function ProfileView({ profile }: { profile: UserProfile }) {
 }
 
 
-export default function CandidateProfilePage({ params }: { params: { id: string } }) {
-  const candidate = users.find(u => u.id === params.id && u.userType === 'student');
+export default function CandidateProfilePage() {
+  const params = useParams();
+  const id = params.id as string;
+  const candidate = users.find(u => u.id === id && u.userType === 'student');
 
   if (!candidate) {
     notFound();
