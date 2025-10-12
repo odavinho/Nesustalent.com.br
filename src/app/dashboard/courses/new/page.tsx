@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, forwardRef, ComponentProps } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useState } from 'react';
+import { useForm, SubmitHandler, useFieldArray, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { courseCategories } from '@/lib/courses';
@@ -11,33 +11,42 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, Wand2, ArrowLeft, Link as LinkIcon } from 'lucide-react';
+import { Loader2, Wand2, ArrowLeft, Link as LinkIcon, PlusCircle, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { generateCourseContentAction, addCourseAction } from '@/app/actions';
 import type { GenerateCourseContentOutput } from '@/ai/flows/generate-course-content';
 import Image from 'next/image';
-import type { Course, CourseModule } from '@/lib/types';
+import type { Course } from '@/lib/types';
 import { useRouter } from 'next/navigation';
-import { cn } from '@/lib/utils';
+
+const moduleSchema = z.object({
+  title: z.string().min(1, "O título do módulo é obrigatório."),
+  topics: z.array(z.object({ value: z.string().min(1, "O tópico não pode estar vazio.") })),
+  videoUrl: z.string().url("Insira um URL válido.").optional().or(z.literal('')),
+});
 
 const formSchema = z.object({
+  // AI generation part
   courseName: z.string().min(5, { message: 'O nome do curso deve ter pelo menos 5 caracteres.' }),
   courseCategory: z.string({ required_error: 'Selecione uma categoria.' }),
   courseLevel: z.string({ required_error: 'Selecione um nível.' }),
-  courseFormat: z.enum(['Online', 'Presencial', 'Híbrido'], { required_error: 'Selecione um formato.' }),
+  
+  // Full course content part
+  format: z.enum(['Online', 'Presencial', 'Híbrido'], { required_error: 'Selecione um formato.' }),
+  courseId: z.string().optional(),
+  duration: z.string().optional(),
+  generalObjective: z.string().optional(),
+  whatYouWillLearn: z.string().optional(),
+  imageDataUri: z.string().optional(),
+  modules: z.array(moduleSchema).optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-type GeneratedContent = GenerateCourseContentOutput & {
-    modules: (CourseModule & { id: string, videoUrl?: string })[];
-};
-
-
 export default function NewCoursePage() {
-  const [generatedContent, setGeneratedContent] = useState<GeneratedContent | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [showGeneratedContent, setShowGeneratedContent] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
 
@@ -45,19 +54,35 @@ export default function NewCoursePage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       courseName: '',
-      courseFormat: 'Online',
+      format: 'Online',
+      modules: []
     },
   });
 
-  const handleGenerateContent: SubmitHandler<FormValues> = async (data) => {
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "modules"
+  });
+
+  const handleGenerateContent: SubmitHandler<Pick<FormValues, 'courseName' | 'courseCategory' | 'courseLevel'>> = async (data) => {
     setIsGenerating(true);
-    setGeneratedContent(null);
+    setShowGeneratedContent(false);
     try {
       const result = await generateCourseContentAction(data);
-      setGeneratedContent({
-        ...result,
-        modules: result.modules.map(m => ({ ...m, id: `mod-${Math.random().toString(36).substr(2, 9)}`, videoUrl: '' }))
-      });
+      form.setValue('courseId', result.courseId);
+      form.setValue('duration', result.duration);
+      form.setValue('generalObjective', result.generalObjective);
+      form.setValue('whatYouWillLearn', result.whatYouWillLearn.join('\n'));
+      form.setValue('imageDataUri', result.imageDataUri);
+      
+      const modulesForForm = result.modules.map(m => ({
+        ...m,
+        topics: m.topics.map(t => ({ value: t })),
+        videoUrl: '',
+      }));
+      form.setValue('modules', modulesForForm);
+
+      setShowGeneratedContent(true);
     } catch (error) {
       toast({
         variant: 'destructive',
@@ -69,44 +94,31 @@ export default function NewCoursePage() {
     }
   };
 
-  const handleVideoUrlChange = (moduleIndex: number, url: string) => {
-    if (!generatedContent) return;
-    const newModules = [...generatedContent.modules];
-    newModules[moduleIndex].videoUrl = url;
-    setGeneratedContent({ ...generatedContent, modules: newModules });
-  };
 
-
-  const handleSaveCourse = async () => {
-    const courseFormat = form.getValues().courseFormat;
-    if (!generatedContent || !form.getValues().courseName) {
-      toast({
-        variant: 'destructive',
-        title: 'Faltam dados',
-        description: 'Gere o conteúdo do curso e preencha todos os campos obrigatórios antes de salvar.',
-      });
-      return;
-    }
-    
+  const handleSaveCourse: SubmitHandler<FormValues> = async (data) => {
+    if (!user) return;
     setIsSaving(true);
     
     const courseData: Omit<Course, 'id'> = {
-      name: form.getValues().courseName,
-      category: form.getValues().courseCategory,
-      format: courseFormat,
-      imageId: `course-image-${generatedContent.courseId}`, // Placeholder imageId
-      duration: generatedContent.duration,
-      generalObjective: generatedContent.generalObjective,
-      whatYouWillLearn: generatedContent.whatYouWillLearn,
-      modules: generatedContent.modules.map(m => ({
+      name: data.courseName,
+      category: data.courseCategory,
+      format: data.format,
+      imageId: `course-image-${data.courseId}`,
+      duration: data.duration || '',
+      generalObjective: data.generalObjective || '',
+      whatYouWillLearn: data.whatYouWillLearn?.split('\n').filter(line => line.trim() !== '') || [],
+      modules: data.modules?.map(m => ({
           title: m.title,
-          topics: m.topics,
+          topics: m.topics.map(t => t.value),
           videoUrl: m.videoUrl,
-      })),
+      })) || [],
     };
 
     try {
+      // Here you would also handle the upload of the image if imageDataUri is present
+      // and replace imageId with the actual URL. For this mock, we just use the ID.
       const result = await addCourseAction(courseData);
+
       if (result.success) {
         toast({
             title: "Curso salvo! (Simulado)",
@@ -128,13 +140,14 @@ export default function NewCoursePage() {
     }
   };
 
+  const {user} = useUser();
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <Button variant="outline" onClick={() => router.back()} className="mb-6">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Voltar
-        </Button>
+      <Button variant="outline" onClick={() => router.back()} className="mb-6">
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Voltar
+      </Button>
       <Card className="max-w-4xl mx-auto">
         <CardHeader>
           <CardTitle className="font-headline text-3xl">Adicionar Novo Curso</CardTitle>
@@ -144,155 +157,57 @@ export default function NewCoursePage() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleGenerateContent)} className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <FormField
-                  control={form.control}
-                  name="courseName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Nome do Curso</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Ex: Gestão de Projetos Ágeis" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="courseCategory"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Categoria</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione uma categoria" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {courseCategories.map((category) => (
-                            <SelectItem key={category.id} value={category.name}>
-                              {category.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+            <form onSubmit={form.handleSubmit(handleSaveCourse)} className="space-y-6">
+              {/* --- AI Generation Section --- */}
+              <div className="space-y-6 p-4 border rounded-md">
+                <h3 className="font-semibold text-lg">1. Gerar Conteúdo Base com IA</h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <FormField control={form.control} name="courseName" render={({ field }) => ( <FormItem><FormLabel>Nome do Curso</FormLabel><FormControl><Input placeholder="Ex: Gestão de Projetos Ágeis" {...field} /></FormControl><FormMessage /></FormItem> )} />
+                  <FormField control={form.control} name="courseCategory" render={({ field }) => ( <FormItem><FormLabel>Categoria</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Selecione uma categoria" /></SelectTrigger></FormControl><SelectContent>{courseCategories.map((c) => (<SelectItem key={c.id} value={c.name}>{c.name}</SelectItem>))}</SelectContent></Select><FormMessage /></FormItem> )} />
+                </div>
+                <FormField control={form.control} name="courseLevel" render={({ field }) => ( <FormItem><FormLabel>Nível do Curso</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Selecione o nível" /></SelectTrigger></FormControl><SelectContent><SelectItem value="Iniciante">Iniciante</SelectItem><SelectItem value="Intermediário">Intermediário</SelectItem><SelectItem value="Avançado">Avançado</SelectItem><SelectItem value="Todos os níveis">Todos os níveis</SelectItem></SelectContent></Select><FormMessage /></FormItem> )} />
+                <Button type="button" onClick={form.handleSubmit(handleGenerateContent)} disabled={isGenerating} className="w-full">
+                  {isGenerating ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Gerando...</> : <><Wand2 className="mr-2 h-4 w-4" /> Gerar Conteúdo</> }
+                </Button>
               </div>
 
-                <div className="grid md:grid-cols-2 gap-6">
-                    <FormField
-                        control={form.control}
-                        name="courseLevel"
-                        render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Nível do Curso</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                                <SelectTrigger>
-                                <SelectValue placeholder="Selecione o nível" />
-                                </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                                <SelectItem value="Iniciante">Iniciante</SelectItem>
-                                <SelectItem value="Intermediário">Intermediário</SelectItem>
-                                <SelectItem value="Avançado">Avançado</SelectItem>
-                                <SelectItem value="Todos os níveis">Todos os níveis</SelectItem>
-                            </SelectContent>
-                            </Select>
-                            <FormMessage />
-                        </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="courseFormat"
-                        render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Formato do Curso</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                                <SelectTrigger>
-                                <SelectValue placeholder="Selecione o formato" />
-                                </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                                <SelectItem value="Online">Online</SelectItem>
-                                <SelectItem value="Presencial">Presencial</SelectItem>
-                                <SelectItem value="Híbrido">Híbrido (Online e Presencial)</SelectItem>
-                            </SelectContent>
-                            </Select>
-                            <FormMessage />
-                        </FormItem>
-                        )}
-                    />
-                </div>
-
-              <Button type="submit" disabled={isGenerating} className="w-full">
-                {isGenerating ? (
-                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Gerando...</>
-                ) : (
-                  <><Wand2 className="mr-2 h-4 w-4" /> Gerar Conteúdo com IA</>
-                )}
-              </Button>
-              
               {isGenerating && (
-                <div className="mt-8 pt-6 border-t text-center">
-                  <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
-                  <p className="mt-2 text-muted-foreground">A IA está a criar o seu curso, por favor aguarde...</p>
-                </div>
+                <div className="text-center pt-6"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /><p className="mt-2 text-muted-foreground">Aguarde...</p></div>
               )}
     
-              {generatedContent && (
+              {showGeneratedContent && (
                 <div className="mt-8 pt-6 border-t space-y-6">
-                  <h3 className="font-headline text-2xl">Conteúdo Gerado e Editável</h3>
+                  <h3 className="font-headline text-2xl">2. Edite e Complete o Conteúdo</h3>
                   
-                  {generatedContent.imageDataUri && (
+                  {form.watch('imageDataUri') && (
                     <div className="relative w-full h-64 rounded-lg overflow-hidden shadow-lg">
-                        <Image src={generatedContent.imageDataUri} alt="Imagem gerada para o curso" fill className="object-cover" />
+                        <Image src={form.watch('imageDataUri')!} alt="Imagem gerada para o curso" fill className="object-cover" />
                     </div>
                   )}
-    
+
                   <div className="space-y-4">
-                    <InputWithLabel label="ID do Curso" defaultValue={generatedContent.courseId} readOnly />
-                    <InputWithLabel label="Duração" defaultValue={generatedContent.duration} />
-                    <TextareaWithLabel label="Objetivo Geral" defaultValue={generatedContent.generalObjective} rows={4} />
-                    <TextareaWithLabel label="O que vai aprender (separado por nova linha)" defaultValue={generatedContent.whatYouWillLearn.join('\n')} rows={5} />
+                    <FormField control={form.control} name="format" render={({ field }) => ( <FormItem><FormLabel>Formato do Curso</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Selecione o formato" /></SelectTrigger></FormControl><SelectContent><SelectItem value="Online">Online</SelectItem><SelectItem value="Presencial">Presencial</SelectItem><SelectItem value="Híbrido">Híbrido</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <FormField control={form.control} name="courseId" render={({ field }) => ( <FormItem><FormLabel>ID do Curso</FormLabel><FormControl><Input {...field} readOnly /></FormControl><FormMessage /></FormItem> )} />
+                      <FormField control={form.control} name="duration" render={({ field }) => ( <FormItem><FormLabel>Duração</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
+                    </div>
+                    <FormField control={form.control} name="generalObjective" render={({ field }) => ( <FormItem><FormLabel>Objetivo Geral</FormLabel><FormControl><Textarea rows={3} {...field} /></FormControl><FormMessage /></FormItem> )} />
+                    <FormField control={form.control} name="whatYouWillLearn" render={({ field }) => ( <FormItem><FormLabel>O que vai aprender (um por linha)</FormLabel><FormControl><Textarea rows={5} {...field} /></FormControl><FormMessage /></FormItem> )} />
     
                     <div>
-                      <h4 className="font-semibold mb-2">Módulos</h4>
+                      <h4 className="font-semibold mb-4 text-lg">Módulos do Curso</h4>
                       <div className="space-y-4">
-                        {generatedContent.modules.map((module, index) => (
-                          <div key={module.id} className="p-4 border rounded-md">
-                            <InputWithLabel label={`Título do Módulo ${index + 1}`} defaultValue={module.title} />
-                            <TextareaWithLabel className="mt-2" label={`Tópicos (separados por vírgula)`} defaultValue={module.topics.join(', ')} />
-    
-                            {(form.getValues().courseFormat === 'Online' || form.getValues().courseFormat === 'Híbrido') && (
-                               <div className='mt-4'>
-                                 <FormLabel>URL da Videoaula</FormLabel>
-                                 <div className="relative">
-                                   <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                   <Input 
-                                     placeholder="https://www.youtube.com/watch?v=..." 
-                                     className="pl-9" 
-                                     value={module.videoUrl || ''}
-                                     onChange={(e) => handleVideoUrlChange(index, e.target.value)}
-                                   />
-                                 </div>
-                               </div>
-                            )}
-                          </div>
+                        {fields.map((field, index) => (
+                           <ModuleField key={field.id} moduleIndex={index} form={form} onRemove={() => remove(index)} />
                         ))}
                       </div>
+                      <Button type="button" variant="outline" size="sm" onClick={() => append({ title: '', topics: [{value: ''}], videoUrl: '' })} className="mt-4">
+                        <PlusCircle className="mr-2 h-4 w-4"/>Adicionar Módulo
+                      </Button>
                     </div>
                   </div>
     
-                  <Button onClick={handleSaveCourse} disabled={isSaving} className="w-full bg-green-600 hover:bg-green-700">
+                  <Button type="submit" disabled={isSaving} className="w-full bg-green-600 hover:bg-green-700">
                      {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Salvar Curso'}
                   </Button>
                 </div>
@@ -305,25 +220,71 @@ export default function NewCoursePage() {
   );
 }
 
-// Helper component to add a label to the Input
-const InputWithLabel = forwardRef<
-  HTMLInputElement,
-  ComponentProps<typeof Input> & { label: string }
->(({ label, ...props }, ref) => (
-  <div className="space-y-2">
-    <FormLabel>{label}</FormLabel>
-    <Input ref={ref} {...props} />
-  </div>
-));
-InputWithLabel.displayName = "InputWithLabel";
 
-const TextareaWithLabel = forwardRef<
-  HTMLTextAreaElement,
-  ComponentProps<typeof Textarea> & { label: string }
->(({ label, className, ...props }, ref) => (
-    <div className={cn("space-y-2", className)}>
-    <FormLabel>{label}</FormLabel>
-    <Textarea ref={ref} {...props} />
-  </div>
-));
-TextareaWithLabel.displayName = "TextareaWithLabel";
+function ModuleField({ moduleIndex, form, onRemove }: { moduleIndex: number; form: any; onRemove: () => void; }) {
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: `modules.${moduleIndex}.topics`
+  });
+
+  const courseFormat = form.watch('format');
+
+  return (
+    <div className="p-4 border rounded-lg relative bg-secondary/30">
+      <div className="flex justify-between items-center mb-4">
+        <h5 className="font-bold text-md">Módulo {moduleIndex + 1}</h5>
+        <Button type="button" variant="ghost" size="icon" onClick={onRemove}>
+          <Trash2 className="h-4 w-4 text-destructive" />
+        </Button>
+      </div>
+
+      <div className="space-y-4">
+        <FormField
+          control={form.control}
+          name={`modules.${moduleIndex}.title`}
+          render={({ field }) => (
+            <FormItem><FormLabel>Título do Módulo</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+          )}
+        />
+        
+        <div className='space-y-2'>
+            <FormLabel>Tópicos da Aula</FormLabel>
+            {fields.map((topicField, topicIndex) => (
+                <div key={topicField.id} className="flex items-center gap-2">
+                    <FormField
+                        control={form.control}
+                        name={`modules.${moduleIndex}.topics.${topicIndex}.value`}
+                        render={({ field }) => (
+                           <FormItem className='flex-grow'><FormControl><Input {...field} placeholder={`Tópico ${topicIndex + 1}`} /></FormControl><FormMessage /></FormItem>
+                        )}
+                    />
+                     <Button type="button" variant="ghost" size="icon" onClick={() => remove(topicIndex)}><Trash2 className="h-4 w-4 text-destructive"/></Button>
+                </div>
+            ))}
+            <Button type="button" variant="outline" size="sm" className="text-xs h-8" onClick={() => append({ value: '' })}>
+                <PlusCircle className="mr-2 h-3 w-3"/>Adicionar Tópico
+            </Button>
+        </div>
+        
+        {(courseFormat === 'Online' || courseFormat === 'Híbrido') && (
+           <FormField
+            control={form.control}
+            name={`modules.${moduleIndex}.videoUrl`}
+            render={({ field }) => (
+                <FormItem>
+                  <FormLabel>URL da Videoaula</FormLabel>
+                  <div className="relative">
+                    <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <FormControl>
+                        <Input placeholder="https://www.youtube.com/watch?v=..." className="pl-9" {...field} />
+                    </FormControl>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+            )}
+           />
+        )}
+      </div>
+    </div>
+  );
+}
