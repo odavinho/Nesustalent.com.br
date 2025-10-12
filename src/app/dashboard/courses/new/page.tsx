@@ -14,7 +14,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Loader2, Wand2, ArrowLeft, Link as LinkIcon, PlusCircle, Trash2, Save, Bot } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { addCourseAction, generateCourseContentAction, generateModuleAssessmentAction } from '@/app/actions';
-import type { GenerateCourseContentOutput, GenerateModuleAssessmentOutput, ModuleAssessmentFormValues } from '@/lib/types';
+import type { GenerateCourseContentOutput, ModuleAssessmentFormValues } from '@/lib/types';
 import Image from 'next/image';
 import type { Course } from '@/lib/types';
 import { useRouter } from 'next/navigation';
@@ -366,6 +366,7 @@ function ModuleAssessmentGenerator({ moduleTitle, topics }: { moduleTitle: strin
           ...q,
           options: q.options ? q.options.map(opt => ({ value: opt })) : [],
         }));
+        // Use reset para substituir completamente o array de questões
         assessmentForm.reset({ questions: questionsForForm });
         setHasGenerated(true);
         toast({
@@ -401,6 +402,7 @@ function ModuleAssessmentGenerator({ moduleTitle, topics }: { moduleTitle: strin
         correctAnswerIndex: type === 'multiple-choice' ? 0 : undefined,
         shortAnswer: type === 'short-answer' ? '' : undefined,
     });
+    if (!hasGenerated) setHasGenerated(true); // Garante que a área de edição apareça
   }
 
   return (
@@ -433,6 +435,14 @@ function ModuleAssessmentGenerator({ moduleTitle, topics }: { moduleTitle: strin
                         </Button>
                     </form>
                  </Form>
+
+                 <Separator className="my-6" />
+
+                 <h4 className='font-semibold mb-4'>Ou Adicionar Manualmente</h4>
+                 <div className="flex flex-col gap-2">
+                    <Button type="button" variant="outline" onClick={() => addNewQuestion('multiple-choice')}><PlusCircle className="mr-2 h-4 w-4"/> Adicionar Múltipla Escolha</Button>
+                    <Button type="button" variant="outline" onClick={() => addNewQuestion('short-answer')}><PlusCircle className="mr-2 h-4 w-4"/> Adicionar Resposta Curta</Button>
+                </div>
             </div>
             
             {/* Coluna de Edição */}
@@ -441,14 +451,18 @@ function ModuleAssessmentGenerator({ moduleTitle, topics }: { moduleTitle: strin
               {isGenerating && <div className="flex items-center justify-center h-full"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}
               
               {!isGenerating && !hasGenerated && (
-                <div className="flex items-center justify-center h-full text-center text-muted-foreground border-2 border-dashed rounded-lg">
-                    <p>Gere um teste com IA ou adicione perguntas manualmente.</p>
+                <div className="flex items-center justify-center h-full text-center text-muted-foreground border-2 border-dashed rounded-lg p-8">
+                    <div>
+                        <Bot size={48} className="mx-auto mb-4" />
+                        <p>Gere um teste com IA ou adicione perguntas manualmente para começar.</p>
+                    </div>
                 </div>
               )}
 
               {hasGenerated && (
                   <Form {...assessmentForm}>
-                    <form onSubmit={assessmentForm.handleSubmit(handleSaveTest)} className="space-y-4">
+                    <form onSubmit={assessmentForm.handleSubmit(handleSaveTest)} className="space-y-4 flex-grow flex flex-col">
+                        <div className='space-y-4 overflow-y-auto flex-grow pr-2'>
                         {fields.map((item, index) => (
                         <div key={item.id} className="p-4 border rounded-md relative bg-background">
                             <Button type="button" variant="ghost" size="icon" className="absolute top-2 right-2" onClick={() => remove(index)}><Trash2 className="h-4 w-4 text-destructive"/></Button>
@@ -495,15 +509,9 @@ function ModuleAssessmentGenerator({ moduleTitle, topics }: { moduleTitle: strin
 
                         </div>
                         ))}
-                        
-                        <Separator />
-                        
-                        <div className="flex gap-2">
-                            <Button type="button" variant="outline" onClick={() => addNewQuestion('multiple-choice')}><PlusCircle className="mr-2 h-4 w-4"/> Adicionar Múltipla Escolha</Button>
-                            <Button type="button" variant="outline" onClick={() => addNewQuestion('short-answer')}><PlusCircle className="mr-2 h-4 w-4"/> Adicionar Resposta Curta</Button>
                         </div>
-
-                        <DialogFooter className="pt-4 !justify-end">
+                        
+                        <DialogFooter className="pt-4 !justify-end sticky bottom-0 bg-background py-4">
                         <Button type="submit" disabled={fields.length === 0} size="lg">
                             <Save className="mr-2 h-4 w-4" /> Guardar Teste no Módulo
                         </Button>
