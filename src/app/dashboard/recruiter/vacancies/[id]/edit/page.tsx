@@ -58,7 +58,7 @@ const toDate = (date: any): Date | undefined => {
   if (date instanceof Date) return date;
   if (date.toDate) return date.toDate(); // Firebase Timestamp
   return new Date(date);
-}
+};
 
 // Helper component
 const TextareaWithLabel = (props: React.ComponentProps<typeof Textarea> & { label: string }) => {
