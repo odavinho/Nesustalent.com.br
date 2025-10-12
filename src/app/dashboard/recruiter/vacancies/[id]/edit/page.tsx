@@ -11,12 +11,9 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, Wand2, CalendarIcon, ArrowLeft, Save } from 'lucide-react';
+import { Loader2, CalendarIcon, ArrowLeft, Save } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { generateVacancyContentAction } from '@/app/actions';
-import type { GenerateVacancyContentOutput } from '@/ai/flows/generate-vacancy-content';
 import { useRouter, useParams, notFound } from 'next/navigation';
-import { useUser } from '@/firebase';
 import { Switch } from '@/components/ui/switch';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
@@ -60,43 +57,34 @@ const toDate = (date: any): Date | undefined => {
   return new Date(date);
 };
 
-// Helper component
-interface TextareaWithLabelProps extends React.ComponentProps<typeof Textarea> {
-    label: string;
-}
-
-const TextareaWithLabel = ({ label, ...props }: TextareaWithLabelProps) => {
-    return (
-        <FormItem>
-            <FormLabel>{label}</FormLabel>
-            <FormControl>
-                <Textarea {...props} />
-            </FormControl>
-            <FormMessage />
-        </FormItem>
-    );
-};
-
-
 export default function EditVacancyPage() {
   const router = useRouter();
   const params = useParams();
   const vacancyId = params.id as string;
   
-  const [vacancy, setVacancy] = useState<Vacancy | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [vacancy, setVacancy] = useState<Vacancy | null | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: '',
+      category: '',
+      industry: '',
+      location: '',
+      type: 'Full-time',
+      numberOfVacancies: 1,
+      showSalary: true,
+      hideEmployerData: false,
+    }
   });
 
   useEffect(() => {
     if (vacancyId) {
       const foundVacancy = getVacancyById(vacancyId);
+      setVacancy(foundVacancy);
       if (foundVacancy) {
-        setVacancy(foundVacancy);
         form.reset({
           ...foundVacancy,
           closingDate: toDate(foundVacancy.closingDate),
@@ -106,7 +94,6 @@ export default function EditVacancyPage() {
           screeningQuestions: foundVacancy.screeningQuestions?.join('\n'),
         });
       }
-      setIsLoading(false);
     }
   }, [vacancyId, form]);
   
@@ -116,7 +103,7 @@ export default function EditVacancyPage() {
     const vacancyDataToUpdate = {
         ...data,
         responsibilities: data.responsibilities.split('\n').filter(r => r.trim() !== ''),
-        requirements: data.requirements.split('\n').filter(r => r.trim() !== ''),
+        requirements: data.requirements.split('\n').filter(q => q.trim() !== ''),
         screeningQuestions: data.screeningQuestions?.split('\n').filter(q => q.trim() !== ''),
         languages: data.languages?.split(',').map(l => l.trim()).filter(l => l),
     };
@@ -144,11 +131,11 @@ export default function EditVacancyPage() {
     }
   };
 
-  if (isLoading) {
+  if (vacancy === undefined) {
     return <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12"><Skeleton className="h-96" /></div>;
   }
 
-  if (!vacancy) {
+  if (vacancy === null) {
     return notFound();
   }
 
@@ -186,44 +173,52 @@ export default function EditVacancyPage() {
                     control={form.control}
                     name="description"
                     render={({ field }) => (
-                        <TextareaWithLabel
-                            label="Descrição Geral"
-                            rows={4}
-                            {...field}
-                        />
+                        <FormItem>
+                            <FormLabel>Descrição Geral</FormLabel>
+                            <FormControl>
+                                <Textarea rows={4} {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
                     )}
                 />
                  <FormField
                     control={form.control}
                     name="responsibilities"
                     render={({ field }) => (
-                        <TextareaWithLabel
-                            label="Responsabilidades (uma por linha)"
-                            rows={5}
-                            {...field}
-                        />
+                        <FormItem>
+                            <FormLabel>Responsabilidades (uma por linha)</FormLabel>
+                            <FormControl>
+                                <Textarea rows={5} {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
                     )}
                 />
                  <FormField
                     control={form.control}
                     name="requirements"
                     render={({ field }) => (
-                        <TextareaWithLabel
-                            label="Requisitos (um por linha)"
-                            rows={5}
-                            {...field}
-                        />
+                       <FormItem>
+                            <FormLabel>Requisitos (um por linha)</FormLabel>
+                            <FormControl>
+                                <Textarea rows={5} {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
                     )}
                 />
                  <FormField
                     control={form.control}
                     name="screeningQuestions"
                     render={({ field }) => (
-                        <TextareaWithLabel
-                            label="Perguntas de Triagem (uma por linha)"
-                            rows={4}
-                            {...field}
-                        />
+                        <FormItem>
+                            <FormLabel>Perguntas de Triagem (uma por linha)</FormLabel>
+                            <FormControl>
+                                <Textarea rows={4} {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
                     )}
                 />
 
