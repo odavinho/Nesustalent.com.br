@@ -23,14 +23,15 @@ import { pt } from 'date-fns/locale';
 import { getVacancyById, updateVacancy } from '@/lib/vacancy-service';
 import type { Vacancy } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Timestamp } from 'firebase/firestore';
 
 
 const formSchema = z.object({
   title: z.string().min(5, { message: 'O título da vaga deve ter pelo menos 5 caracteres.' }),
   category: z.string({ required_error: 'Selecione uma área funcional.' }),
   industry: z.string().min(3, { message: 'A indústria é obrigatória.' }),
-  minExperience: z.string().optional(),
-  demandLevel: z.string().optional(),
+  minExperience: z.string().min(1, 'A experiência mínima é obrigatória.'),
+  demandLevel: z.string().min(1, 'O grau de exigência é obrigatório.'),
   location: z.string().min(3, { message: 'A localização é obrigatória.' }),
   type: z.enum(['Full-time', 'Part-time', 'Remote']),
   numberOfVacancies: z.coerce.number().min(1, 'Deve haver pelo menos uma vaga.'),
@@ -50,14 +51,6 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-function toDate(date: any): Date | undefined {
-  if (!date) return undefined;
-  if (date instanceof Date) return date;
-  if (typeof date.toDate === 'function') return date.toDate(); // Firebase Timestamp
-  const parsedDate = new Date(date);
-  if (isNaN(parsedDate.getTime())) return undefined;
-  return parsedDate;
-};
 
 export default function EditVacancyPage() {
   const router = useRouter();
@@ -83,7 +76,7 @@ export default function EditVacancyPage() {
       responsibilities: '',
       requirements: '',
       screeningQuestions: '',
-      minExperience: '',
+      minExperience: '', 
       demandLevel: '',
       languages: '',
       requiredNationality: '',
@@ -96,11 +89,17 @@ export default function EditVacancyPage() {
       const foundVacancy = getVacancyById(vacancyId);
       setVacancy(foundVacancy);
       if (foundVacancy) {
+        let closingDateValue: Date | undefined = undefined;
+        if (foundVacancy.closingDate) {
+            const date = foundVacancy.closingDate;
+            closingDateValue = date instanceof Timestamp ? date.toDate() : date;
+        }
+
         form.reset({
           ...foundVacancy,
           minExperience: '', 
           demandLevel: '',
-          closingDate: toDate(foundVacancy.closingDate),
+          closingDate: closingDateValue,
           languages: foundVacancy.languages?.join(', '),
           responsibilities: foundVacancy.responsibilities.join('\n'),
           requirements: foundVacancy.requirements.join('\n'),
