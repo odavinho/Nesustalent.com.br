@@ -67,7 +67,6 @@ export async function generateCourseContentAction(input: GenerateCourseContentIn
     }
 }
 
-// This is a placeholder/mock action.
 export async function addCourseAction(course: Omit<Course, 'id'>): Promise<{ success: boolean; message: string }> {
     // In a real application, you would save this to Firestore.
     console.log("Mock addCourseAction:", course);

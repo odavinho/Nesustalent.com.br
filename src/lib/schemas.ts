@@ -34,3 +34,23 @@ export const GenerateVacancyContentOutputSchema = z.object({
     requirements: z.array(z.string()).describe("A list of required qualifications and skills."),
     screeningQuestions: z.array(z.string()).describe("A list of 3-5 screening questions for the candidate."),
 });
+
+const QuestionSchema = z.object({
+    id: z.string().describe("A unique ID for the question (e.g., 'q1')."),
+    question: z.string().describe('The text of the question.'),
+    type: z.enum(['multiple-choice', 'short-answer', 'psychometric']).describe('The type of the question.'),
+    options: z.array(z.string()).optional().describe('A list of 4 options for multiple-choice questions.'),
+});
+  
+export const GenerateAssessmentTestInputSchema = z.object({
+    jobDescription: z.string().describe('The full job description for the vacancy.'),
+    testType: z.enum(['knowledge', 'psychometric']).describe('The type of test to generate.'),
+    numMultipleChoice: z.coerce.number().describe('The number of multiple-choice questions.'),
+    numShortAnswer: z.coerce.number().describe('The number of short-answer questions.'),
+});
+
+export const GenerateAssessmentTestOutputSchema = z.object({
+    id: z.string().describe("A unique ID for the test (e.g., 'test-123')."),
+    title: z.string().describe('A concise and relevant title for the generated test.'),
+    questions: z.array(QuestionSchema).describe('The list of generated questions.'),
+});
