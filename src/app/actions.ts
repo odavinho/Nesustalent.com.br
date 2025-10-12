@@ -8,13 +8,14 @@ import { extractProfileFromResume, ExtractProfileFromResumeInput, ExtractProfile
 import { generateAssessmentTest } from "@/ai/flows/generate-assessment-test";
 import { generateModuleAssessment } from "@/ai/flows/generate-module-assessment";
 
-import { GenerateCourseContentInput, GenerateCourseContentOutput, GenerateVacancyContentInput, GenerateVacancyContentOutput, GenerateAssessmentTestInput, GenerateAssessmentTestOutput, GenerateModuleAssessmentInput, GenerateModuleAssessmentOutput } from "@/lib/schemas";
+import { GenerateCourseContentInputSchema, GenerateCourseContentOutputSchema, GenerateVacancyContentInputSchema, GenerateVacancyContentOutputSchema, GenerateAssessmentTestInputSchema, GenerateAssessmentTestOutputSchema, GenerateModuleAssessmentInputSchema, GenerateModuleAssessmentOutputSchema } from "@/lib/schemas";
+import type { Course, GenerateCourseContentInput, GenerateCourseContentOutput, GenerateVacancyContentInput, GenerateVacancyContentOutput, GenerateAssessmentTestInput, GenerateAssessmentTestOutput, GenerateModuleAssessmentInput, GenerateModuleAssessmentOutput } from "@/lib/types";
+
 
 import { revalidatePath } from "next/cache";
 import type { ImagePlaceholder } from "@/lib/placeholder-images";
 import { promises as fs } from 'fs';
 import path from 'path';
-import type { Course } from "@/lib/types";
 import { addCourse } from "@/lib/course-service";
 
 // AI Actions
