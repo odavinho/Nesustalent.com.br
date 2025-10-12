@@ -67,21 +67,24 @@ export const GenerateModuleAssessmentInputSchema = z.object({
 const ModuleQuestionSchema = z.object({
     question: z.string().min(1, "A pergunta não pode estar em branco."),
     type: z.enum(['multiple-choice', 'short-answer']),
-    options: z.array(z.object({ value: z.string().min(1, "A opção não pode estar em branco.") })).optional(),
+    options: z.array(z.string()).optional(),
     correctAnswerIndex: z.coerce.number().optional(),
     shortAnswer: z.string().optional(),
 });
   
 export const GenerateModuleAssessmentOutputSchema = z.object({
-    questions: z.array(ModuleQuestionSchema.omit({ options: true, shortAnswer: true }).extend({
-        options: z.array(z.string()).optional(),
-        shortAnswer: z.string().optional(),
-    })).describe('The list of generated questions for the module quiz.'),
+    questions: z.array(ModuleQuestionSchema).describe('The list of generated questions for the module quiz.'),
 });
 
 // Zod schema for the form in the UI, which uses a different structure for options
 export const ModuleAssessmentFormSchema = z.object({
-    questions: z.array(ModuleQuestionSchema),
+    questions: z.array(z.object({
+        question: z.string().min(1, "A pergunta não pode estar em branco."),
+        type: z.enum(['multiple-choice', 'short-answer']),
+        options: z.array(z.object({ value: z.string().min(1, "A opção não pode estar em branco.") })).optional(),
+        correctAnswerIndex: z.coerce.number().optional(),
+        shortAnswer: z.string().optional(),
+    })),
 });
 
 export type ModuleAssessmentFormValues = z.infer<typeof ModuleAssessmentFormSchema>;
