@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, type ComponentProps, forwardRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -29,8 +29,8 @@ const formSchema = z.object({
   title: z.string().min(5, { message: 'O título da vaga deve ter pelo menos 5 caracteres.' }),
   category: z.string({ required_error: 'Selecione uma área funcional.' }),
   industry: z.string().min(3, { message: 'A indústria é obrigatória.' }),
-  minExperience: z.string(), // Removed .optional()
-  demandLevel: z.string(), // Removed .optional()
+  minExperience: z.string().optional(),
+  demandLevel: z.string().optional(),
   location: z.string().min(3, { message: 'A localização é obrigatória.' }),
   type: z.enum(['Full-time', 'Part-time', 'Remote']),
   numberOfVacancies: z.coerce.number().min(1, 'Deve haver pelo menos uma vaga.'),
@@ -50,7 +50,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-const toDate = (date: any): Date | undefined => {
+function toDate(date: any): Date | undefined {
   if (!date) return undefined;
   if (date instanceof Date) return date;
   if (typeof date.toDate === 'function') return date.toDate(); // Firebase Timestamp
