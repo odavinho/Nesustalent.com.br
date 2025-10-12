@@ -29,6 +29,7 @@ export default function CoursesPage() {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
+    // This function will now read from localStorage if available
     setCourses(getCourses());
     setCourseCategories(getCourseCategories());
   }, []);

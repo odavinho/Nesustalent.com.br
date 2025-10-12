@@ -139,12 +139,13 @@ export default function NewCoursePage() {
         return;
     }
 
-    const courseData: Omit<Course, 'id'> & {id: string} = {
+    const courseData: Course = {
       id: data.id,
       name: data.courseName,
       category: data.courseCategory,
       format: data.format,
       imageId: `course-image-${data.id}`,
+      imageDataUri: data.imageDataUri,
       duration: data.duration || '',
       generalObjective: data.generalObjective || '',
       whatYouWillLearn: data.whatYouWillLearn?.split('\n').filter(line => line.trim() !== '') || [],

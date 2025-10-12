@@ -2,12 +2,12 @@
 
 import { aiResumeAnalysis, AIResumeAnalysisInput, AIResumeAnalysisOutput } from "@/ai/flows/ai-resume-analysis";
 import { personalizedCourseRecommendations, PersonalizedCourseRecommendationsInput, PersonalizedCourseRecommendationsOutput } from "@/ai/flows/personalized-course-recommendations";
-import { generateCourseContent } from "@/ai/flows/generate-course-content";
-import { generateVacancyContent } from "@/ai/flows/generate-vacancy-content";
+import { generateCourseContent, GenerateCourseContentInput, GenerateCourseContentOutput } from "@/ai/flows/generate-course-content";
+import { generateVacancyContent, GenerateVacancyContentInput, GenerateVacancyContentOutput } from "@/ai/flows/generate-vacancy-content";
 import { extractProfileFromResume, ExtractProfileFromResumeInput, ExtractProfileFromResumeOutput } from "@/ai/flows/extract-profile-from-resume";
-import { generateAssessmentTest } from "@/ai/flows/generate-assessment-test";
-import { generateModuleAssessment } from "@/ai/flows/generate-module-assessment";
-import type { Course, GenerateCourseContentInput, GenerateCourseContentOutput, GenerateVacancyContentInput, GenerateVacancyContentOutput, GenerateAssessmentTestInput, GenerateAssessmentTestOutput, GenerateModuleAssessmentInput, GenerateModuleAssessmentOutput } from "@/lib/types";
+import { generateAssessmentTest, GenerateAssessmentTestInput, GenerateAssessmentTestOutput } from "@/ai/flows/generate-assessment-test";
+import { generateModuleAssessment, GenerateModuleAssessmentInput, GenerateModuleAssessmentOutput } from "@/ai/flows/generate-module-assessment";
+import type { Course } from "@/lib/types";
 
 import { revalidatePath } from "next/cache";
 import type { ImagePlaceholder } from "@/lib/placeholder-images";

@@ -24,6 +24,7 @@ export interface Course {
     name: string;
     category: string;
     imageId: string;
+    imageDataUri?: string; // New field for the generated image
     duration: string;
     format: 'Online' | 'Presencial' | 'Híbrido';
     generalObjective: string;
@@ -149,63 +150,3 @@ export interface Course {
       imageHint: string;
       imageDataUri?: string;
   }
-
-  // Types for generate-vacancy-content flow
-    export interface GenerateVacancyContentInput {
-        title: string;
-        category: string;
-        industry: string;
-        minExperience: string;
-        demandLevel: string;
-    }
-    
-    export interface GenerateVacancyContentOutput {
-        description: string;
-        responsibilities: string[];
-        requirements: string[];
-        screeningQuestions?: string[];
-    }
-    
-  // Types for generate-assessment-test flow
-    export interface GenerateAssessmentTestInput {
-        jobDescription: string;
-        testType: 'knowledge' | 'psychometric';
-        numMultipleChoice: number;
-        numShortAnswer: number;
-    }
-
-    interface TestQuestion {
-        id: string;
-        question: string;
-        type: 'multiple-choice' | 'short-answer' | 'psychometric';
-        options?: string[];
-    }
-    
-    export interface GenerateAssessmentTestOutput {
-        id: string;
-        title: string;
-        questions: TestQuestion[];
-    }
-
-  // Types for generate-module-assessment flow
-    export interface GenerateModuleAssessmentInput {
-        moduleTitle: string;
-        topics: string[];
-        numMultipleChoice: number;
-        numShortAnswer: number;
-        level: 'Fácil' | 'Médio' | 'Difícil';
-    }
-
-    interface ModuleQuestionGen {
-        question: string;
-        type: 'multiple-choice' | 'short-answer';
-        options?: string[];
-        correctAnswerIndex?: number;
-        shortAnswer?: string;
-    }
-    
-    export interface GenerateModuleAssessmentOutput {
-        questions: ModuleQuestionGen[];
-    }
-  
-
