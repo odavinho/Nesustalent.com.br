@@ -24,8 +24,10 @@ function ProfileView({ profile }: { profile: UserProfile }) {
                     <p className="text-muted-foreground text-xl mt-1">{profile.academicTitle}</p>
                     <p className="text-muted-foreground text-sm mt-2">{profile.functionalArea}  &middot; {profile.yearsOfExperience} anos de experiência</p>
                 </div>
-                <Button>
-                    <User className="mr-2 h-4 w-4" /> Contactar Candidato
+                <Button asChild>
+                    <a href={`mailto:${profile.email}`}>
+                        <User className="mr-2 h-4 w-4" /> Contactar Candidato
+                    </a>
                 </Button>
             </div>
             
