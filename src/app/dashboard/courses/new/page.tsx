@@ -18,6 +18,7 @@ import type { GenerateCourseContentOutput } from '@/ai/flows/generate-course-con
 import Image from 'next/image';
 import type { Course } from '@/lib/types';
 import { useRouter } from 'next/navigation';
+import { useUser } from '@/firebase';
 
 const moduleSchema = z.object({
   title: z.string().min(1, "O título do módulo é obrigatório."),
