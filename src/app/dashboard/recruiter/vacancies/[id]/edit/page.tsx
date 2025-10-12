@@ -116,7 +116,7 @@ export default function EditVacancyPage() {
         ...data,
         responsibilities: data.responsibilities.split('\n').filter(r => r.trim() !== ''),
         requirements: data.requirements.split('\n').filter(q => q.trim() !== ''),
-        screeningQuestions: data.screeningQuestions?.split('\n').filter(q => q.trim() !== '') || [],
+        screeningQuestions: data.screeningQuestions ? data.screeningQuestions.split('\n').filter(q => q.trim() !== '') : [],
         languages: data.languages ? data.languages.split(',').map(l => l.trim()).filter(l => l) : [],
     };
 
@@ -259,3 +259,5 @@ export default function EditVacancyPage() {
     </div>
   );
 }
+
+    
