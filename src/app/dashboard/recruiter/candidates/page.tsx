@@ -21,7 +21,7 @@ const initialCandidates = mockUsers
 
 const educationLevels: EducationLevel[] = ['Ensino Primário', 'Ensino Médio', 'Frequência Universitária', 'Licenciatura', 'Mestrado', 'Doutoramento'];
 
-const CANDIDATES_PER_PAGE = 10;
+const CANDIDATES_PER_PAGE = 12;
 
 export default function CandidatesPage() {
     const [searchTerm, setSearchTerm] = useState('');
