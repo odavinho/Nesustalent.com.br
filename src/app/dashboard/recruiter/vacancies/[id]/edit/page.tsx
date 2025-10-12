@@ -30,8 +30,8 @@ const formSchema = z.object({
   title: z.string().min(5, { message: 'O título da vaga deve ter pelo menos 5 caracteres.' }),
   category: z.string({ required_error: 'Selecione uma área funcional.' }),
   industry: z.string().min(3, { message: 'A indústria é obrigatória.' }),
-  minExperience: z.string({ required_error: 'A experiência mínima é obrigatória.' }),
-  demandLevel: z.string({ required_error: 'O grau de exigência é obrigatório.' }),
+  minExperience: z.string().optional(),
+  demandLevel: z.string().optional(),
   location: z.string().min(3, { message: 'A localização é obrigatória.' }),
   type: z.enum(['Full-time', 'Part-time', 'Remote']),
   numberOfVacancies: z.coerce.number().min(1, 'Deve haver pelo menos uma vaga.'),
@@ -88,31 +88,41 @@ export default function EditVacancyPage() {
   useEffect(() => {
     if (vacancyId) {
       const foundVacancy = getVacancyById(vacancyId);
-      setVacancy(foundVacancy);
-      if (foundVacancy) {
+      setVacancy(foundVacancy); // Can be Vacancy or null
+    }
+  }, [vacancyId]);
+  
+  useEffect(() => {
+    if (vacancy) {
         let closingDateValue: Date | undefined = undefined;
-        if (foundVacancy.closingDate) {
-            const date = foundVacancy.closingDate;
+        if (vacancy.closingDate) {
+            const date = vacancy.closingDate;
             closingDateValue = date instanceof Timestamp ? date.toDate() : date;
         }
 
         form.reset({
-          ...foundVacancy,
+          ...vacancy,
           minExperience: '', // This is for AI generation, not editing.
           demandLevel: '', // This is for AI generation, not editing.
           closingDate: closingDateValue,
-          languages: foundVacancy.languages?.join(', ') || '',
-          responsibilities: foundVacancy.responsibilities.join('\n'),
-          requirements: foundVacancy.requirements.join('\n'),
-          screeningQuestions: foundVacancy.screeningQuestions?.join('\n') || '',
+          languages: vacancy.languages?.join(', ') || '',
+          responsibilities: vacancy.responsibilities.join('\n'),
+          requirements: vacancy.requirements.join('\n'),
+          screeningQuestions: vacancy.screeningQuestions?.join('\n') || '',
         });
       }
-    }
-  }, [vacancyId, form]);
-  
+  }, [vacancy, form]);
+
+
   const handleUpdateVacancy: SubmitHandler<FormValues> = async (data) => {
     setIsSubmitting(true);
     
+    if (!vacancy) {
+        toast({ variant: "destructive", title: "Erro", description: "Vaga não encontrada para atualizar."});
+        setIsSubmitting(false);
+        return;
+    }
+
     const vacancyDataToUpdate: Partial<Vacancy> = {
         ...data,
         responsibilities: data.responsibilities.split('\n').filter(r => r.trim() !== ''),
@@ -121,7 +131,7 @@ export default function EditVacancyPage() {
         languages: data.languages ? data.languages.split(',').map(l => l.trim()).filter(l => l) : [],
     };
 
-    if (data.hideEmployerData && vacancy) {
+    if (data.hideEmployerData) {
         vacancyDataToUpdate.employerName = `Empresa líder no setor de ${vacancy.industry}`;
         vacancyDataToUpdate.aboutEmployer = `Oportunidade confidencial numa empresa de referência no setor de ${vacancy.industry}.`;
     }
@@ -145,11 +155,18 @@ export default function EditVacancyPage() {
   };
 
   if (vacancy === undefined) {
-    return <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12"><Skeleton className="h-96" /></div>;
+    return (
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className="max-w-4xl mx-auto">
+                <Skeleton className="h-96 w-full" />
+            </div>
+        </div>
+    );
   }
 
   if (vacancy === null) {
-    return notFound();
+    notFound();
+    return null;
   }
 
   return (
