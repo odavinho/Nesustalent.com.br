@@ -30,8 +30,8 @@ const formSchema = z.object({
   title: z.string().min(5, { message: 'O título da vaga deve ter pelo menos 5 caracteres.' }),
   category: z.string({ required_error: 'Selecione uma área funcional.' }),
   industry: z.string().min(3, { message: 'A indústria é obrigatória.' }),
-  minExperience: z.string().min(1, 'A experiência mínima é obrigatória.'),
-  demandLevel: z.string().min(1, 'O grau de exigência é obrigatório.'),
+  minExperience: z.string({ required_error: 'A experiência mínima é obrigatória.' }),
+  demandLevel: z.string({ required_error: 'O grau de exigência é obrigatório.' }),
   location: z.string().min(3, { message: 'A localização é obrigatória.' }),
   type: z.enum(['Full-time', 'Part-time', 'Remote']),
   numberOfVacancies: z.coerce.number().min(1, 'Deve haver pelo menos uma vaga.'),
@@ -97,13 +97,13 @@ export default function EditVacancyPage() {
 
         form.reset({
           ...foundVacancy,
-          minExperience: '', 
-          demandLevel: '',
+          minExperience: '', // This seems to be for the AI generation part, keeping it empty for edit
+          demandLevel: '', // This seems to be for the AI generation part, keeping it empty for edit
           closingDate: closingDateValue,
-          languages: foundVacancy.languages?.join(', '),
+          languages: foundVacancy.languages?.join(', ') || '',
           responsibilities: foundVacancy.responsibilities.join('\n'),
           requirements: foundVacancy.requirements.join('\n'),
-          screeningQuestions: foundVacancy.screeningQuestions?.join('\n'),
+          screeningQuestions: foundVacancy.screeningQuestions?.join('\n') || '',
         });
       }
     }
@@ -116,8 +116,8 @@ export default function EditVacancyPage() {
         ...data,
         responsibilities: data.responsibilities.split('\n').filter(r => r.trim() !== ''),
         requirements: data.requirements.split('\n').filter(q => q.trim() !== ''),
-        screeningQuestions: data.screeningQuestions?.split('\n').filter(q => q.trim() !== ''),
-        languages: data.languages?.split(',').map(l => l.trim()).filter(l => l),
+        screeningQuestions: data.screeningQuestions?.split('\n').filter(q => q.trim() !== '') || [],
+        languages: data.languages ? data.languages.split(',').map(l => l.trim()).filter(l => l) : [],
     };
 
     if (data.hideEmployerData && vacancy) {
