@@ -32,4 +32,5 @@ export const GenerateVacancyContentOutputSchema = z.object({
     description: z.string().describe("A general summary of the job vacancy."),
     responsibilities: z.array(z.string()).describe("A list of key responsibilities."),
     requirements: z.array(z.string()).describe("A list of required qualifications and skills."),
+    screeningQuestions: z.array(z.string()).describe("A list of 3-5 screening questions for the candidate."),
 });

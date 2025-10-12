@@ -3,7 +3,7 @@
 import { getVacancyById } from "@/lib/vacancy-service";
 import { notFound, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Briefcase, Clock, MapPin, Share2, Loader2 } from "lucide-react";
+import { ArrowLeft, Briefcase, Clock, MapPin, Share2, Loader2, HelpCircle } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { courseCategories } from "@/lib/courses";
@@ -15,6 +15,8 @@ import { doc, setDoc, serverTimestamp, getDoc } from "firebase/firestore";
 import { useToast } from "@/hooks/use-toast";
 import React, { useState, useEffect } from "react";
 import type { UserProfile, Vacancy } from "@/lib/types";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function VacancyDetailPage({ params }: { params: { id: string } }) {
   const [vacancy, setVacancy] = useState<Vacancy | null | undefined>(undefined);
@@ -180,6 +182,21 @@ export default function VacancyDetailPage({ params }: { params: { id: string } }
                                   <span><strong>Tipo:</strong> {vacancy.type}</span>
                               </div>
                           </div>
+                          
+                          {vacancy.screeningQuestions && vacancy.screeningQuestions.length > 0 && (
+                            <div className="mt-6 pt-6 border-t">
+                                <h4 className="font-semibold mb-4 flex items-center gap-2"><HelpCircle size={18}/> Perguntas de Triagem</h4>
+                                <div className="space-y-4">
+                                {vacancy.screeningQuestions.map((question, index) => (
+                                    <div key={index} className="space-y-2">
+                                        <Label htmlFor={`question-${index}`}>{question}</Label>
+                                        <Textarea id={`question-${index}`} placeholder="Sua resposta..." rows={3} />
+                                    </div>
+                                ))}
+                                </div>
+                            </div>
+                          )}
+
                           <Button 
                             size="lg" 
                             className="w-full mt-6 bg-accent hover:bg-accent/90 text-accent-foreground"

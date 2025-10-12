@@ -28,6 +28,7 @@ export interface Course {
     closingDate?: Timestamp | Date;
     responsibilities: string[];
     requirements: string[];
+    screeningQuestions?: string[];
     industry?: string;
     numberOfVacancies?: number;
     requiredNationality?: string;

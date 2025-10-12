@@ -485,11 +485,14 @@ export default function NewVacancyPage() {
 
               {generatedContent && (
                 <div className="mt-8 pt-6 border-t space-y-6">
-                  <h3 className="font-headline text-2xl">Descrição Gerada</h3>
+                  <h3 className="font-headline text-2xl">Conteúdo Gerado</h3>
                   <div className="space-y-4">
                     <TextareaWithLabel label="Descrição Geral" value={generatedContent.description} onChange={(e) => setGeneratedContent({...generatedContent, description: e.target.value})} rows={4} />
                     <TextareaWithLabel label="Responsabilidades (separado por nova linha)" value={generatedContent.responsibilities.join('\n')} onChange={(e) => setGeneratedContent({...generatedContent, responsibilities: e.target.value.split('\n')})} rows={6} />
                     <TextareaWithLabel label="Requisitos (separado por nova linha)" value={generatedContent.requirements.join('\n')} onChange={(e) => setGeneratedContent({...generatedContent, requirements: e.target.value.split('\n')})} rows={6} />
+                    {generatedContent.screeningQuestions && (
+                        <TextareaWithLabel label="Perguntas de Triagem (separado por nova linha)" value={generatedContent.screeningQuestions.join('\n')} onChange={(e) => setGeneratedContent({...generatedContent, screeningQuestions: e.target.value.split('\n')})} rows={5} />
+                    )}
                   </div>
                   <Button onClick={handleSaveVacancy} disabled={isSaving} className="w-full bg-green-600 hover:bg-green-700">
                     {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Publicar Vaga'}
