@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, use } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { users } from '@/lib/users';
 import type { UserProfile } from '@/lib/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -44,6 +44,7 @@ const getInitials = (name: string) => name.split(' ').map(n => n[0]).join('').sl
 
 export default function ConversationsPage() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [conversations, setConversations] = useState<Conversation[]>(initialConversations);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [newMessage, setNewMessage] = useState('');
@@ -89,7 +90,7 @@ export default function ConversationsPage() {
   const renderConversationList = () => (
     <div className="flex flex-col h-full">
       <div className="p-4 border-b">
-        <h1 className="font-headline text-2xl font-bold">Conversas</h1>
+        <h2 className="font-headline text-2xl font-bold">Conversas</h2>
          <div className="relative mt-4">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Pesquisar conversas..." className="pl-9" />
@@ -178,18 +179,24 @@ export default function ConversationsPage() {
    const isChatOpen = !!selectedConversation;
 
   return (
-    <div className="h-[calc(100vh-10rem)] border rounded-lg overflow-hidden grid grid-cols-1 md:grid-cols-3">
-      <div className={`col-span-1 border-r ${isChatOpen ? 'hidden md:block' : 'block'}`}>
-        {renderConversationList()}
-      </div>
-      <div className={`md:col-span-2 ${isChatOpen ? 'block' : 'hidden md:flex'} items-center justify-center bg-slate-50`}>
-         {selectedConversation ? renderChatView() : (
-            <div className='text-center text-muted-foreground'>
-                <MessageSquare size={48} className='mx-auto mb-2'/>
-                <p>Selecione uma conversa para começar a conversar.</p>
+    <div className="space-y-6">
+        <Button variant="outline" onClick={() => router.back()} className="mb-6">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Voltar
+        </Button>
+        <div className="h-[calc(100vh-10rem)] border rounded-lg overflow-hidden grid grid-cols-1 md:grid-cols-3">
+            <div className={`col-span-1 border-r ${isChatOpen ? 'hidden md:block' : 'block'}`}>
+                {renderConversationList()}
             </div>
-         )}
-      </div>
+            <div className={`md:col-span-2 ${isChatOpen ? 'block' : 'hidden md:flex'} items-center justify-center bg-slate-50`}>
+                {selectedConversation ? renderChatView() : (
+                    <div className='text-center text-muted-foreground'>
+                        <MessageSquare size={48} className='mx-auto mb-2'/>
+                        <p>Selecione uma conversa para começar a conversar.</p>
+                    </div>
+                )}
+            </div>
+        </div>
     </div>
   );
 }
