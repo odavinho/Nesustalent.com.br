@@ -59,16 +59,29 @@ export const GenerateAssessmentTestOutputSchema = z.object({
 export const GenerateModuleAssessmentInputSchema = z.object({
     moduleTitle: z.string().describe('The title of the course module.'),
     topics: z.array(z.string()).describe('A list of topics covered in the module.'),
+    numMultipleChoice: z.coerce.number().describe('The number of multiple-choice questions.'),
+    numShortAnswer: z.coerce.number().describe('The number of short-answer questions.'),
+    level: z.enum(['Fácil', 'Médio', 'Difícil']).describe('The difficulty level of the test.'),
 });
 
 const ModuleQuestionSchema = z.object({
-    question: z.string().describe('The text of the question.'),
-    type: z.enum(['multiple-choice', 'short-answer']).describe('The type of the question.'),
-    options: z.array(z.string()).optional().describe('A list of 4 options for multiple-choice questions.'),
-    correctAnswerIndex: z.number().optional().describe('The index of the correct answer in the options array for multiple-choice questions.'),
-    shortAnswer: z.string().optional().describe('The ideal short answer for short-answer questions.'),
+    question: z.string().min(1, "A pergunta não pode estar em branco."),
+    type: z.enum(['multiple-choice', 'short-answer']),
+    options: z.array(z.object({ value: z.string().min(1, "A opção não pode estar em branco.") })).optional(),
+    correctAnswerIndex: z.coerce.number().optional(),
+    shortAnswer: z.string().optional(),
 });
   
 export const GenerateModuleAssessmentOutputSchema = z.object({
-    questions: z.array(ModuleQuestionSchema).describe('The list of generated questions for the module quiz.'),
+    questions: z.array(ModuleQuestionSchema.omit({ options: true, shortAnswer: true }).extend({
+        options: z.array(z.string()).optional(),
+        shortAnswer: z.string().optional(),
+    })).describe('The list of generated questions for the module quiz.'),
 });
+
+// Zod schema for the form in the UI, which uses a different structure for options
+export const ModuleAssessmentFormSchema = z.object({
+    questions: z.array(ModuleQuestionSchema),
+});
+
+export type ModuleAssessmentFormValues = z.infer<typeof ModuleAssessmentFormSchema>;

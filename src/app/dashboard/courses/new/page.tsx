@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm, SubmitHandler, useFieldArray } from 'react-hook-form';
+import { useForm, SubmitHandler, useFieldArray, useWatch, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { getCourseCategories } from '@/lib/course-service';
@@ -14,7 +14,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Loader2, Wand2, ArrowLeft, Link as LinkIcon, PlusCircle, Trash2, Save, Bot } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { addCourseAction, generateCourseContentAction, generateModuleAssessmentAction } from '@/app/actions';
-import type { GenerateCourseContentOutput, GenerateModuleAssessmentOutput } from '@/lib/types';
+import type { GenerateCourseContentOutput, GenerateModuleAssessmentOutput, ModuleAssessmentFormValues } from '@/lib/types';
 import Image from 'next/image';
 import type { Course } from '@/lib/types';
 import { useRouter } from 'next/navigation';
@@ -23,10 +23,14 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { ModuleAssessmentFormSchema } from '@/lib/schemas';
+import { Separator } from '@/components/ui/separator';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const moduleSchema = z.object({
   title: z.string().min(1, "O título do módulo é obrigatório."),
@@ -95,6 +99,10 @@ export default function NewCoursePage() {
       form.setValue('modules', modulesForForm);
 
       setShowGeneratedContent(true);
+      toast({
+        title: "Conteúdo Gerado!",
+        description: "O conteúdo base para o seu curso foi criado. Edite e salve quando estiver pronto.",
+      });
     } catch (error) {
       toast({
         variant: 'destructive',
@@ -307,7 +315,7 @@ function ModuleField({ moduleIndex, form, onRemove }: { moduleIndex: number; for
         )}
         <ModuleAssessmentGenerator 
             moduleTitle={moduleTitle} 
-            topics={moduleTopics.map((t: {value: string}) => t.value)} 
+            topics={moduleTopics?.map((t: {value: string}) => t.value) || []} 
         />
       </div>
     </div>
@@ -316,93 +324,193 @@ function ModuleField({ moduleIndex, form, onRemove }: { moduleIndex: number; for
 
 
 function ModuleAssessmentGenerator({ moduleTitle, topics }: { moduleTitle: string, topics: string[] }) {
-    const [isOpen, setIsOpen] = useState(false);
-    const [isGenerating, setIsGenerating] = useState(false);
-    const [assessment, setAssessment] = useState<GenerateModuleAssessmentOutput | null>(null);
-    const { toast } = useToast();
+  const [isOpen, setIsOpen] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const { toast } = useToast();
 
-    const handleGenerate = async () => {
-        if (!moduleTitle || topics.length === 0) {
-            toast({
-                variant: "destructive",
-                title: "Faltam Dados",
-                description: "O módulo precisa de um título e pelo menos um tópico para gerar um teste.",
-            });
-            return;
-        }
-        setIsGenerating(true);
-        setAssessment(null);
-        try {
-            const result = await generateModuleAssessmentAction({ moduleTitle, topics });
-            setAssessment(result);
-        } catch (error) {
-            toast({
-                variant: 'destructive',
-                title: 'Erro ao gerar teste',
-                description: error instanceof Error ? error.message : 'Ocorreu um erro desconhecido.',
-            });
-        } finally {
-            setIsGenerating(false);
-        }
-    };
+  const assessmentForm = useForm<ModuleAssessmentFormValues>({
+    resolver: zodResolver(ModuleAssessmentFormSchema),
+    defaultValues: {
+      questions: [],
+    },
+  });
 
-    return (
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger asChild>
-                <Button variant="outline" size="sm" className="w-full mt-2">
-                    <Bot className="mr-2 h-4 w-4" /> Gerar Teste de Avaliação com IA
-                </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[625px]">
-                <DialogHeader>
-                    <DialogTitle>Gerador de Teste para: {moduleTitle}</DialogTitle>
-                    <DialogDescription>
-                        Clique em "Gerar" para criar um pequeno teste com base nos tópicos do módulo.
-                    </DialogDescription>
-                </DialogHeader>
-                <div className="py-4">
-                    {!assessment && !isGenerating && (
-                        <div className="flex items-center justify-center h-40 rounded-lg border-2 border-dashed">
-                             <p className="text-muted-foreground">O teste gerado aparecerá aqui.</p>
-                        </div>
-                    )}
-                    {isGenerating && (
-                         <div className="flex items-center justify-center h-40">
-                            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                        </div>
-                    )}
-                    {assessment && (
-                        <div className="space-y-4 max-h-[50vh] overflow-y-auto pr-4">
-                            {assessment.questions.map((q, index) => (
-                                <div key={index} className="border-b pb-4">
-                                    <p className="font-semibold">{index + 1}. {q.question}</p>
-                                    {q.options && (
-                                        <div className="mt-2 space-y-1 text-sm pl-4">
-                                            {q.options.map((opt, i) => (
-                                                <p key={i} className={i === q.correctAnswerIndex ? 'text-green-600 font-bold' : ''}>
-                                                    {opt} {i === q.correctAnswerIndex && '(Correta)'}
-                                                </p>
+  const { fields, append, remove } = useFieldArray({
+    control: assessmentForm.control,
+    name: 'questions',
+  });
+
+  const configForm = useForm({
+    defaultValues: {
+      numMultipleChoice: 2,
+      numShortAnswer: 1,
+      level: 'Médio' as 'Fácil' | 'Médio' | 'Difícil',
+    },
+  });
+
+  const handleGenerate = async (configData: any) => {
+    if (!moduleTitle || topics.length === 0 || topics.every(t => !t)) {
+        toast({
+            variant: "destructive",
+            title: "Faltam Dados",
+            description: "O módulo precisa de um título e pelo menos um tópico para gerar um teste.",
+        });
+        return;
+    }
+    setIsGenerating(true);
+    assessmentForm.reset({ questions: [] });
+    try {
+        const result = await generateModuleAssessmentAction({ moduleTitle, topics: topics.filter(t => t), ...configData });
+        const questionsForForm = result.questions.map(q => ({
+          ...q,
+          options: q.options ? q.options.map(opt => ({ value: opt })) : [],
+        }));
+        assessmentForm.reset({ questions: questionsForForm });
+        toast({
+            title: "Teste Gerado!",
+            description: "Pode agora editar o teste e guardá-lo."
+        });
+    } catch (error) {
+        toast({
+            variant: 'destructive',
+            title: 'Erro ao gerar teste',
+            description: error instanceof Error ? error.message : 'Ocorreu um erro desconhecido.',
+        });
+    } finally {
+        setIsGenerating(false);
+    }
+  };
+  
+  const handleSaveTest = (data: ModuleAssessmentFormValues) => {
+    // Lógica para salvar o teste (atualmente simulada)
+    console.log("Saving test:", data);
+    toast({
+        title: "Teste Salvo (Simulado)",
+        description: `O teste para o módulo "${moduleTitle}" foi salvo com sucesso.`,
+    });
+    setIsOpen(false);
+  }
+
+  const addNewQuestion = (type: 'multiple-choice' | 'short-answer') => {
+    append({
+        question: '',
+        type,
+        options: type === 'multiple-choice' ? [{value: ''}, {value: ''}, {value: ''}, {value: ''}] : [],
+        correctAnswerIndex: type === 'multiple-choice' ? 0 : undefined,
+        shortAnswer: type === 'short-answer' ? '' : undefined,
+    });
+  }
+
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+          <Button variant="outline" size="sm" className="w-full mt-2">
+              <Bot className="mr-2 h-4 w-4" /> Gerir/Criar Teste de Avaliação
+          </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-[70vw] h-[90vh] flex flex-col">
+          <DialogHeader>
+              <DialogTitle>Gerador de Teste para: {moduleTitle}</DialogTitle>
+              <DialogDescription>
+                  Configure, gere com IA, edite e salve o teste para este módulo.
+              </DialogDescription>
+          </DialogHeader>
+
+          <div className='grid grid-cols-1 lg:grid-cols-3 gap-6 overflow-hidden flex-grow'>
+            {/* Coluna de Configuração */}
+            <div className='lg:col-span-1 border-r pr-6 flex flex-col'>
+                <h4 className='font-semibold mb-4'>1. Configurar e Gerar</h4>
+                 <Form {...configForm}>
+                    <form onSubmit={configForm.handleSubmit(handleGenerate)} className="space-y-4">
+                        <FormField control={configForm.control} name="numMultipleChoice" render={({ field }) => ( <FormItem><FormLabel>Nº de Múltipla Escolha</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem> )} />
+                        <FormField control={configForm.control} name="numShortAnswer" render={({ field }) => ( <FormItem><FormLabel>Nº de Resposta Curta</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem> )} />
+                        <FormField control={configForm.control} name="level" render={({ field }) => ( <FormItem><FormLabel>Nível</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent><SelectItem value="Fácil">Fácil</SelectItem><SelectItem value="Médio">Médio</SelectItem><SelectItem value="Difícil">Difícil</SelectItem></SelectContent></Select></FormItem> )} />
+                         <Button type="submit" disabled={isGenerating} className="w-full">
+                            {isGenerating ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Wand2 className="mr-2 h-4 w-4"/>}
+                            {assessmentForm.getValues('questions').length > 0 ? 'Gerar Novamente' : 'Gerar Teste com IA'}
+                        </Button>
+                    </form>
+                 </Form>
+            </div>
+            
+            {/* Coluna de Edição */}
+            <div className='lg:col-span-2 overflow-y-auto pr-2 flex flex-col'>
+              <h4 className='font-semibold mb-4'>2. Rever e Editar Teste</h4>
+              {isGenerating && <div className="flex items-center justify-center h-full"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}
+              
+              {!isGenerating && fields.length === 0 && (
+                <div className="flex items-center justify-center h-full text-center text-muted-foreground border-2 border-dashed rounded-lg">
+                    <p>Gere um teste com IA ou adicione perguntas manualmente.</p>
+                </div>
+              )}
+
+              <Form {...assessmentForm}>
+                 <form onSubmit={assessmentForm.handleSubmit(handleSaveTest)} className="space-y-4">
+                    {fields.map((item, index) => (
+                      <div key={item.id} className="p-4 border rounded-md relative bg-background">
+                         <Button type="button" variant="ghost" size="icon" className="absolute top-2 right-2" onClick={() => remove(index)}><Trash2 className="h-4 w-4 text-destructive"/></Button>
+                         <FormField control={assessmentForm.control} name={`questions.${index}.question`} render={({ field }) => ( <FormItem><FormLabel>Pergunta {index + 1}</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage/></FormItem> )} />
+                         
+                         {item.type === 'multiple-choice' && (
+                          <div className='mt-4 space-y-2'>
+                            <FormLabel>Opções (Marque a correta)</FormLabel>
+                             <Controller
+                                control={assessmentForm.control}
+                                name={`questions.${index}.correctAnswerIndex`}
+                                render={({ field: radioField }) => (
+                                    <RadioGroup
+                                        onValueChange={radioField.onChange}
+                                        defaultValue={radioField.value?.toString()}
+                                        className="space-y-1"
+                                    >
+                                        <div className='space-y-2'>
+                                            {Array.from({length: 4}).map((_, optionIndex) => (
+                                                <FormField
+                                                  key={`${item.id}-opt-${optionIndex}`}
+                                                  control={assessmentForm.control}
+                                                  name={`questions.${index}.options.${optionIndex}.value`}
+                                                  render={({ field }) => (
+                                                    <FormItem className='flex items-center gap-2 space-y-0'>
+                                                      <FormControl>
+                                                         <RadioGroupItem value={optionIndex.toString()} />
+                                                      </FormControl>
+                                                      <Input {...field} placeholder={`Opção ${optionIndex + 1}`} className="flex-1"/>
+                                                    </FormItem>
+                                                  )}
+                                                />
                                             ))}
                                         </div>
-                                    )}
-                                     {q.shortAnswer && (
-                                         <p className="text-sm text-blue-600 mt-2 pl-4">Resposta: {q.shortAnswer}</p>
-                                     )}
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-                <div className="flex justify-end gap-2">
-                     <Button type="button" onClick={handleGenerate} disabled={isGenerating}>
-                        {isGenerating ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Wand2 className="mr-2 h-4 w-4"/>}
-                        {assessment ? "Gerar Novamente" : "Gerar Teste"}
-                    </Button>
-                    <Button type="button" disabled>
-                       Adicionar ao Módulo (Em breve)
-                    </Button>
-                </div>
-            </DialogContent>
-        </Dialog>
-    );
+                                    </RadioGroup>
+                                )}
+                            />
+                          </div>
+                         )}
+
+                         {item.type === 'short-answer' && (
+                           <FormField control={assessmentForm.control} name={`questions.${index}.shortAnswer`} render={({ field }) => ( <FormItem className='mt-2'><FormLabel>Resposta Ideal</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage/></FormItem> )} />
+                         )}
+
+                      </div>
+                    ))}
+                    
+                    <Separator />
+                    
+                    <div className="flex gap-2">
+                        <Button type="button" variant="outline" onClick={() => addNewQuestion('multiple-choice')}><PlusCircle className="mr-2 h-4 w-4"/> Adicionar Múltipla Escolha</Button>
+                        <Button type="button" variant="outline" onClick={() => addNewQuestion('short-answer')}><PlusCircle className="mr-2 h-4 w-4"/> Adicionar Resposta Curta</Button>
+                    </div>
+
+                    <DialogFooter className="pt-4 !justify-end">
+                      <Button type="submit" disabled={fields.length === 0}>
+                         <Save className="mr-2 h-4 w-4" /> Guardar Teste no Módulo
+                      </Button>
+                    </DialogFooter>
+                 </form>
+              </Form>
+
+            </div>
+          </div>
+      </DialogContent>
+    </Dialog>
+  );
 }

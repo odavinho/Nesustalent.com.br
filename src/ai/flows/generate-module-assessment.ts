@@ -23,7 +23,7 @@ const prompt = ai.definePrompt({
   name: 'generateModuleAssessmentPrompt',
   input: { schema: GenerateModuleAssessmentInputSchema },
   output: { schema: GenerateModuleAssessmentOutputSchema },
-  prompt: `You are an expert in creating educational assessments. Your task is to generate a short, 3-question quiz based on a course module's title and topics. The quiz should validate a student's understanding of the material.
+  prompt: `You are an expert in creating educational assessments. Your task is to generate a quiz based on a course module's title, topics, and requested parameters.
 
 Module Title:
 {{{moduleTitle}}}
@@ -33,11 +33,13 @@ Topics Covered:
 - {{{this}}}
 {{/each}}
 
-Generate a quiz with:
-- 2 multiple-choice questions. Each must have exactly 4 options, and you must indicate the correct one.
-- 1 short-answer question that requires the student to explain a concept. Provide an ideal, concise answer.
+Difficulty Level: {{{level}}}
 
-The questions should be clear, directly related to the topics, and suitable for a quick knowledge check.`,
+Generate a quiz with:
+- {{{numMultipleChoice}}} multiple-choice questions. Each must have exactly 4 plausible options, and you must indicate the correct one by setting 'correctAnswerIndex'.
+- {{{numShortAnswer}}} short-answer questions. Each must have an ideal, concise answer.
+
+The questions should be clear, directly related to the topics, and suitable for the specified difficulty level.`,
 });
 
 const generateModuleAssessmentFlow = ai.defineFlow(
