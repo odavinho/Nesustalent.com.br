@@ -76,6 +76,15 @@ export default function SignupPage() {
 
   const handleSignup: SubmitHandler<FormValues> = async (data) => {
     setIsLoading(true);
+    if (!firestore || !auth) {
+        toast({
+            variant: "destructive",
+            title: "Erro de Configuração",
+            description: "Os serviços da Firebase não estão disponíveis.",
+        });
+        setIsLoading(false);
+        return;
+    }
     try {
       // 1. Create user in Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
@@ -93,40 +102,44 @@ export default function SignupPage() {
         firstName: data.firstName,
         lastName: data.lastName,
         userType: data.userType,
-        // Add other fields as necessary, potentially empty initially
         academicTitle: data.userType === 'instructor' ? data.specialization : undefined,
       };
 
-      await setDoc(userDocRef, newUserProfile);
-
-      toast({
-        title: 'Conta criada com sucesso!',
-        description: `Bem-vindo(a)! Você já pode fazer o login.`,
-      });
-      router.push('/login');
+      // Set document in Firestore and handle potential permission errors
+      setDoc(userDocRef, newUserProfile)
+        .then(() => {
+          toast({
+            title: 'Conta criada com sucesso!',
+            description: `Bem-vindo(a)! Você já pode fazer o login.`,
+          });
+          router.push('/login');
+        })
+        .catch((error) => {
+            // This is the correct place to catch Firestore-specific errors like permission denied
+            const permissionError = new FirestorePermissionError({
+                path: userDocRef.path,
+                operation: 'create',
+                requestResourceData: newUserProfile
+            });
+            errorEmitter.emit('permission-error', permissionError);
+            setIsLoading(false); // Stop loading on Firestore error
+        });
 
     } catch (error: any) {
-        console.error("Signup Error:", error);
+        // This catches Auth errors (like email-already-in-use)
+        console.error("Signup Error (Auth):", error);
         let description = 'Ocorreu um erro. Tente novamente.';
         if (error.code === 'auth/email-already-in-use') {
             description = 'Este endereço de e-mail já está a ser utilizado por outra conta.';
-        } else if (error.code === 'permission-denied') {
-             const permissionError = new FirestorePermissionError({
-                path: `users/${auth.currentUser?.uid || 'new_user'}`,
-                operation: 'create',
-             });
-             errorEmitter.emit('permission-error', permissionError);
-             return; 
         }
-
         toast({
             variant: 'destructive',
             title: 'Erro ao criar conta',
             description: description,
         });
-    } finally {
-      setIsLoading(false);
-    }
+        setIsLoading(false);
+    } 
+    // Do not set isLoading to false here, as the setDoc promise is running
   };
 
   return (
