@@ -1,14 +1,21 @@
 import type { Timestamp } from 'firebase/firestore';
 
+export interface CourseModule {
+  title: string;
+  topics: string[];
+  videoUrl?: string;
+}
+
 export interface Course {
     id: string;
     name: string;
     category: string;
     imageId: string;
     duration: string;
+    format: 'Online' | 'Presencial' | 'Híbrido';
     generalObjective: string;
     whatYouWillLearn: string[];
-    modules: { title: string; topics: string[] }[];
+    modules: CourseModule[];
   }
   
   export interface CourseCategory {

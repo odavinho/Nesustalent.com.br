@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import Image from 'next/image';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, BookOpen, Clock, Users, CheckCircle, Target, Book, List } from "lucide-react";
+import { ArrowLeft, BookOpen, Clock, Users, CheckCircle, Target, Book, List, Video } from "lucide-react";
 import Link from "next/link";
 import { CourseCard } from "@/components/courses/course-card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -70,11 +70,18 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
                               <AccordionItem value={`item-${index}`} key={index}>
                                   <AccordionTrigger className="text-lg font-semibold hover:no-underline">{module.title}</AccordionTrigger>
                                   <AccordionContent>
-                                      <ul className="list-disc pl-5 space-y-2 text-base">
+                                      <ul className="list-disc pl-5 space-y-2 text-base mb-4">
                                           {module.topics.map((topic, topicIndex) => (
                                               <li key={topicIndex}>{topic}</li>
                                           ))}
                                       </ul>
+                                       {module.videoUrl && (
+                                            <Button asChild>
+                                                <a href={module.videoUrl} target="_blank" rel="noopener noreferrer">
+                                                    <Video className="mr-2 h-4 w-4" /> Assistir Aula
+                                                </a>
+                                            </Button>
+                                        )}
                                   </AccordionContent>
                               </AccordionItem>
                           ))}
@@ -93,7 +100,7 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
                       <div className="space-y-4 text-sm">
                           <div className="flex items-center gap-3">
                               <BookOpen className="w-5 h-5 text-muted-foreground" />
-                              <span><strong>Modalidade:</strong> Online e Presencial</span>
+                              <span><strong>Modalidade:</strong> {course.format}</span>
                           </div>
                           <div className="flex items-center gap-3">
                               <Clock className="w-5 h-5 text-muted-foreground" />

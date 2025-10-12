@@ -10,6 +10,7 @@ import type { Course } from '@/lib/types';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import { Badge } from '@/components/ui/badge';
 
 export default function ManageCoursesPage() {
   const firestore = useFirestore();
@@ -74,7 +75,8 @@ export default function ManageCoursesPage() {
                         <CardDescription>{course.category}</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-sm text-muted-foreground">{course.generalObjective}</p>
+                        <Badge>{course.format}</Badge>
+                        <p className="text-sm text-muted-foreground mt-2">{course.generalObjective}</p>
                         <div className='mt-4 flex gap-2'>
                             <Button variant="outline" size="sm">Editar</Button>
                             <Button variant="destructive" size="sm">Excluir</Button>

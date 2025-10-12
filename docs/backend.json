@@ -168,7 +168,8 @@
         },
         "format": {
           "type": "string",
-          "description": "The format of the course ('online' or 'in-person')."
+          "description": "The format of the course ('Online', 'Presencial', 'Híbrido').",
+          "enum": ["Online", "Presencial", "Híbrido"]
         },
         "trainerId": {
           "type": "string",
