@@ -362,6 +362,51 @@
         "applicationDate",
         "status"
       ]
+    },
+     "Test": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Test",
+      "type": "object",
+      "description": "Represents an online assessment test for a job vacancy.",
+      "properties": {
+        "id": { "type": "string" },
+        "vacancyId": { "type": "string" },
+        "title": { "type": "string" },
+        "testType": { "type": "string", "enum": ["knowledge", "psychometric"] }
+      },
+      "required": ["id", "vacancyId", "title", "testType"]
+    },
+    "Question": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Question",
+      "type": "object",
+      "description": "Represents a single question within a test.",
+      "properties": {
+        "id": { "type": "string" },
+        "testId": { "type": "string" },
+        "questionText": { "type": "string" },
+        "questionType": { "type": "string", "enum": ["multiple-choice", "short-answer", "psychometric"] },
+        "options": { "type": "array", "items": { "type": "string" } },
+        "correctAnswerIndex": { "type": "number" }
+      },
+      "required": ["id", "testId", "questionText", "questionType"]
+    },
+    "CandidateTest": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "CandidateTest",
+      "type": "object",
+      "description": "Represents a candidate's session for a specific test.",
+      "properties": {
+        "id": { "type": "string" },
+        "candidateId": { "type": "string" },
+        "testId": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "started", "finished"] },
+        "score": { "type": "number" },
+        "startTime": { "type": "string", "format": "date-time" },
+        "endTime": { "type": "string", "format": "date-time" },
+        "tabSwitchCount": { "type": "number" }
+      },
+      "required": ["id", "candidateId", "testId", "status"]
     }
   },
   "auth": {
@@ -480,6 +525,42 @@
               "name": "applicationId",
               "description": "The composite unique identifier for the application (userId_jobPostingId)."
             }
+          ]
+        }
+      },
+      {
+        "path": "/vacancies/{vacancyId}/tests/{testId}",
+        "definition": {
+          "entityName": "Test",
+          "schema": { "$ref": "#/entities/Test" },
+          "description": "Stores assessment tests created for a specific vacancy.",
+          "params": [
+            { "name": "vacancyId" },
+            { "name": "testId" }
+          ]
+        }
+      },
+      {
+        "path": "/vacancies/{vacancyId}/tests/{testId}/questions/{questionId}",
+        "definition": {
+          "entityName": "Question",
+          "schema": { "$ref": "#/entities/Question" },
+          "description": "Stores all questions for a given test.",
+          "params": [
+            { "name": "vacancyId" },
+            { "name": "testId" },
+            { "name": "questionId" }
+          ]
+        }
+      },
+      {
+        "path": "/candidateTests/{candidateTestId}",
+        "definition": {
+          "entityName": "CandidateTest",
+          "schema": { "$ref": "#/entities/CandidateTest" },
+          "description": "Tracks the state of a candidate's test session, including score and anti-fraud metrics.",
+          "params": [
+            { "name": "candidateTestId" }
           ]
         }
       }

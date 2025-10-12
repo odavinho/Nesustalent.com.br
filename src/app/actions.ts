@@ -5,6 +5,7 @@ import { personalizedCourseRecommendations, PersonalizedCourseRecommendationsInp
 import { generateCourseContent, GenerateCourseContentInput, GenerateCourseContentOutput } from "@/ai/flows/generate-course-content";
 import { generateVacancyContent, GenerateVacancyContentInput, GenerateVacancyContentOutput } from "@/ai/flows/generate-vacancy-content";
 import { extractProfileFromResume, ExtractProfileFromResumeInput, ExtractProfileFromResumeOutput } from "@/ai/flows/extract-profile-from-resume";
+import { generateAssessmentTest, GenerateAssessmentTestInput, GenerateAssessmentTestOutput } from "@/ai/flows/generate-assessment-test";
 
 
 import { revalidatePath } from "next/cache";
@@ -74,6 +75,16 @@ export async function generateVacancyContentAction(input: GenerateVacancyContent
         throw new Error("Failed to generate vacancy content. Please try again.");
     }
 }
+
+export async function generateAssessmentTestAction(input: GenerateAssessmentTestInput): Promise<GenerateAssessmentTestOutput> {
+    try {
+      const output = await generateAssessmentTest(input);
+      return output;
+    } catch (error) {
+      console.error("Error in generateAssessmentTestAction:", error);
+      throw new Error("Failed to generate assessment test. Please try again.");
+    }
+  }
 
 
 // JSON file actions

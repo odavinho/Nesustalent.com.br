@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Briefcase, FileWarning, PlusCircle, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Briefcase, FileWarning, PlusCircle, ArrowLeft, ArrowRight, ClipboardCheck } from 'lucide-react';
 import type { Vacancy } from '@/lib/types';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -132,13 +132,18 @@ export default function RecruiterVacanciesPage() {
                     </CardHeader>
                     <CardContent>
                     <p className="text-sm text-muted-foreground line-clamp-2">{vacancy.description}</p>
-                    <div className="mt-4 flex gap-2">
+                    <div className="mt-4 flex gap-2 flex-wrap">
                         <Button variant="outline" size="sm" asChild>
-                        <Link href={`/dashboard/recruiter/vacancies/${vacancy.id}/edit`}>Editar</Link>
+                            <Link href={`/dashboard/recruiter/vacancies/${vacancy.id}/edit`}>Editar Vaga</Link>
                         </Button>
-                        <Button variant="destructive" size="sm" onClick={() => handleDelete(vacancy.id)}>Excluir</Button>
+                        <Button variant="destructive" size="sm" onClick={() => handleDelete(vacancy.id)}>Excluir Vaga</Button>
                         <Button variant="secondary" size="sm" asChild>
                             <Link href={`/dashboard/recruiter/vacancies/${vacancy.id}/applications`}>Ver Candidatos</Link>
+                        </Button>
+                        <Button variant="default" size="sm" asChild>
+                            <Link href={`/dashboard/recruiter/vacancies/${vacancy.id}/assessment/new`}>
+                               <ClipboardCheck className='mr-2 h-4 w-4' /> Criar Teste de Avaliação
+                            </Link>
                         </Button>
                     </div>
                     </CardContent>

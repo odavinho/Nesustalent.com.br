@@ -97,3 +97,16 @@ export interface Course {
     certifications?: Certification[];
   }
   
+  export interface AssessmentQuestion {
+    id: string;
+    question: string;
+    type: 'multiple-choice' | 'short-answer' | 'psychometric';
+    options?: string[];
+  }
+  
+  export interface AssessmentTest {
+    id: string;
+    title: string;
+    questions: AssessmentQuestion[];
+  }
+  

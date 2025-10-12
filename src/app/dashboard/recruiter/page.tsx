@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Briefcase, Users, FileText, PlusCircle, MessageSquare } from "lucide-react";
+import { Briefcase, Users, FileText, PlusCircle, MessageSquare, ClipboardCheck } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useUser, useFirestore, useCollection, useMemoFirebase } from "@/firebase";
@@ -113,7 +113,7 @@ export default function RecruiterDashboardPage() {
                     </CardContent>
                 </Card>
 
-                 <Card className="lg:col-span-2">
+                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <FileText />
@@ -126,6 +126,24 @@ export default function RecruiterDashboardPage() {
                          <Button asChild>
                             <Link href="/recruitment">
                                 Ir para o Analisador
+                            </Link>
+                        </Button>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <ClipboardCheck />
+                            Testes de Avaliação
+                        </CardTitle>
+                         <CardDescription>Crie e gira testes de conhecimento e psicotécnicos para as suas vagas.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                         <p className="text-muted-foreground mb-4">A IA gera testes relevantes para filtrar os melhores candidatos.</p>
+                         <Button asChild variant="outline">
+                            <Link href="/dashboard/recruiter/vacancies">
+                                Gerir Testes por Vaga
                             </Link>
                         </Button>
                     </CardContent>
