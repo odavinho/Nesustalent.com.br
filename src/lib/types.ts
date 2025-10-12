@@ -1,9 +1,22 @@
 import type { Timestamp } from 'firebase/firestore';
 
+export interface ModuleQuestion {
+  question: string;
+  type: 'multiple-choice' | 'short-answer';
+  options?: { value: string }[];
+  correctAnswerIndex?: number;
+  shortAnswer?: string;
+}
+
+export interface ModuleAssessment {
+  questions: ModuleQuestion[];
+}
+
 export interface CourseModule {
   title: string;
   topics: string[];
   videoUrl?: string;
+  assessment?: ModuleAssessment;
 }
 
 export interface Course {
@@ -178,9 +191,12 @@ export interface Course {
     export interface GenerateModuleAssessmentInput {
         moduleTitle: string;
         topics: string[];
+        numMultipleChoice: number;
+        numShortAnswer: number;
+        level: 'Fácil' | 'Médio' | 'Difícil';
     }
 
-    interface ModuleQuestion {
+    interface ModuleQuestionGen {
         question: string;
         type: 'multiple-choice' | 'short-answer';
         options?: string[];
@@ -189,6 +205,7 @@ export interface Course {
     }
     
     export interface GenerateModuleAssessmentOutput {
-        questions: ModuleQuestion[];
+        questions: ModuleQuestionGen[];
     }
   
+

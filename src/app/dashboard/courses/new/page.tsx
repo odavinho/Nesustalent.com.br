@@ -15,7 +15,7 @@ import { Loader2, Wand2, ArrowLeft, Link as LinkIcon, PlusCircle, Trash2, Save, 
 import { useToast } from '@/hooks/use-toast';
 import { addCourseAction, generateCourseContentAction, generateModuleAssessmentAction } from '@/app/actions';
 import Image from 'next/image';
-import type { Course } from '@/lib/types';
+import type { Course, ModuleAssessment, ModuleQuestion } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/firebase';
 import {
@@ -31,10 +31,19 @@ import { ModuleAssessmentFormSchema, GenerateModuleAssessmentInput, GenerateModu
 import { Separator } from '@/components/ui/separator';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
+const moduleQuestionSchema = z.object({
+    question: z.string().min(1, "A pergunta não pode estar em branco."),
+    type: z.enum(['multiple-choice', 'short-answer']),
+    options: z.array(z.object({ value: z.string().min(1, "A opção não pode estar em branco.") })).optional(),
+    correctAnswerIndex: z.coerce.number().optional(),
+    shortAnswer: z.string().optional(),
+});
+
 const moduleSchema = z.object({
   title: z.string().min(1, "O título do módulo é obrigatório."),
   topics: z.array(z.object({ value: z.string().min(1, "O tópico não pode estar vazio.") })),
   videoUrl: z.string().url("Insira um URL válido.").optional().or(z.literal('')),
+  assessment: z.object({ questions: z.array(moduleQuestionSchema) }).optional(),
 });
 
 const formSchema = z.object({
@@ -143,6 +152,7 @@ export default function NewCoursePage() {
           title: m.title,
           topics: m.topics.map(t => t.value),
           videoUrl: m.videoUrl,
+          assessment: m.assessment,
       })) || [],
     };
 
@@ -314,9 +324,11 @@ function ModuleField({ moduleIndex, form, onRemove }: { moduleIndex: number; for
             )}
            />
         )}
-        <ModuleAssessmentGenerator 
+        <ModuleAssessmentGenerator
+            moduleIndex={moduleIndex} 
             moduleTitle={moduleTitle} 
             topics={moduleTopics?.map((t: {value: string}) => t.value) || []} 
+            mainForm={form}
         />
       </div>
     </div>
@@ -324,7 +336,7 @@ function ModuleField({ moduleIndex, form, onRemove }: { moduleIndex: number; for
 }
 
 
-function ModuleAssessmentGenerator({ moduleTitle, topics }: { moduleTitle: string, topics: string[] }) {
+function ModuleAssessmentGenerator({ moduleIndex, moduleTitle, topics, mainForm }: { moduleIndex: number, moduleTitle: string, topics: string[], mainForm: any }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [hasGenerated, setHasGenerated] = useState(false);
@@ -333,7 +345,7 @@ function ModuleAssessmentGenerator({ moduleTitle, topics }: { moduleTitle: strin
   const assessmentForm = useForm<ModuleAssessmentFormValues>({
     resolver: zodResolver(ModuleAssessmentFormSchema),
     defaultValues: {
-      questions: [],
+      questions: mainForm.getValues(`modules.${moduleIndex}.assessment.questions`) || [],
     },
   });
 
@@ -398,11 +410,10 @@ function ModuleAssessmentGenerator({ moduleTitle, topics }: { moduleTitle: strin
   };
   
   const handleSaveTest = (data: ModuleAssessmentFormValues) => {
-    // Lógica para salvar o teste (atualmente simulada)
-    console.log("Saving test:", data);
+    mainForm.setValue(`modules.${moduleIndex}.assessment`, data);
     toast({
-        title: "Teste Salvo (Simulado)",
-        description: `O teste para o módulo "${moduleTitle}" foi salvo com sucesso.`,
+        title: "Teste Salvo!",
+        description: `O teste para o módulo "${moduleTitle}" foi salvo no formulário principal do curso.`,
     });
     setIsOpen(false);
   }
