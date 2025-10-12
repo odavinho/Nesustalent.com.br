@@ -5,13 +5,14 @@ import { users as mockUsers } from '@/lib/users';
 import type { UserProfile, EducationLevel } from '@/lib/types';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Slider } from '@/components/ui/slider';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Search, SlidersHorizontal, Users, ArrowLeft, ArrowRight, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { Search, SlidersHorizontal, Users, ArrowLeft, ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CandidateCard } from '@/components/recruitment/candidate-card';
 import { SearchFilter, type FilterOption } from '@/components/recruitment/search-filter';
+import { Label } from '@/components/ui/label';
 
 type CandidateStatus = 'interessante' | 'rejeitado' | 'neutro';
 
@@ -28,6 +29,7 @@ export default function CandidatesPage() {
     const [filters, setFilters] = useState({
         functionalArea: [] as string[],
         nationality: [] as string[],
+        cidade: [] as string[],
         educationLevel: [] as string[],
         gender: [] as string[],
         languages: [] as string[],
@@ -68,6 +70,7 @@ export default function CandidatesPage() {
 
             const areaMatch = filters.functionalArea.length === 0 || (c.functionalArea && filters.functionalArea.includes(c.functionalArea));
             const nationalityMatch = filters.nationality.length === 0 || (c.nationality && filters.nationality.includes(c.nationality));
+            const cityMatch = filters.cidade.length === 0 || (c.cidade && filters.cidade.includes(c.cidade));
             const educationMatch = filters.educationLevel.length === 0 || (c.educationLevel && filters.educationLevel.includes(c.educationLevel));
             const genderMatch = filters.gender.length === 0 || (c.gender && filters.gender.includes(c.gender));
             const languageMatch = filters.languages.length === 0 || filters.languages.every(lang => c.languages?.includes(lang));
@@ -76,7 +79,7 @@ export default function CandidatesPage() {
             const age = getAge(c.dateOfBirth);
             const ageMatch = age >= filters.age[0] && age <= filters.age[1];
 
-            return searchMatch && areaMatch && expMatch && nationalityMatch && educationMatch && genderMatch && languageMatch && ageMatch;
+            return searchMatch && areaMatch && expMatch && nationalityMatch && educationMatch && genderMatch && languageMatch && ageMatch && cityMatch;
         });
     }, [allCandidates, searchTerm, filters]);
     
@@ -113,7 +116,7 @@ export default function CandidatesPage() {
                     counts[v] = (counts[v] || 0) + 1;
                 });
             } else if (value) {
-                counts[value] = (counts[value] || 0) + 1;
+                counts[String(value)] = (counts[String(value)] || 0) + 1;
             }
         });
     
@@ -124,6 +127,7 @@ export default function CandidatesPage() {
 
     const functionalAreaOptions = useMemo(() => generateFilterOptions('functionalArea'), [filteredCandidates]);
     const nationalityOptions = useMemo(() => generateFilterOptions('nationality'), [filteredCandidates]);
+    const cityOptions = useMemo(() => generateFilterOptions('cidade'), [filteredCandidates]);
     const educationLevelOptions = useMemo(() => educationLevels.map(level => {
         const count = filteredCandidates.filter(c => c.educationLevel === level).length;
         return { name: level, count };
@@ -195,7 +199,33 @@ export default function CandidatesPage() {
                             
                             <SearchFilter title="Área Funcional" options={functionalAreaOptions} selected={filters.functionalArea} onChange={(v) => handleFilterChange('functionalArea', v)} />
                             <SearchFilter title="Nacionalidade" options={nationalityOptions} selected={filters.nationality} onChange={(v) => handleFilterChange('nationality', v)} />
+                            <SearchFilter title="Cidade" options={cityOptions} selected={filters.cidade} onChange={(v) => handleFilterChange('cidade', v)} />
                             <SearchFilter title="Habilitações Literárias" options={educationLevelOptions} selected={filters.educationLevel} onChange={(v) => handleFilterChange('educationLevel', v)} />
+                            
+                            <div className="space-y-4 border-b pb-4">
+                                <Label htmlFor="experience-slider">Anos de Experiência: {filters.experience[0]} - {filters.experience[1]}</Label>
+                                <Slider 
+                                    id="experience-slider"
+                                    min={0}
+                                    max={50}
+                                    step={1}
+                                    value={filters.experience}
+                                    onValueChange={(v) => handleFilterChange('experience', v)}
+                                />
+                            </div>
+
+                            <div className="space-y-4 border-b pb-4">
+                                <Label htmlFor="age-slider">Idade: {filters.age[0]} - {filters.age[1]}</Label>
+                                <Slider 
+                                    id="age-slider"
+                                    min={18}
+                                    max={80}
+                                    step={1}
+                                    value={filters.age}
+                                    onValueChange={(v) => handleFilterChange('age', v)}
+                                />
+                            </div>
+
                             <SearchFilter title="Gênero" options={genderOptions} selected={filters.gender} onChange={(v) => handleFilterChange('gender', v)} />
                             <SearchFilter title="Línguas" options={languageOptions} selected={filters.languages} onChange={(v) => handleFilterChange('languages', v)} />
 

@@ -74,6 +74,7 @@ export interface Course {
     resumeUrl?: string;
     academicTitle?: string;
     nationality?: string;
+    cidade?: string;
     dateOfBirth?: string; // Format "YYYY-MM-DD"
     gender?: 'Masculino' | 'Feminino';
     languages?: string[];
