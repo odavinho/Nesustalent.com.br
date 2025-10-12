@@ -15,6 +15,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
+import { cn } from '@/lib/utils';
 
 
 const CandidateCard = ({ candidate }: { candidate: UserProfile }) => {
