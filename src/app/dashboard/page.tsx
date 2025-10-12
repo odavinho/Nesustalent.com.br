@@ -20,29 +20,32 @@ export default function DashboardRedirectPage() {
 
     useEffect(() => {
         const isLoading = isUserLoading || isProfileLoading;
+        
+        // Don't do anything until all user and profile data has finished loading.
         if (isLoading) {
-            return; // Aguarda o fim do carregamento
+            return;
         }
 
+        // If after loading there is no user, redirect to login.
         if (!user) {
             router.replace('/login');
             return;
         }
 
-        // A lógica é agora muito mais simples:
-        // 1. Se o perfil do utilizador (com userType) existe, redireciona para o seu painel.
-        // 2. Se não existir, o painel de estudante é o fallback.
-        const role = userProfile?.userType || 'student';
-        
-        // Verifica se o email é um dos de teste para acesso de admin (override)
+        // Now that we have a user, determine the role and redirect.
+        // The admin email is a special override.
         if (user.email === 'admin@nexustalent.com') {
             router.replace('/dashboard/admin');
-        } else {
-            router.replace(`/dashboard/${role}`);
+            return;
         }
+
+        // For all other users, the userType from their Firestore profile is the source of truth.
+        // If the profile or userType doesn't exist for some reason, fallback to the student dashboard.
+        const role = userProfile?.userType || 'student';
+        router.replace(`/dashboard/${role}`);
 
     }, [user, isUserLoading, userProfile, isProfileLoading, router]);
 
-    // Exibe o ecrã de carregamento enquanto a autenticação e a leitura do perfil estão a decorrer.
+    // Display a loading screen while authentication and profile fetching are in progress.
     return <Loading />;
 }
