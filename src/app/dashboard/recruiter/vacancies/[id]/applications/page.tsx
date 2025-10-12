@@ -9,7 +9,6 @@ import { type Vacancy, type Application, type UserProfile } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Loader2, Sparkles, User, Users, Check, Wand2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { analyzeResumeAction } from "@/app/actions";
 import { toast } from "@/hooks/use-toast";
@@ -37,7 +36,7 @@ export default function VacancyApplicationsPage() {
     
     useEffect(() => {
         const foundVacancy = getVacancyById(vacancyId);
-        setVacancy(foundVacancy); // This will be the vacancy or undefined
+        setVacancy(foundVacancy); 
         
         if (foundVacancy) {
             const vacancyApps = allApplications.filter(app => app.jobPostingId === vacancyId);
@@ -46,8 +45,18 @@ export default function VacancyApplicationsPage() {
             const appUserIds = vacancyApps.map(app => app.userId);
             const vacancyCandidates = users.filter(user => appUserIds.includes(user.id));
             setCandidates(vacancyCandidates);
+        } else if (foundVacancy === null) { 
+            // Explicitly not found after search
+            notFound();
         }
     }, [vacancyId]);
+
+    const candidatesWithScores = useMemo(() => {
+        return candidates.map(c => ({
+            ...c,
+            score: analysisResults[c.id]
+        })).sort((a, b) => (b.score ?? -1) - (a.score ?? -1));
+    }, [candidates, analysisResults]);
     
     if (vacancy === undefined) {
         return <div className="flex justify-center items-center h-screen"><Loader2 className="h-8 w-8 animate-spin" /></div>;
@@ -101,13 +110,6 @@ export default function VacancyApplicationsPage() {
             .map(([id]) => id);
         setSelectedCandidates(over50);
     };
-
-    const candidatesWithScores = useMemo(() => {
-        return candidates.map(c => ({
-            ...c,
-            score: analysisResults[c.id]
-        })).sort((a, b) => (b.score ?? -1) - (a.score ?? -1));
-    }, [candidates, analysisResults]);
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
