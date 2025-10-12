@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, Wand2, ArrowLeft, Save, ListChecks, HelpCircle, Bot } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { generateAssessmentTestAction } from '@/app/actions';
@@ -18,14 +17,10 @@ import { getVacancyById } from '@/lib/vacancy-service';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { GenerateAssessmentTestInputSchema } from '@/lib/schemas';
 
-const formSchema = z.object({
-  testType: z.enum(['knowledge', 'psychometric'], { required_error: 'Selecione o tipo de teste.' }),
-  numMultipleChoice: z.coerce.number().min(0).max(10),
-  numShortAnswer: z.coerce.number().min(0).max(5),
-});
 
-type FormValues = z.infer<typeof formSchema>;
+type FormValues = z.infer<typeof GenerateAssessmentTestInputSchema>;
 
 export default function NewAssessmentPage() {
   const [vacancy, setVacancy] = useState<Vacancy | null | undefined>(undefined);
@@ -38,7 +33,7 @@ export default function NewAssessmentPage() {
   const vacancyId = params.id as string;
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(GenerateAssessmentTestInputSchema),
     defaultValues: {
       testType: 'knowledge',
       numMultipleChoice: 5,

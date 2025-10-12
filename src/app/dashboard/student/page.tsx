@@ -1,14 +1,15 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Award, Calendar, UserCircle } from "lucide-react";
+import { BookOpen, Award, UserCircle, LineChart, Star } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 
 export default function StudentDashboardPage() {
     // Mock data for enrolled courses
     const enrolledCourses = [
-        { name: 'Técnicas de Apresentação', progress: 75 },
-        { name: 'Gestão de Conflitos', progress: 40 },
-        { name: 'Excel Avançado', progress: 100 },
+        { name: 'Técnicas de Apresentação', progress: 75, grade: 88 },
+        { name: 'Gestão de Conflitos', progress: 40, grade: null },
+        { name: 'Excel Avançado', progress: 100, grade: 95 },
     ];
 
     return (
@@ -36,9 +37,7 @@ export default function StudentDashboardPage() {
                                             <h4 className="font-medium text-sm">{course.name}</h4>
                                             <span className="text-sm font-semibold text-primary">{course.progress}%</span>
                                         </div>
-                                        <div className="w-full bg-secondary rounded-full h-2.5">
-                                            <div className="bg-primary h-2.5 rounded-full" style={{ width: `${course.progress}%` }}></div>
-                                        </div>
+                                        <Progress value={course.progress} className="h-2" />
                                     </div>
                                 ))}
                             </div>
@@ -51,12 +50,23 @@ export default function StudentDashboardPage() {
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <Calendar />
-                                Próximos Eventos
+                                <LineChart />
+                                Progressão e Acompanhamento
                             </CardTitle>
+                             <CardDescription>Visualize o seu desempenho e evolução nos cursos.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-muted-foreground">Nenhuma aula ao vivo ou prazo agendado para breve.</p>
+                             <div className="space-y-3">
+                                {enrolledCourses.map(course => (
+                                    <div key={course.name} className="flex justify-between items-center p-3 bg-secondary/50 rounded-lg">
+                                        <p className="font-medium">{course.name}</p>
+                                        <div className="text-right">
+                                            <p className="font-bold text-lg">{course.grade ? `${course.grade}%` : 'N/A'}</p>
+                                            <p className="text-xs text-muted-foreground">Nota Final</p>
+                                        </div>
+                                    </div>
+                                ))}
+                             </div>
                         </CardContent>
                     </Card>
                 </div>
@@ -82,9 +92,21 @@ export default function StudentDashboardPage() {
                                 <Award />
                                 Meus Certificados
                             </CardTitle>
+                            <CardDescription>Os seus certificados serão emitidos e guardados aqui.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                             <p className="text-muted-foreground">Conclua cursos para ganhar certificados.</p>
+                            {enrolledCourses.filter(c => c.progress === 100).length > 0 ? (
+                                <div className="space-y-2">
+                                  {enrolledCourses.filter(c => c.progress === 100).map(c => (
+                                    <Button key={c.name} variant="outline" className="w-full justify-between">
+                                        <span>{c.name}</span>
+                                        <Star className="h-4 w-4 text-yellow-500" />
+                                    </Button>
+                                  ))}
+                                </div>
+                            ) : (
+                                <p className="text-muted-foreground text-sm">Conclua cursos para ganhar certificados.</p>
+                            )}
                         </CardContent>
                     </Card>
                 </div>
