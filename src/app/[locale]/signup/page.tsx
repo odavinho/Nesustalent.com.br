@@ -115,18 +115,16 @@ export default function SignupPage() {
           router.push('/login');
         })
         .catch((error) => {
-            // This is the correct place to catch Firestore-specific errors like permission denied
             const permissionError = new FirestorePermissionError({
                 path: userDocRef.path,
                 operation: 'create',
                 requestResourceData: newUserProfile
             });
             errorEmitter.emit('permission-error', permissionError);
-            setIsLoading(false); // Stop loading on Firestore error
+            setIsLoading(false);
         });
 
     } catch (error: any) {
-        // This catches Auth errors (like email-already-in-use)
         console.error("Signup Error (Auth):", error);
         let description = 'Ocorreu um erro. Tente novamente.';
         if (error.code === 'auth/email-already-in-use') {
@@ -139,7 +137,6 @@ export default function SignupPage() {
         });
         setIsLoading(false);
     } 
-    // Do not set isLoading to false here, as the setDoc promise is running
   };
 
   return (
@@ -164,7 +161,7 @@ export default function SignupPage() {
           <Card>
               <CardHeader>
                   <CardTitle>Cadastre-se</CardTitle>
-                  <CardDescription>Para testar os diferentes painéis, use os emails 'admin@nexustalent.com', 'instructor@nexustalent.com' ou 'recruiter@nexustalent.com' e selecione o papel correspondente abaixo.</CardDescription>
+                  <CardDescription>Para testar o painel de recrutador, use o email 'recruiter@nexustalent.com.br' e a senha '123456', selecionando o papel "Recrutador / Empresa" abaixo.</CardDescription>
               </CardHeader>
               <CardContent>
                 <Form {...form}>
