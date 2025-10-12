@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/shared/logo";
 import Link from "next/link";
 import { useAuth } from '@/firebase/provider';
@@ -28,7 +27,7 @@ const formSchema = z.object({
   companyName: z.string().optional(),
   specialization: z.string().optional(),
 }).refine(data => {
-    if (data.role === 'recruiter' && !data.companyName) {
+    if (data.role === 'recruiter' && (!data.companyName || data.companyName.trim() === '')) {
         return false;
     }
     return true;
@@ -36,7 +35,7 @@ const formSchema = z.object({
     message: 'O nome da empresa é obrigatório para recrutadores.',
     path: ['companyName'],
 }).refine(data => {
-    if (data.role === 'instructor' && !data.specialization) {
+    if (data.role === 'instructor' && (!data.specialization || data.specialization.trim() === '')) {
         return false;
     }
     return true;
@@ -80,7 +79,7 @@ export default function SignupPage() {
       }
       toast({
         title: 'Conta criada com sucesso!',
-        description: `Bem-vindo(a) ${data.role}! Você já pode fazer o login.`,
+        description: `Bem-vindo(a)! Você já pode fazer o login.`,
       });
       router.push('/login');
     } catch (error: any) {
@@ -121,7 +120,7 @@ export default function SignupPage() {
           <Card>
               <CardHeader>
                   <CardTitle>Cadastre-se</CardTitle>
-                  <CardDescription>Para testar os diferentes painéis, crie contas usando os emails 'admin@nexustalent.com', 'instructor@nexustalent.com' ou 'recruiter@nexustalent.com' com uma senha à sua escolha.</CardDescription>
+                  <CardDescription>Para testar os diferentes painéis, use os emails 'admin@nexustalent.com', 'instructor@nexustalent.com' ou 'recruiter@nexustalent.com' e selecione o papel correspondente abaixo.</CardDescription>
               </CardHeader>
               <CardContent>
                 <Form {...form}>
