@@ -3,10 +3,12 @@
 import { useMemo, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { FileWarning, Files } from 'lucide-react';
+import { FileWarning, Files, ArrowLeft } from 'lucide-react';
 import type { Application } from '@/lib/types';
 import { ApplicationCard } from '@/components/admin/application-card';
 import { applications as mockApplications } from '@/lib/applications';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 type ApplicationStatus = 'Recebida' | 'Em análise' | 'Rejeitada';
 
@@ -61,7 +63,7 @@ const ApplicationList = ({
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {applications.map(app => (
-                <ApplicationCard key={app.id} application={app} />
+                <ApplicationCard key={app.id} application={app} onStatusChange={() => {}} />
             ))}
         </div>
     );
@@ -79,6 +81,7 @@ export default function ManageApplicationsPage() {
   const [allApplications, setAllApplications] = useState<Application[]>(mockApplications);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const router = useRouter();
 
   const handleStatusUpdate = (appId: string, newStatus: ApplicationStatus) => {
     setAllApplications(prevApps => 
@@ -98,6 +101,10 @@ export default function ManageApplicationsPage() {
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <Button variant="outline" onClick={() => router.back()} className="mb-6">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Voltar
+      </Button>
       <div className="mb-8">
         <h1 className="font-headline text-4xl font-bold">Gestão de Candidaturas</h1>
         <p className="text-muted-foreground mt-2">

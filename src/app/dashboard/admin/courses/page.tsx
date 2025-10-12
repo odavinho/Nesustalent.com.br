@@ -5,13 +5,15 @@ import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { BookOpen, FileWarning, PlusCircle } from 'lucide-react';
+import { BookOpen, FileWarning, PlusCircle, ArrowLeft } from 'lucide-react';
 import type { Course } from '@/lib/types';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 export default function ManageCoursesPage() {
   const firestore = useFirestore();
+  const router = useRouter();
   
   const coursesQuery = useMemoFirebase(() => {
     if (!firestore) return null;
@@ -86,6 +88,10 @@ export default function ManageCoursesPage() {
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <Button variant="outline" onClick={() => router.back()} className="mb-6">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Voltar
+        </Button>
         <div className="flex justify-between items-start mb-8">
             <div>
                 <h1 className="font-headline text-4xl font-bold">Gestão de Cursos</h1>

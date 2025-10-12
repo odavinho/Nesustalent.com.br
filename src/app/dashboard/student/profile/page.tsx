@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Wand2, PlusCircle, Trash2, Edit, User, Briefcase, GraduationCap, Award, Link as LinkIcon, FileText, Download } from 'lucide-react';
+import { Loader2, Wand2, PlusCircle, Trash2, Edit, User, Briefcase, GraduationCap, Award, Link as LinkIcon, FileText, Download, ArrowLeft } from 'lucide-react';
 import type { UserProfile, AcademicHistory, WorkExperience } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,6 +18,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { extractProfileFromResumeAction } from '@/app/actions';
 import { Badge } from '@/components/ui/badge';
 import { users } from '@/lib/users'; // Using mock user data
+import { useRouter } from 'next/navigation';
 
 const fileToDataUri = (file: File) => new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
@@ -138,8 +139,13 @@ export default function ProfilePage() {
 }
 
 function ProfileView({ profile, onEdit }: { profile: UserProfile; onEdit: () => void }) {
+    const router = useRouter();
     return (
         <div className="max-w-4xl mx-auto space-y-8">
+            <Button variant="outline" onClick={() => router.back()} className="mb-6">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Voltar
+            </Button>
              <div className="flex justify-between items-start">
                 <div>
                     <h1 className="font-headline text-4xl font-bold">{profile.firstName} {profile.lastName}</h1>
