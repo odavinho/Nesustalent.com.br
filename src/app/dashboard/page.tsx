@@ -19,32 +19,35 @@ export default function DashboardRedirectPage() {
     const { data: userProfile, isLoading: isProfileLoading } = useDoc<UserProfile>(userDocRef);
 
     useEffect(() => {
-        const isLoading = isUserLoading || isProfileLoading;
-        
-        // Don't do anything until all user and profile data has finished loading.
-        if (isLoading) {
+        // Wait until both user and profile loading is complete
+        if (isUserLoading || isProfileLoading) {
             return;
         }
 
-        // If after loading there is no user, redirect to login.
+        // If not logged in after loading, redirect to login
         if (!user) {
             router.replace('/login');
             return;
         }
 
-        // Now that we have a user, determine the role and redirect.
-        // The admin email is a special override.
+        // Special override for admin user
         if (user.email === 'admin@nexustalent.com') {
             router.replace('/dashboard/admin');
             return;
         }
 
-        // For all other users, the userType from their Firestore profile is the source of truth.
-        // If the profile or userType doesn't exist for some reason, fallback to the student dashboard.
-        const role = userProfile?.userType || 'student';
-        router.replace(`/dashboard/${role}`);
+        // Redirect based on the role from the Firestore profile
+        const role = userProfile?.userType;
 
-    }, [user, isUserLoading, userProfile, isProfileLoading, router]);
+        if (role) {
+            router.replace(`/dashboard/${role}`);
+        } else {
+            // Fallback to student dashboard if profile/role is somehow missing after loading
+            console.warn("User profile or userType not found, defaulting to student dashboard.");
+            router.replace('/dashboard/student');
+        }
+
+    }, [user, isUserLoading, userProfile, isProfileLoading, router, firestore]);
 
     // Display a loading screen while authentication and profile fetching are in progress.
     return <Loading />;
