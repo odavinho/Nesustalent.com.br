@@ -7,7 +7,7 @@ import type { UserProfile } from '@/lib/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Send, ArrowLeft, Search } from 'lucide-react';
+import { Send, ArrowLeft, Search, MessageSquare } from 'lucide-react';
 import { Card, CardHeader } from '@/components/ui/card';
 import Link from 'next/link';
 
