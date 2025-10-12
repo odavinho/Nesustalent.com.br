@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { getVacancies } from '@/lib/vacancy-service';
-import { courseCategories } from '@/lib/courses';
+import { getCourseCategories } from '@/lib/course-service';
 import { Input } from '@/components/ui/input';
 import { Search, MapPin, Briefcase } from 'lucide-react';
 import {
@@ -16,17 +16,19 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import Link from 'next/link';
-import type { Vacancy } from '@/lib/types';
+import type { Vacancy, CourseCategory } from '@/lib/types';
 
 
 export function VacancyList() {
   const [allVacancies, setAllVacancies] = useState<Vacancy[]>([]);
+  const [courseCategories, setCourseCategories] = useState<CourseCategory[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('all');
 
   useEffect(() => {
     setAllVacancies(getVacancies());
+    setCourseCategories(getCourseCategories());
   }, []);
 
   const locations = useMemo(() => ['all', ...new Set(allVacancies.map(v => v.location))], [allVacancies]);

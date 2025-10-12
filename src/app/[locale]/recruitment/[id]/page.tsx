@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Briefcase, Clock, MapPin, Share2, Loader2, HelpCircle } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { courseCategories } from "@/lib/courses";
+import { getCourseCategories } from "@/lib/course-service";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -14,16 +14,22 @@ import { useUser, useFirestore, errorEmitter, FirestorePermissionError, useDoc, 
 import { doc, setDoc, serverTimestamp, getDoc } from "firebase/firestore";
 import { useToast } from "@/hooks/use-toast";
 import React, { useState, useEffect } from "react";
-import type { UserProfile, Vacancy } from "@/lib/types";
+import type { UserProfile, Vacancy, CourseCategory } from "@/lib/types";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
 export default function VacancyDetailPage({ params }: { params: { id: string } }) {
   const [vacancy, setVacancy] = useState<Vacancy | null | undefined>(undefined);
+  const [category, setCategory] = useState<CourseCategory | null>(null);
+
 
   useEffect(() => {
     const foundVacancy = getVacancyById(params.id);
     setVacancy(foundVacancy);
+    if(foundVacancy){
+        const categories = getCourseCategories();
+        setCategory(categories.find(c => c.name === foundVacancy.category) || null);
+    }
   }, [params.id]);
 
 
@@ -127,8 +133,6 @@ export default function VacancyDetailPage({ params }: { params: { id: string } }
         setIsApplying(false);
       });
   };
-
-  const category = courseCategories.find(c => c.name === vacancy.category);
 
   return (
     <>

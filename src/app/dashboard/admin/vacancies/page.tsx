@@ -12,25 +12,35 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
+import { getVacancies, deleteVacancy } from '@/lib/vacancy-service';
+import { useEffect, useState } from 'react';
 
 export default function ManageVacanciesPage() {
-  const firestore = useFirestore();
   const { toast } = useToast();
   const router = useRouter();
-  
-  const vacanciesQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return query(collection(firestore, 'vacancies'), orderBy('postedDate', 'desc'));
-  }, [firestore]);
+  const [vacancies, setVacancies] = useState<Vacancy[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-  const { data: vacancies, isLoading, error } = useCollection<Vacancy>(vacanciesQuery);
+  useEffect(() => {
+    try {
+      const allVacancies = getVacancies();
+      setVacancies(allVacancies);
+    } catch(e) {
+      if (e instanceof Error) {
+        setError(e);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   const handleDelete = async (vacancyId: string) => {
-    if (!firestore) return;
     if (!confirm('Tem a certeza que deseja excluir esta vaga? Esta ação não pode ser desfeita.')) return;
 
     try {
-        await deleteDoc(doc(firestore, 'vacancies', vacancyId));
+        deleteVacancy(vacancyId);
+        setVacancies(vacs => vacs.filter(v => v.id !== vacancyId));
         toast({
             title: 'Vaga Excluída!',
             description: 'A vaga foi removida com sucesso.',
@@ -40,7 +50,7 @@ export default function ManageVacanciesPage() {
         toast({
             variant: 'destructive',
             title: 'Erro ao Excluir',
-            description: 'Não foi possível excluir a vaga. Verifique as permissões.',
+            description: 'Não foi possível excluir a vaga.',
         });
     }
   }
@@ -71,7 +81,7 @@ export default function ManageVacanciesPage() {
             <FileWarning className="h-4 w-4" />
           <AlertTitle>Erro ao Carregar Vagas</AlertTitle>
           <AlertDescription>
-            Não foi possível carregar os dados das vagas. Verifique as permissões do Firestore.
+            Não foi possível carregar os dados das vagas.
           </AlertDescription>
         </Alert>
       );
@@ -108,7 +118,9 @@ export default function ManageVacanciesPage() {
                     <CardContent>
                         <p className="text-sm text-muted-foreground line-clamp-2">{vacancy.description}</p>
                         <div className='mt-4 flex gap-2'>
-                            <Button variant="outline" size="sm" disabled>Editar</Button>
+                            <Button variant="outline" size="sm" asChild>
+                                <Link href={`/dashboard/recruiter/vacancies/${vacancy.id}/edit`}>Editar</Link>
+                            </Button>
                             <Button variant="destructive" size="sm" onClick={() => handleDelete(vacancy.id)}>Excluir</Button>
                         </div>
                     </CardContent>

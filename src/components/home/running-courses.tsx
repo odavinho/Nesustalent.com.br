@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Autoplay from "embla-carousel-autoplay"
 import {
     Carousel,
@@ -7,18 +7,24 @@ import {
     CarouselItem,
 } from "@/components/ui/carousel"
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { courses } from '@/lib/courses';
+import { getCourses } from '@/lib/course-service';
 import Image from 'next/image';
 import { Card } from '../ui/card';
 import Link from 'next/link';
+import type { Course } from '@/lib/types';
+
 
 export function RunningCourses() {
     const plugin = React.useRef(
         Autoplay({ delay: 2000, stopOnInteraction: true })
     )
+    const [runningCourses, setRunningCourses] = useState<Course[]>([]);
 
-    const runningCourseIds = ['TA-001', 'LMP-006', 'EN-427', 'NE-74', 'GC-002', 'GE-003'];
-    const runningCourses = courses.filter(course => runningCourseIds.includes(course.id));
+    useEffect(() => {
+        const allCourses = getCourses();
+        const runningCourseIds = ['TA-001', 'LMP-006', 'EN-427', 'NE-74', 'GC-002', 'GE-003'];
+        setRunningCourses(allCourses.filter(course => runningCourseIds.includes(course.id)));
+    }, []);
 
     return (
         <section className="py-16 sm:py-24 bg-card">

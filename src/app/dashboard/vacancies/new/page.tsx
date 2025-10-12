@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { courseCategories } from '@/lib/courses';
+import { getCourseCategories } from '@/lib/course-service';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -61,6 +61,7 @@ export default function NewVacancyPage() {
   const { toast } = useToast();
   const router = useRouter();
   const { user } = useUser();
+  const courseCategories = getCourseCategories();
 
 
   const form = useForm<FormValues>({

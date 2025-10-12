@@ -12,7 +12,8 @@ import { revalidatePath } from "next/cache";
 import type { ImagePlaceholder } from "@/lib/placeholder-images";
 import { promises as fs } from 'fs';
 import path from 'path';
-import { Course } from "@/lib/types";
+import type { Course } from "@/lib/types";
+import { addCourse } from "@/lib/course-service";
 
 // AI Actions
 export async function analyzeResumeAction(input: AIResumeAnalysisInput): Promise<AIResumeAnalysisOutput> {
@@ -67,12 +68,18 @@ export async function generateCourseContentAction(input: GenerateCourseContentIn
     }
 }
 
-export async function addCourseAction(course: Omit<Course, 'id'>): Promise<{ success: boolean; message: string }> {
-    // In a real application, you would save this to Firestore.
-    console.log("Mock addCourseAction:", course);
-    // For now, let's assume it's always successful for the mock.
-    // In a real scenario, you'd handle potential errors from the database.
-    return { success: true, message: 'Curso adicionado com sucesso (simulado).' };
+export async function addCourseAction(course: Omit<Course, 'id'>): Promise<{ success: boolean; message: string; course?: Course }> {
+    try {
+        const newCourse = addCourse(course);
+        // Revalidate paths where courses are listed to reflect the change
+        revalidatePath('/courses');
+        revalidatePath('/dashboard/admin/courses');
+        return { success: true, message: 'Curso adicionado com sucesso!', course: newCourse };
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'Falha ao adicionar o curso.';
+        console.error("Error in addCourseAction:", error);
+        return { success: false, message };
+    }
 }
 
 

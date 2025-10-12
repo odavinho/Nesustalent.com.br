@@ -4,14 +4,14 @@ import { useState } from 'react';
 import { useForm, SubmitHandler, useFieldArray, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { courseCategories } from '@/lib/courses';
+import { getCourseCategories } from '@/lib/course-service';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, Wand2, ArrowLeft, Link as LinkIcon, PlusCircle, Trash2 } from 'lucide-react';
+import { Loader2, Wand2, ArrowLeft, Link as LinkIcon, PlusCircle, Trash2, Save } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { generateCourseContentAction, addCourseAction } from '@/app/actions';
 import type { GenerateCourseContentOutput } from '@/ai/flows/generate-course-content';
@@ -33,8 +33,8 @@ const formSchema = z.object({
   courseLevel: z.string({ required_error: 'Selecione um nível.' }),
   
   // Full course content part
+  id: z.string().optional(),
   format: z.enum(['Online', 'Presencial', 'Híbrido'], { required_error: 'Selecione um formato.' }),
-  courseId: z.string().optional(),
   duration: z.string().optional(),
   generalObjective: z.string().optional(),
   whatYouWillLearn: z.string().optional(),
@@ -50,6 +50,9 @@ export default function NewCoursePage() {
   const [showGeneratedContent, setShowGeneratedContent] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
+  const {user} = useUser();
+  const courseCategories = getCourseCategories();
+
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -70,7 +73,7 @@ export default function NewCoursePage() {
     setShowGeneratedContent(false);
     try {
       const result = await generateCourseContentAction(data);
-      form.setValue('courseId', result.courseId);
+      form.setValue('id', result.courseId);
       form.setValue('duration', result.duration);
       form.setValue('generalObjective', result.generalObjective);
       form.setValue('whatYouWillLearn', result.whatYouWillLearn.join('\n'));
@@ -101,10 +104,11 @@ export default function NewCoursePage() {
     setIsSaving(true);
     
     const courseData: Omit<Course, 'id'> = {
+      id: data.id!, // The ID is now part of the form
       name: data.courseName,
       category: data.courseCategory,
       format: data.format,
-      imageId: `course-image-${data.courseId}`,
+      imageId: `course-image-${data.id}`, // Placeholder logic
       duration: data.duration || '',
       generalObjective: data.generalObjective || '',
       whatYouWillLearn: data.whatYouWillLearn?.split('\n').filter(line => line.trim() !== '') || [],
@@ -116,14 +120,13 @@ export default function NewCoursePage() {
     };
 
     try {
-      // Here you would also handle the upload of the image if imageDataUri is present
-      // and replace imageId with the actual URL. For this mock, we just use the ID.
+      // In a real app, you'd handle the upload of the image if imageDataUri is present.
       const result = await addCourseAction(courseData);
 
       if (result.success) {
         toast({
-            title: "Curso salvo! (Simulado)",
-            description: "O curso foi adicionado com sucesso à lista de cursos.",
+            title: "Curso salvo!",
+            description: "O curso foi adicionado com sucesso.",
         });
         router.push('/dashboard/admin/courses');
       } else {
@@ -141,7 +144,6 @@ export default function NewCoursePage() {
     }
   };
 
-  const {user} = useUser();
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -189,7 +191,7 @@ export default function NewCoursePage() {
                   <div className="space-y-4">
                     <FormField control={form.control} name="format" render={({ field }) => ( <FormItem><FormLabel>Formato do Curso</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Selecione o formato" /></SelectTrigger></FormControl><SelectContent><SelectItem value="Online">Online</SelectItem><SelectItem value="Presencial">Presencial</SelectItem><SelectItem value="Híbrido">Híbrido</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
                     <div className="grid md:grid-cols-2 gap-4">
-                      <FormField control={form.control} name="courseId" render={({ field }) => ( <FormItem><FormLabel>ID do Curso</FormLabel><FormControl><Input {...field} readOnly /></FormControl><FormMessage /></FormItem> )} />
+                      <FormField control={form.control} name="id" render={({ field }) => ( <FormItem><FormLabel>ID do Curso</FormLabel><FormControl><Input {...field} readOnly /></FormControl><FormMessage /></FormItem> )} />
                       <FormField control={form.control} name="duration" render={({ field }) => ( <FormItem><FormLabel>Duração</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
                     </div>
                     <FormField control={form.control} name="generalObjective" render={({ field }) => ( <FormItem><FormLabel>Objetivo Geral</FormLabel><FormControl><Textarea rows={3} {...field} /></FormControl><FormMessage /></FormItem> )} />
@@ -209,7 +211,7 @@ export default function NewCoursePage() {
                   </div>
     
                   <Button type="submit" disabled={isSaving} className="w-full bg-green-600 hover:bg-green-700">
-                     {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Salvar Curso'}
+                     {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <><Save className="mr-2 h-4 w-4" /> Salvar Curso</>}
                   </Button>
                 </div>
               )}

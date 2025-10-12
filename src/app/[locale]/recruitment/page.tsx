@@ -1,10 +1,19 @@
+'use client';
 import { VacancyList } from "@/components/recruitment/vacancy-list";
 import { ResumeAnalyzer } from "@/components/recruitment/resume-analyzer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { useEffect } from "react";
+import { getVacancies } from "@/lib/vacancy-service";
 
 export default function RecruitmentPage() {
+
+    // Pre-warm the vacancies data
+    useEffect(() => {
+        getVacancies();
+    }, []);
+
   return (
     <>
       <Header />

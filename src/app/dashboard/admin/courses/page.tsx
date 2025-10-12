@@ -11,17 +11,31 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
+import { getCourses } from '@/lib/course-service';
+import { useEffect, useState } from 'react';
+
 
 export default function ManageCoursesPage() {
-  const firestore = useFirestore();
   const router = useRouter();
-  
-  const coursesQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return query(collection(firestore, 'courses'), orderBy('name', 'asc'));
-  }, [firestore]);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-  const { data: courses, isLoading, error } = useCollection<Course>(coursesQuery);
+  useEffect(() => {
+    try {
+      const allCourses = getCourses();
+      setCourses(allCourses);
+    } catch (e) {
+        if (e instanceof Error) {
+            setError(e);
+        } else {
+            setError(new Error("An unknown error occurred."));
+        }
+    } finally {
+        setIsLoading(false);
+    }
+  }, []);
+
 
   const renderContent = () => {
     if (isLoading) {
@@ -45,7 +59,7 @@ export default function ManageCoursesPage() {
             <FileWarning className="h-4 w-4" />
           <AlertTitle>Erro ao Carregar Cursos</AlertTitle>
           <AlertDescription>
-            Não foi possível carregar os dados dos cursos. Verifique as permissões do Firestore.
+            Não foi possível carregar os dados dos cursos.
           </AlertDescription>
         </Alert>
       );
@@ -76,10 +90,13 @@ export default function ManageCoursesPage() {
                     </CardHeader>
                     <CardContent>
                         <Badge>{course.format}</Badge>
-                        <p className="text-sm text-muted-foreground mt-2">{course.generalObjective}</p>
+                        <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{course.generalObjective}</p>
                         <div className='mt-4 flex gap-2'>
-                            <Button variant="outline" size="sm">Editar</Button>
-                            <Button variant="destructive" size="sm">Excluir</Button>
+                            <Button variant="outline" size="sm" asChild>
+                                <Link href={`/courses/${course.id}`}>Ver</Link>
+                            </Button>
+                            <Button variant="outline" size="sm" disabled>Editar</Button>
+                            <Button variant="destructive" size="sm" disabled>Excluir</Button>
                         </div>
                     </CardContent>
                 </Card>

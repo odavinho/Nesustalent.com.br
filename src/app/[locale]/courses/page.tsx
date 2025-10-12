@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { courses, courseCategories } from '@/lib/courses';
+import { getCourses, getCourseCategories } from '@/lib/course-service';
 import { CourseCard } from '@/components/courses/course-card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -17,13 +17,21 @@ import { FeaturedCourses } from '@/components/home/featured-courses';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { RunningCourses } from '@/components/home/running-courses';
+import type { Course, CourseCategory } from '@/lib/types';
 
 const COURSES_PER_PAGE = 12;
 
 export default function CoursesPage() {
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [courseCategories, setCourseCategories] = useState<CourseCategory[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    setCourses(getCourses());
+    setCourseCategories(getCourseCategories());
+  }, []);
 
   const filteredCourses = useMemo(() => {
     return courses.filter(course => {
@@ -31,7 +39,7 @@ export default function CoursesPage() {
       const matchesSearch = course.name.toLowerCase().includes(searchTerm.toLowerCase()) || course.id.toLowerCase().includes(searchTerm.toLowerCase());
       return matchesCategory && matchesSearch;
     });
-  }, [searchTerm, selectedCategory]);
+  }, [courses, searchTerm, selectedCategory]);
 
   const totalPages = Math.ceil(filteredCourses.length / COURSES_PER_PAGE);
 

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { courseCategories } from '@/lib/courses';
+import { getCourseCategories } from '@/lib/course-service';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -56,6 +56,7 @@ export default function EditVacancyPage() {
   const router = useRouter();
   const params = useParams();
   const vacancyId = params.id as string;
+  const courseCategories = getCourseCategories();
   
   const [vacancy, setVacancy] = useState<Vacancy | null | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);

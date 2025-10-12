@@ -1,4 +1,5 @@
-import { courses, courseCategories } from "@/lib/courses";
+'use client';
+import { getCourseById, getCourseCategories, getCourses } from "@/lib/course-service";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { notFound } from "next/navigation";
 import Image from 'next/image';
@@ -10,21 +11,41 @@ import { CourseCard } from "@/components/courses/course-card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import React from "react";
+import React, { useState, useEffect } from "react";
+import type { Course, CourseCategory } from "@/lib/types";
 
 
 export default function CourseDetailPage({ params }: { params: { id: string } }) {
-  const course = courses.find(c => c.id === params.id);
+  const [course, setCourse] = useState<Course | null>(null);
+  const [category, setCategory] = useState<CourseCategory | null>(null);
+  const [relatedCourses, setRelatedCourses] = useState<Course[]>([]);
+  const [image, setImage] = useState<any>(null);
+
+  useEffect(() => {
+    const foundCourse = getCourseById(params.id);
+    if (!foundCourse) {
+      notFound();
+    }
+    setCourse(foundCourse);
+
+    const categories = getCourseCategories();
+    const foundCategory = categories.find(c => c.id === foundCourse.category);
+    setCategory(foundCategory || null);
+
+    const allCourses = getCourses();
+    const related = allCourses
+      .filter(c => c.category === foundCourse.category && c.id !== foundCourse.id)
+      .slice(0, 4);
+    setRelatedCourses(related);
+
+    const foundImage = PlaceHolderImages.find(p => p.id === foundCourse.imageId);
+    setImage(foundImage || null);
+  }, [params.id]);
+
 
   if (!course) {
-    notFound();
+    return <div>Loading...</div>; // Or a proper skeleton loader
   }
-
-  const category = courseCategories.find(c => c.id === course.category);
-  const image = PlaceHolderImages.find(p => p.id === course.imageId);
-  const relatedCourses = courses
-    .filter(c => c.category === course.category && c.id !== course.id)
-    .slice(0, 4);
 
   return (
     <>
