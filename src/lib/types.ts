@@ -116,4 +116,79 @@ export interface Course {
     title: string;
     questions: AssessmentQuestion[];
   }
+
+  // Types for generate-course-content flow
+  export interface GenerateCourseContentInput {
+    courseName: string;
+    courseCategory: string;
+    courseLevel: string;
+  }
+
+  export interface GenerateCourseContentOutput {
+      courseId: string;
+      generalObjective: string;
+      whatYouWillLearn: string[];
+      modules: Array<{
+          title: string;
+          topics: string[];
+      }>;
+      duration: string;
+      imageHint: string;
+      imageDataUri?: string;
+  }
+
+  // Types for generate-vacancy-content flow
+    export interface GenerateVacancyContentInput {
+        title: string;
+        category: string;
+        industry: string;
+        minExperience: string;
+        demandLevel: string;
+    }
+    
+    export interface GenerateVacancyContentOutput {
+        description: string;
+        responsibilities: string[];
+        requirements: string[];
+        screeningQuestions?: string[];
+    }
+    
+  // Types for generate-assessment-test flow
+    export interface GenerateAssessmentTestInput {
+        jobDescription: string;
+        testType: 'knowledge' | 'psychometric';
+        numMultipleChoice: number;
+        numShortAnswer: number;
+    }
+
+    interface TestQuestion {
+        id: string;
+        question: string;
+        type: 'multiple-choice' | 'short-answer' | 'psychometric';
+        options?: string[];
+    }
+    
+    export interface GenerateAssessmentTestOutput {
+        id: string;
+        title: string;
+        questions: TestQuestion[];
+    }
+
+  // Types for generate-module-assessment flow
+    export interface GenerateModuleAssessmentInput {
+        moduleTitle: string;
+        topics: string[];
+    }
+
+    interface ModuleQuestion {
+        question: string;
+        type: 'multiple-choice' | 'short-answer';
+        options?: string[];
+        correctAnswerIndex?: number;
+        shortAnswer?: string;
+    }
+    
+    export interface GenerateModuleAssessmentOutput {
+        questions: ModuleQuestion[];
+    }
   

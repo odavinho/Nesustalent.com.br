@@ -21,17 +21,18 @@ export const getCourseById = (id: string): Course | undefined => {
 };
 
 // Function to add a new course
-export const addCourse = (courseData: Omit<Course, 'id'>): Course => {
+export const addCourse = (courseData: Course): Course => {
     const newCourse: Course = {
         ...courseData,
-        id: courseData.id || `course-${new Date().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
     };
     // Ensure no duplicate IDs
     if (courses.some(c => c.id === newCourse.id)) {
-        // Handle duplicate ID case, e.g., by regenerating or throwing an error
-        newCourse.id = `${newCourse.id}-${Math.random().toString(36).substr(2, 4)}`;
+        // Handle duplicate ID case, e.g., by throwing an error or just updating
+        const index = courses.findIndex(c => c.id === newCourse.id);
+        courses[index] = newCourse;
+    } else {
+       courses.unshift(newCourse); // Add to the beginning of the array
     }
-    courses.unshift(newCourse); // Add to the beginning of the array
     return newCourse;
 };
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm, SubmitHandler, useFieldArray, Controller } from 'react-hook-form';
+import { useForm, SubmitHandler, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { getCourseCategories } from '@/lib/course-service';
@@ -11,14 +11,22 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, Wand2, ArrowLeft, Link as LinkIcon, PlusCircle, Trash2, Save } from 'lucide-react';
+import { Loader2, Wand2, ArrowLeft, Link as LinkIcon, PlusCircle, Trash2, Save, Bot } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { generateCourseContentAction, addCourseAction } from '@/app/actions';
-import type { GenerateCourseContentOutput } from '@/ai/flows/generate-course-content';
+import { addCourseAction, generateCourseContentAction, generateModuleAssessmentAction } from '@/app/actions';
+import type { GenerateCourseContentOutput, GenerateModuleAssessmentOutput } from '@/lib/types';
 import Image from 'next/image';
 import type { Course } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/firebase';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 const moduleSchema = z.object({
   title: z.string().min(1, "O título do módulo é obrigatório."),
@@ -27,12 +35,9 @@ const moduleSchema = z.object({
 });
 
 const formSchema = z.object({
-  // AI generation part
   courseName: z.string().min(5, { message: 'O nome do curso deve ter pelo menos 5 caracteres.' }),
   courseCategory: z.string({ required_error: 'Selecione uma categoria.' }),
   courseLevel: z.string({ required_error: 'Selecione um nível.' }),
-  
-  // Full course content part
   id: z.string().optional(),
   format: z.enum(['Online', 'Presencial', 'Híbrido'], { required_error: 'Selecione um formato.' }),
   duration: z.string().optional(),
@@ -73,6 +78,9 @@ export default function NewCoursePage() {
     setShowGeneratedContent(false);
     try {
       const result = await generateCourseContentAction(data);
+      if (!result) {
+        throw new Error("A geração de conteúdo não retornou nenhum resultado.");
+      }
       form.setValue('id', result.courseId);
       form.setValue('duration', result.duration);
       form.setValue('generalObjective', result.generalObjective);
@@ -103,12 +111,22 @@ export default function NewCoursePage() {
     if (!user) return;
     setIsSaving(true);
     
-    const courseData: Omit<Course, 'id'> = {
-      id: data.id!, // The ID is now part of the form
+    if (!data.id) {
+        toast({
+            variant: 'destructive',
+            title: 'Erro',
+            description: 'O ID do curso não foi gerado. Tente gerar o conteúdo novamente.',
+        });
+        setIsSaving(false);
+        return;
+    }
+
+    const courseData: Omit<Course, 'id'> & {id: string} = {
+      id: data.id,
       name: data.courseName,
       category: data.courseCategory,
       format: data.format,
-      imageId: `course-image-${data.id}`, // Placeholder logic
+      imageId: `course-image-${data.id}`,
       duration: data.duration || '',
       generalObjective: data.generalObjective || '',
       whatYouWillLearn: data.whatYouWillLearn?.split('\n').filter(line => line.trim() !== '') || [],
@@ -120,7 +138,6 @@ export default function NewCoursePage() {
     };
 
     try {
-      // In a real app, you'd handle the upload of the image if imageDataUri is present.
       const result = await addCourseAction(courseData);
 
       if (result.success) {
@@ -161,7 +178,6 @@ export default function NewCoursePage() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSaveCourse)} className="space-y-6">
-              {/* --- AI Generation Section --- */}
               <div className="space-y-6 p-4 border rounded-md">
                 <h3 className="font-semibold text-lg">1. Gerar Conteúdo Base com IA</h3>
                 <div className="grid md:grid-cols-2 gap-6">
@@ -231,6 +247,8 @@ function ModuleField({ moduleIndex, form, onRemove }: { moduleIndex: number; for
   });
 
   const courseFormat = form.watch('format');
+  const moduleTitle = form.watch(`modules.${moduleIndex}.title`);
+  const moduleTopics = form.watch(`modules.${moduleIndex}.topics`);
 
   return (
     <div className="p-4 border rounded-lg relative bg-secondary/30">
@@ -287,7 +305,104 @@ function ModuleField({ moduleIndex, form, onRemove }: { moduleIndex: number; for
             )}
            />
         )}
+        <ModuleAssessmentGenerator 
+            moduleTitle={moduleTitle} 
+            topics={moduleTopics.map((t: {value: string}) => t.value)} 
+        />
       </div>
     </div>
   );
+}
+
+
+function ModuleAssessmentGenerator({ moduleTitle, topics }: { moduleTitle: string, topics: string[] }) {
+    const [isOpen, setIsOpen] = useState(false);
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [assessment, setAssessment] = useState<GenerateModuleAssessmentOutput | null>(null);
+    const { toast } = useToast();
+
+    const handleGenerate = async () => {
+        if (!moduleTitle || topics.length === 0) {
+            toast({
+                variant: "destructive",
+                title: "Faltam Dados",
+                description: "O módulo precisa de um título e pelo menos um tópico para gerar um teste.",
+            });
+            return;
+        }
+        setIsGenerating(true);
+        setAssessment(null);
+        try {
+            const result = await generateModuleAssessmentAction({ moduleTitle, topics });
+            setAssessment(result);
+        } catch (error) {
+            toast({
+                variant: 'destructive',
+                title: 'Erro ao gerar teste',
+                description: error instanceof Error ? error.message : 'Ocorreu um erro desconhecido.',
+            });
+        } finally {
+            setIsGenerating(false);
+        }
+    };
+
+    return (
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+                <Button variant="outline" size="sm" className="w-full mt-2">
+                    <Bot className="mr-2 h-4 w-4" /> Gerar Teste de Avaliação com IA
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[625px]">
+                <DialogHeader>
+                    <DialogTitle>Gerador de Teste para: {moduleTitle}</DialogTitle>
+                    <DialogDescription>
+                        Clique em "Gerar" para criar um pequeno teste com base nos tópicos do módulo.
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="py-4">
+                    {!assessment && !isGenerating && (
+                        <div className="flex items-center justify-center h-40 rounded-lg border-2 border-dashed">
+                             <p className="text-muted-foreground">O teste gerado aparecerá aqui.</p>
+                        </div>
+                    )}
+                    {isGenerating && (
+                         <div className="flex items-center justify-center h-40">
+                            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                        </div>
+                    )}
+                    {assessment && (
+                        <div className="space-y-4 max-h-[50vh] overflow-y-auto pr-4">
+                            {assessment.questions.map((q, index) => (
+                                <div key={index} className="border-b pb-4">
+                                    <p className="font-semibold">{index + 1}. {q.question}</p>
+                                    {q.options && (
+                                        <div className="mt-2 space-y-1 text-sm pl-4">
+                                            {q.options.map((opt, i) => (
+                                                <p key={i} className={i === q.correctAnswerIndex ? 'text-green-600 font-bold' : ''}>
+                                                    {opt} {i === q.correctAnswerIndex && '(Correta)'}
+                                                </p>
+                                            ))}
+                                        </div>
+                                    )}
+                                     {q.shortAnswer && (
+                                         <p className="text-sm text-blue-600 mt-2 pl-4">Resposta: {q.shortAnswer}</p>
+                                     )}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+                <div className="flex justify-end gap-2">
+                     <Button type="button" onClick={handleGenerate} disabled={isGenerating}>
+                        {isGenerating ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Wand2 className="mr-2 h-4 w-4"/>}
+                        {assessment ? "Gerar Novamente" : "Gerar Teste"}
+                    </Button>
+                    <Button type="button" disabled>
+                       Adicionar ao Módulo (Em breve)
+                    </Button>
+                </div>
+            </DialogContent>
+        </Dialog>
+    );
 }

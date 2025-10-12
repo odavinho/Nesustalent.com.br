@@ -6,6 +6,7 @@ import { generateCourseContent, GenerateCourseContentInput, GenerateCourseConten
 import { generateVacancyContent, GenerateVacancyContentInput, GenerateVacancyContentOutput } from "@/ai/flows/generate-vacancy-content";
 import { extractProfileFromResume, ExtractProfileFromResumeInput, ExtractProfileFromResumeOutput } from "@/ai/flows/extract-profile-from-resume";
 import { generateAssessmentTest, GenerateAssessmentTestInput, GenerateAssessmentTestOutput } from "@/ai/flows/generate-assessment-test";
+import { generateModuleAssessment, GenerateModuleAssessmentInput, GenerateModuleAssessmentOutput } from "@/ai/flows/generate-module-assessment";
 
 
 import { revalidatePath } from "next/cache";
@@ -58,7 +59,7 @@ export async function getCourseRecommendationsAction(input: { userProfile: strin
     }
 }
 
-export async function generateCourseContentAction(input: GenerateCourseContentInput): Promise<GenerateCourseContentOutput> {
+export async function generateCourseContentAction(input: GenerateCourseContentInput): Promise<GenerateCourseContentOutput | null> {
     try {
         const output = await generateCourseContent(input);
         return output;
@@ -68,7 +69,7 @@ export async function generateCourseContentAction(input: GenerateCourseContentIn
     }
 }
 
-export async function addCourseAction(course: Omit<Course, 'id'>): Promise<{ success: boolean; message: string; course?: Course }> {
+export async function addCourseAction(course: Course): Promise<{ success: boolean; message: string; course?: Course }> {
     try {
         const newCourse = addCourse(course);
         // Revalidate paths where courses are listed to reflect the change
@@ -100,6 +101,16 @@ export async function generateAssessmentTestAction(input: GenerateAssessmentTest
     } catch (error) {
       console.error("Error in generateAssessmentTestAction:", error);
       throw new Error("Failed to generate assessment test. Please try again.");
+    }
+  }
+
+  export async function generateModuleAssessmentAction(input: GenerateModuleAssessmentInput): Promise<GenerateModuleAssessmentOutput> {
+    try {
+      const output = await generateModuleAssessment(input);
+      return output;
+    } catch (error) {
+      console.error("Error in generateModuleAssessmentAction:", error);
+      throw new Error("Failed to generate module assessment. Please try again.");
     }
   }
 

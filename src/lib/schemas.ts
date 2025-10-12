@@ -54,3 +54,21 @@ export const GenerateAssessmentTestOutputSchema = z.object({
     title: z.string().describe('A concise and relevant title for the generated test.'),
     questions: z.array(QuestionSchema).describe('The list of generated questions.'),
 });
+
+
+export const GenerateModuleAssessmentInputSchema = z.object({
+    moduleTitle: z.string().describe('The title of the course module.'),
+    topics: z.array(z.string()).describe('A list of topics covered in the module.'),
+});
+
+const ModuleQuestionSchema = z.object({
+    question: z.string().describe('The text of the question.'),
+    type: z.enum(['multiple-choice', 'short-answer']).describe('The type of the question.'),
+    options: z.array(z.string()).optional().describe('A list of 4 options for multiple-choice questions.'),
+    correctAnswerIndex: z.number().optional().describe('The index of the correct answer in the options array for multiple-choice questions.'),
+    shortAnswer: z.string().optional().describe('The ideal short answer for short-answer questions.'),
+});
+  
+export const GenerateModuleAssessmentOutputSchema = z.object({
+    questions: z.array(ModuleQuestionSchema).describe('The list of generated questions for the module quiz.'),
+});
