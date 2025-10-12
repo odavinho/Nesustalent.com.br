@@ -6,7 +6,7 @@ import { users } from "@/lib/users";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Edit, User, Briefcase, GraduationCap, Award, FileText, Download } from "lucide-react";
+import { ArrowLeft, Edit, User, Briefcase, GraduationCap, Award, FileText, Download, ThumbsUp, ThumbsDown } from "lucide-react";
 import type { UserProfile } from "@/lib/types";
 
 function ProfileView({ profile }: { profile: UserProfile }) {
@@ -24,11 +24,19 @@ function ProfileView({ profile }: { profile: UserProfile }) {
                     <p className="text-muted-foreground text-xl mt-1">{profile.academicTitle}</p>
                     <p className="text-muted-foreground text-sm mt-2">{profile.functionalArea}  &middot; {profile.yearsOfExperience} anos de experiência</p>
                 </div>
-                <Button asChild>
-                    <a href={`mailto:${profile.email}`}>
-                        <User className="mr-2 h-4 w-4" /> Contactar Candidato
-                    </a>
-                </Button>
+                <div className="flex gap-2">
+                     <Button variant={'outline'} size="icon" title="Marcar como interessante">
+                        <ThumbsUp className={`h-5 w-5 text-green-500`} />
+                    </Button>
+                    <Button variant={'outline'} size="icon" title="Rejeitar">
+                        <ThumbsDown className={`h-5 w-5 text-red-500`} />
+                    </Button>
+                    <Button asChild>
+                        <a href={`mailto:${profile.email}`}>
+                            <User className="mr-2 h-4 w-4" /> Contactar Candidato
+                        </a>
+                    </Button>
+                </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

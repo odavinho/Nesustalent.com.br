@@ -62,6 +62,8 @@ export interface Course {
     description?: string;
   }
 
+  export type EducationLevel = 'Ensino Primário' | 'Ensino Médio' | 'Frequência Universitária' | 'Licenciatura' | 'Mestrado' | 'Doutoramento';
+
   export interface UserProfile {
     id: string;
     firstName: string;
@@ -72,7 +74,10 @@ export interface Course {
     resumeUrl?: string;
     academicTitle?: string;
     nationality?: string;
-    dateOfBirth?: string;
+    dateOfBirth?: string; // Format "YYYY-MM-DD"
+    gender?: 'Masculino' | 'Feminino';
+    languages?: string[];
+    educationLevel?: EducationLevel;
     yearsOfExperience?: number;
     functionalArea?: string;
     subFunctionalArea?: string;
