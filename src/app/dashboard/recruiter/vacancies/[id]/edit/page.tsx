@@ -88,7 +88,7 @@ export default function EditVacancyPage() {
   useEffect(() => {
     if (vacancyId) {
       const foundVacancy = getVacancyById(vacancyId);
-      setVacancy(foundVacancy); // Can be Vacancy or null
+      setVacancy(foundVacancy); 
     }
   }, [vacancyId]);
   
@@ -97,20 +97,20 @@ export default function EditVacancyPage() {
         let closingDateValue: Date | undefined = undefined;
         if (vacancy.closingDate) {
             const date = vacancy.closingDate;
-            closingDateValue = date instanceof Timestamp ? date.toDate() : date;
+            closingDateValue = date instanceof Timestamp ? date.toDate() : (typeof date === 'string' ? new Date(date) : (date instanceof Date ? date : undefined));
         }
 
         form.reset({
           ...vacancy,
-          minExperience: '', // This is for AI generation, not editing.
-          demandLevel: '', // This is for AI generation, not editing.
+          minExperience: '', 
+          demandLevel: '', 
           closingDate: closingDateValue,
           languages: vacancy.languages?.join(', ') || '',
           responsibilities: vacancy.responsibilities.join('\n'),
           requirements: vacancy.requirements.join('\n'),
           screeningQuestions: vacancy.screeningQuestions?.join('\n') || '',
         });
-      }
+    }
   }, [vacancy, form]);
 
 
@@ -168,7 +168,7 @@ export default function EditVacancyPage() {
     notFound();
     return null;
   }
-
+  
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <Button variant="outline" onClick={() => router.back()} className="mb-6">
