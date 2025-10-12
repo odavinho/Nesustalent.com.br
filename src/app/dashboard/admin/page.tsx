@@ -77,7 +77,7 @@ export default function AdminDashboardPage() {
                         </CardHeader>
                         <CardContent>
                             <Button asChild variant="outline">
-                                <Link href="#">Gerir Usuários</Link>
+                                <Link href="/dashboard/admin/users">Gerir Usuários</Link>
                             </Button>
                         </CardContent>
                     </Card>
