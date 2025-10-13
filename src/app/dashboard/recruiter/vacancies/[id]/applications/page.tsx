@@ -10,10 +10,18 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Loader2, Users } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { RecruitmentPipeline } from "@/components/recruitment/recruitment-pipeline";
+import { Timestamp } from "firebase/firestore";
+
+interface TriagedCandidate extends Application {
+    candidate: UserProfile;
+    score?: number;
+}
+
 
 export default function VacancyApplicationsPage() {
     const params = useParams();
     const router = useRouter();
+    const searchParams = useSearchParams();
     const vacancyId = params.id as string;
 
     const [vacancy, setVacancy] = useState<Vacancy | null | undefined>(undefined);
@@ -29,22 +37,67 @@ export default function VacancyApplicationsPage() {
             setApplications(vacancyApps);
             
             const appUserIds = vacancyApps.map(app => app.userId);
-            const vacancyCandidates = allUsers.filter(user => appUserIds.includes(user.id));
-            setCandidates(vacancyCandidates);
+
+            const analysisParam = searchParams.get('analysis');
+            if(analysisParam) {
+                try {
+                    const triagedData = JSON.parse(decodeURIComponent(analysisParam));
+                    const triagedUserIds = triagedData.map((t: any) => t.id); // Assuming triaged data has candidate id
+                    const allUserIds = [...new Set([...appUserIds, ...triagedUserIds])];
+                    const vacancyCandidates = allUsers.filter(user => allUserIds.includes(user.id));
+                    setCandidates(vacancyCandidates);
+                } catch(e) {
+                     const vacancyCandidates = allUsers.filter(user => appUserIds.includes(user.id));
+                     setCandidates(vacancyCandidates);
+                }
+            } else {
+                const vacancyCandidates = allUsers.filter(user => appUserIds.includes(user.id));
+                setCandidates(vacancyCandidates);
+            }
+
         } else if (foundVacancy === null) { 
             notFound();
         }
-    }, [vacancyId]);
+    }, [vacancyId, searchParams]);
 
     const candidatesWithApplications = useMemo(() => {
-        return applications.map(app => {
+        let combined: TriagedCandidate[] = applications.map(app => {
             const candidate = candidates.find(c => c.id === app.userId);
             return {
                 ...app,
                 candidate: candidate,
             }
-        }).filter(item => item.candidate); // Filter out any applications where the candidate wasn't found
-    }, [applications, candidates]);
+        }).filter((item): item is Application & { candidate: UserProfile } => !!item.candidate);
+
+        const analysisParam = searchParams.get('analysis');
+        if (analysisParam) {
+             try {
+                const triagedData = JSON.parse(decodeURIComponent(analysisParam));
+                 triagedData.forEach((triaged: any) => {
+                    const existing = combined.find(c => c.candidate.id === triaged.id);
+                    if (!existing) {
+                        const candidateProfile = allUsers.find(u => u.id === triaged.id);
+                         if (candidateProfile) {
+                             combined.push({
+                                id: `${candidateProfile.id}_${vacancyId}`,
+                                userId: candidateProfile.id,
+                                jobPostingId: vacancyId,
+                                applicationDate: new Date(),
+                                status: 'Triagem', 
+                                candidate: candidateProfile,
+                                score: triaged.score,
+                            });
+                         }
+                    }
+                 });
+             } catch(e) {
+                 console.error("Failed to parse triaged candidates:", e);
+             }
+        }
+
+
+        return combined;
+    }, [applications, candidates, searchParams, vacancyId]);
 
     const handleStatusChange = (applicationId: string, newStatus: ApplicationStatus) => {
         setApplications(prev => prev.map(app => app.id === applicationId ? { ...app, status: newStatus } : app));
@@ -70,15 +123,16 @@ export default function VacancyApplicationsPage() {
                 <div className="mb-8">
                     <h1 className="font-headline text-3xl font-bold">Pipeline de Recrutamento</h1>
                     <p className="text-muted-foreground mt-1 text-lg">
-                        <span className="font-semibold">{vacancy.title}</span> - {applications.length} candidatura(s) no total.
+                        <span className="font-semibold">{vacancy.title}</span> - {candidatesWithApplications.length} candidatura(s) no total.
                     </p>
                 </div>
             </div>
             
             <RecruitmentPipeline 
-                applications={candidatesWithApplications as (Application & { candidate: UserProfile })[]}
+                applications={candidatesWithApplications}
                 onStatusChange={handleStatusChange} 
             />
         </div>
     );
 }
+    

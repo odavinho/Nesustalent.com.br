@@ -5,7 +5,7 @@ import { PipelineCandidateCard } from "./pipeline-candidate-card";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 interface RecruitmentPipelineProps {
-    applications: (Application & { candidate: UserProfile })[];
+    applications: (Application & { candidate: UserProfile; score?: number })[];
     onStatusChange: (applicationId: string, newStatus: ApplicationStatus) => void;
 }
 
@@ -23,7 +23,14 @@ export function RecruitmentPipeline({ applications, onStatusChange }: Recruitmen
         <ScrollArea className="flex-grow w-full">
             <div className="flex gap-6 p-4 sm:p-6 lg:p-8 pt-0">
                 {pipelineStages.map((stage) => {
-                    const stageApplications = applications.filter(app => app.status === stage.status || (stage.status === 'Triagem' && app.status === 'Recebida'));
+                    const stageApplications = applications.filter(app => {
+                         // A fase de Triagem inclui tanto 'Triagem' como 'Recebida'
+                         if (stage.status === 'Triagem') {
+                            return app.status === 'Triagem' || app.status === 'Recebida';
+                         }
+                         return app.status === stage.status;
+                    }).sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+                    
                     return (
                         <div key={stage.status} className="w-80 flex-shrink-0">
                             <div className="flex items-baseline gap-2 mb-4">
@@ -50,3 +57,4 @@ export function RecruitmentPipeline({ applications, onStatusChange }: Recruitmen
         </ScrollArea>
     );
 }
+    

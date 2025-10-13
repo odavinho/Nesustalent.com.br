@@ -4,15 +4,17 @@ import type { Application, UserProfile, ApplicationStatus } from "@/lib/types";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Calendar, ArrowRight, Eye } from "lucide-react";
+import { MoreHorizontal, Calendar, ArrowRight, Eye, Percent } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { formatDistanceToNow } from "date-fns";
 import { pt } from "date-fns/locale";
 import Link from "next/link";
 import { toast } from "@/hooks/use-toast";
+import { Progress } from "../ui/progress";
+
 
 interface PipelineCandidateCardProps {
-    application: Application;
+    application: Application & { score?: number };
     candidate: UserProfile;
     onStatusChange: (applicationId: string, newStatus: ApplicationStatus) => void;
 }
@@ -61,7 +63,16 @@ export function PipelineCandidateCard({ application, candidate, onStatusChange }
                     </DropdownMenuContent>
                 </DropdownMenu>
             </CardHeader>
-            <CardContent className="p-4 pt-0">
+            <CardContent className="p-4 pt-0 space-y-3">
+                {application.score !== undefined && (
+                     <div className="space-y-1">
+                        <div className="flex items-center justify-between">
+                            <p className="text-xs font-medium text-muted-foreground flex items-center gap-1"><Percent size={12}/> Compatibilidade</p>
+                            <span className="text-xs font-bold">{application.score}%</span>
+                        </div>
+                        <Progress value={application.score} className="h-1.5" />
+                    </div>
+                )}
                 <div className="text-xs text-muted-foreground flex items-center gap-2">
                     <Calendar size={14}/>
                     <span>
@@ -72,3 +83,4 @@ export function PipelineCandidateCard({ application, candidate, onStatusChange }
         </Card>
     );
 }
+    

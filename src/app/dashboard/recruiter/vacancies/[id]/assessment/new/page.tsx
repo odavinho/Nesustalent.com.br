@@ -53,8 +53,10 @@ export default function NewAssessmentPage() {
     setIsGenerating(true);
     setGeneratedTest(null);
     try {
+      const fullJobDescription = `${vacancy.description}\n\nResponsabilidades:\n${vacancy.responsibilities.join('\n')}\n\nRequisitos:\n${vacancy.requirements.join('\n')}`;
+
       const result = await generateAssessmentTestAction({
-        jobDescription: vacancy.description + "\n\nRequisitos:\n" + vacancy.requirements.join('\n'),
+        jobDescription: fullJobDescription,
         ...data
       });
       setGeneratedTest(result);
@@ -148,7 +150,7 @@ export default function NewAssessmentPage() {
                       <FormItem>
                         <FormLabel>Nº de Perguntas de Múltipla Escolha</FormLabel>
                         <FormControl>
-                          <Input type="number" {...field} />
+                          <Input type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value, 10))} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -161,7 +163,7 @@ export default function NewAssessmentPage() {
                       <FormItem>
                         <FormLabel>Nº de Perguntas de Resposta Curta</FormLabel>
                         <FormControl>
-                          <Input type="number" {...field} />
+                          <Input type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value, 10))} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -215,3 +217,4 @@ export default function NewAssessmentPage() {
     </div>
   );
 }
+    
