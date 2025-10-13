@@ -59,6 +59,7 @@ export interface Course {
     employerName?: string;
     aboutEmployer?: string;
     hideEmployerData?: boolean;
+    minEducationLevel?: EducationLevel;
   }
   
   export type ApplicationStatus = 'Recebida' | 'Triagem' | 'Teste' | 'Entrevista' | 'Oferta' | 'Contratado' | 'Rejeitada';

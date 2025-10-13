@@ -24,7 +24,7 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { pt } from 'date-fns/locale';
 import { addVacancy } from '@/lib/vacancy-service';
-import type { Vacancy } from '@/lib/types';
+import type { Vacancy, EducationLevel } from '@/lib/types';
 
 
 const formSchema = z.object({
@@ -44,6 +44,7 @@ const formSchema = z.object({
   employerName: z.string().min(1, 'O nome do empregador é obrigatório.'),
   aboutEmployer: z.string().min(10, 'A descrição sobre o empregador é obrigatória.'),
   hideEmployerData: z.boolean().default(false),
+  minEducationLevel: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -53,6 +54,7 @@ const recruiterProfile = {
     companyName: 'NexusTalent Corp',
     companyDescription: 'A NexusTalent é uma empresa líder em soluções de recrutamento e formação, conectando os melhores talentos às oportunidades mais desafiadoras do mercado.'
 }
+const educationLevels: EducationLevel[] = ['Ensino Primário', 'Ensino Médio', 'Frequência Universitária', 'Licenciatura', 'Mestrado', 'Doutoramento'];
 
 export default function NewVacancyPage() {
   const [generatedContent, setGeneratedContent] = useState<GenerateVacancyContentOutput | null>(null);
@@ -129,6 +131,7 @@ export default function NewVacancyPage() {
 
     const newVacancy: Omit<Vacancy, 'id' | 'postedDate'> = {
         ...formValues,
+        minEducationLevel: formValues.minEducationLevel as EducationLevel | undefined,
         ...generatedContent,
         recruiterId: user.uid,
         languages: formValues.languages?.split(',').map(l => l.trim()).filter(l => l) || [],
@@ -254,8 +257,8 @@ export default function NewVacancyPage() {
                       )}
                   />
               </div>
-
-               <FormField
+              <div className="grid md:grid-cols-2 gap-6">
+                <FormField
                     control={form.control}
                     name="industry"
                     render={({ field }) => (
@@ -268,6 +271,30 @@ export default function NewVacancyPage() {
                         </FormItem>
                     )}
                 />
+                 <FormField
+                    control={form.control}
+                    name="minEducationLevel"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Habilitações Literárias Mínimas</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Selecione o nível de escolaridade" />
+                            </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                                <SelectItem value="">N/A</SelectItem>
+                                {educationLevels.map(level => (
+                                    <SelectItem key={level} value={level}>{level}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+              </div>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <FormField
