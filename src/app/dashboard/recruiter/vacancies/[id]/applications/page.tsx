@@ -7,7 +7,7 @@ import { applications as allApplications } from "@/lib/applications";
 import { users as allUsers } from "@/lib/users";
 import { type Vacancy, type Application, type UserProfile, type ApplicationStatus } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Loader2, FileDown } from "lucide-react";
+import { ArrowLeft, Loader2, FileDown, GraduationCap } from "lucide-react";
 import { RecruitmentPipeline } from "@/components/recruitment/recruitment-pipeline";
 import { Timestamp } from "firebase/firestore";
 import jsPDF from 'jspdf';
@@ -98,6 +98,38 @@ export default function VacancyApplicationsPage() {
         if (!vacancy) return;
 
         const doc = new jsPDF();
+        const pageHeight = doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
+        const pageWidth = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
+
+        // --- Header ---
+        // Logo
+        doc.setFillColor(33, 150, 243); // Primary color
+        doc.setDrawColor(33, 150, 243);
+        doc.rect(14, 15, 10, 10, 'FD'); // Square
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(10);
+        // This is a simplified representation of the GraduationCap icon
+        doc.text('🎓', 16, 22);
+
+        // Title
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(22);
+        doc.setFont("helvetica", "bold");
+        doc.text("Nexus", 26, 22);
+        doc.setTextColor(33, 150, 243);
+        doc.text("Talent", 46, 22);
+        
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(18);
+        doc.setTextColor(0, 0, 0);
+        doc.text(`Relatório de Recrutamento: ${vacancy.title}`, 14, 40);
+        
+        doc.setFontSize(11);
+        doc.setTextColor(100);
+        doc.text(`Vaga ID: ${vacancy.id}`, 14, 48);
+        doc.text(`Total de Candidatos: ${applications.length}`, 14, 54);
+
+        // --- Table ---
         const tableData = applications.map(app => [
             `${app.candidate.firstName} ${app.candidate.lastName}`,
             app.status,
@@ -105,19 +137,19 @@ export default function VacancyApplicationsPage() {
             app.candidate.academicTitle || 'N/A'
         ]);
 
-        doc.setFontSize(18);
-        doc.text(`Relatório de Recrutamento: ${vacancy.title}`, 14, 22);
-        doc.setFontSize(11);
-        doc.setTextColor(100);
-        doc.text(`Vaga ID: ${vacancy.id}`, 14, 30);
-        doc.text(`Total de Candidatos: ${applications.length}`, 14, 36);
-
         doc.autoTable({
-            startY: 45,
+            startY: 65,
             head: [['Candidato', 'Status', 'Pontuação IA', 'Habilitações']],
             body: tableData,
             theme: 'striped',
-            headStyles: { fillColor: [22, 163, 74] },
+            headStyles: { fillColor: [29, 113, 184] }, // Darker primary color for header
+            didDrawPage: (data) => {
+                // --- Footer ---
+                doc.setFontSize(8);
+                doc.setTextColor(150);
+                const footerText = `Gerado por NexusTalent | ${new Date().toLocaleDateString('pt-PT')}`;
+                doc.text(footerText, pageWidth / 2, pageHeight - 10, { align: 'center' });
+            }
         });
 
         doc.save(`Relatorio_${vacancy.title.replace(/ /g, '_')}.pdf`);
