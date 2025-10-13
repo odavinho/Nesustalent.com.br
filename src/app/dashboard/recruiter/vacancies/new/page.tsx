@@ -11,7 +11,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, Wand2, CalendarIcon, ArrowLeft } from 'lucide-react';
+import { Loader2, Wand2, CalendarIcon, ArrowLeft, Save } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { generateVacancyContentAction } from '@/app/actions';
 import type { GenerateVacancyContentOutput } from '@/ai/flows/generate-vacancy-content';
@@ -90,22 +90,38 @@ export default function NewVacancyPage() {
     if (vacancyData) {
       try {
         const decodedData = decodeURIComponent(vacancyData);
-        const parsedVacancy = JSON.parse(decodedData) as Vacancy;
+        const parsedVacancy = JSON.parse(decodedData) as any; // Use 'any' to handle flexible data
         
+        // Map old data to new form schema, including potentially missing fields
         form.reset({
-          ...parsedVacancy,
-          minExperience: '', 
-          demandLevel: '',
+          title: parsedVacancy.title || '',
+          category: parsedVacancy.category || '',
+          industry: parsedVacancy.industry || '',
+          minExperience: parsedVacancy.minExperience || '', 
+          demandLevel: parsedVacancy.demandLevel || '',
+          location: parsedVacancy.location || 'Luanda, Angola',
+          type: parsedVacancy.type || 'Full-time',
+          numberOfVacancies: parsedVacancy.numberOfVacancies || 1,
           closingDate: parsedVacancy.closingDate ? new Date(parsedVacancy.closingDate as string) : undefined,
-          languages: parsedVacancy.languages?.join(', ') || '',
+          salaryRange: parsedVacancy.salaryRange || '',
+          showSalary: parsedVacancy.showSalary === undefined ? true : parsedVacancy.showSalary,
+          languages: Array.isArray(parsedVacancy.languages) ? parsedVacancy.languages.join(', ') : '',
+          requiredNationality: parsedVacancy.requiredNationality || 'Angolana',
+          employerName: parsedVacancy.employerName || recruiterProfile.companyName,
+          aboutEmployer: parsedVacancy.aboutEmployer || recruiterProfile.companyDescription,
+          hideEmployerData: parsedVacancy.hideEmployerData || false,
+          minEducationLevel: parsedVacancy.minEducationLevel || undefined,
         });
         
-        setGeneratedContent({
-          description: parsedVacancy.description,
-          responsibilities: parsedVacancy.responsibilities,
-          requirements: parsedVacancy.requirements,
-          screeningQuestions: parsedVacancy.screeningQuestions || [],
-        });
+        // Also pre-fill the generated content section
+        if (parsedVacancy.description && parsedVacancy.responsibilities && parsedVacancy.requirements) {
+            setGeneratedContent({
+              description: parsedVacancy.description,
+              responsibilities: parsedVacancy.responsibilities,
+              requirements: parsedVacancy.requirements,
+              screeningQuestions: parsedVacancy.screeningQuestions || [],
+            });
+        }
 
       } catch (error) {
         console.error("Failed to parse vacancy data from URL", error);
@@ -124,6 +140,10 @@ export default function NewVacancyPage() {
     try {
       const result = await generateVacancyContentAction({title: data.title, category: data.category, industry: data.industry, minExperience: data.minExperience, demandLevel: data.demandLevel });
       setGeneratedContent(result);
+      toast({
+        title: "Conteúdo Gerado!",
+        description: "A descrição da vaga foi gerada pela IA. Reveja e publique.",
+      });
     } catch (error) {
       toast({
         variant: 'destructive',
@@ -236,7 +256,7 @@ export default function NewVacancyPage() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Área Funcional (Categoria)</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Selecione uma área" />
@@ -263,7 +283,7 @@ export default function NewVacancyPage() {
                       render={({ field }) => (
                           <FormItem>
                           <FormLabel>Experiência Mínima</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <Select onValueChange={field.onChange} value={field.value}>
                               <FormControl><SelectTrigger><SelectValue placeholder="Selecione os anos" /></SelectTrigger></FormControl>
                               <SelectContent>
                                   <SelectItem value="0-1 ano">0-1 ano</SelectItem>
@@ -283,7 +303,7 @@ export default function NewVacancyPage() {
                       render={({ field }) => (
                           <FormItem>
                           <FormLabel>Grau de Exigência</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <Select onValueChange={field.onChange} value={field.value}>
                               <FormControl><SelectTrigger><SelectValue placeholder="Selecione o nível" /></SelectTrigger></FormControl>
                               <SelectContent>
                                   <SelectItem value="Estagiário / Júnior">Estagiário / Júnior</SelectItem>
@@ -317,7 +337,7 @@ export default function NewVacancyPage() {
                     render={({ field }) => (
                         <FormItem>
                         <FormLabel>Habilitações Literárias Mínimas</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
                             <SelectTrigger>
                                 <SelectValue placeholder="Selecione o nível de escolaridade" />
@@ -356,7 +376,7 @@ export default function NewVacancyPage() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Tipo de Contrato</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Selecione o tipo" />
@@ -567,7 +587,7 @@ export default function NewVacancyPage() {
                     )}
                   </div>
                   <Button onClick={handleSaveVacancy} disabled={isSaving} className="w-full bg-green-600 hover:bg-green-700">
-                    {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Publicar Vaga'}
+                     {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <><Save className="mr-2 h-4 w-4"/> Publicar Vaga </>}
                   </Button>
                 </div>
               )}
@@ -586,3 +606,5 @@ const TextareaWithLabel = ({ label, ...props }: React.ComponentProps<typeof Text
       <Textarea {...props} />
     </div>
   );
+
+    
