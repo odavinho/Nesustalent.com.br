@@ -17,7 +17,7 @@ import { addCourse } from "@/lib/course-service";
 
 // AI Actions
 export async function analyzeResumeAction(input: AIResumeAnalysisInput): Promise<AIResumeAnalysisOutput> {
-    // The try-catch block is removed from here and moved to the client component
+    // The try-catch block is moved to the client component
     // to handle errors on a per-file basis during bulk analysis.
     const output = await aiResumeAnalysis(input);
     return output;
