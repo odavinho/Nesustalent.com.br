@@ -42,10 +42,12 @@ export default function VacancyApplicationsPage() {
             if(analysisParam) {
                 try {
                     const triagedData = JSON.parse(decodeURIComponent(analysisParam));
-                    const triagedUserIds = triagedData.map((t: any) => t.id); // Assuming triaged data has candidate id
-                    const allUserIds = [...new Set([...appUserIds, ...triagedUserIds])];
-                    const vacancyCandidates = allUsers.filter(user => allUserIds.includes(user.id));
-                    setCandidates(vacancyCandidates);
+                    // The analysis data contains a fake candidate ID like "analyzed-0". We need to find the real candidate profile.
+                    // This is a workaround because the analyzer doesn't have the real candidate ID.
+                    // In a real app, the analyzer would work with existing user profiles.
+                    // Here, we just add ALL student users to the list to ensure the profile can be found.
+                    const allStudentUsers = allUsers.filter(u => u.userType === 'student');
+                    setCandidates(allStudentUsers);
                 } catch(e) {
                      const vacancyCandidates = allUsers.filter(user => appUserIds.includes(user.id));
                      setCandidates(vacancyCandidates);
@@ -72,12 +74,16 @@ export default function VacancyApplicationsPage() {
         const analysisParam = searchParams.get('analysis');
         if (analysisParam) {
              try {
-                const triagedData = JSON.parse(decodeURIComponent(analysisParam));
-                 triagedData.forEach((triaged: any) => {
-                    const existing = combined.find(c => c.candidate.id === triaged.id);
-                    if (!existing) {
-                        const candidateProfile = allUsers.find(u => u.id === triaged.id);
-                         if (candidateProfile) {
+                const triagedData = JSON.parse(decodeURIComponent(analysisParam)) as { id: string, name: string, score: number }[];
+                 
+                 triagedData.forEach((triaged) => {
+                    // This is a mock: find a candidate by matching the filename from analysis.
+                    // In a real app, you'd have a persistent ID.
+                    const candidateProfile = allUsers.find(u => u.firstName.toLowerCase() === triaged.name.split('.')[0].toLowerCase());
+                    
+                    if (candidateProfile) {
+                        const existing = combined.find(c => c.candidate.id === candidateProfile.id);
+                        if (!existing) {
                              combined.push({
                                 id: `${candidateProfile.id}_${vacancyId}`,
                                 userId: candidateProfile.id,
