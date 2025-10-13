@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { NextIntlClientProvider } from 'next-intl/client';
+import { NextIntlClientProvider, useMessages } from 'next-intl';
 import { getMessages, unstable_setRequestLocale } from 'next-intl/server';
 
 type Props = {
