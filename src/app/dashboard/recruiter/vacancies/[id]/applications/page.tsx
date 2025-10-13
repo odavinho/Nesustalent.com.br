@@ -25,85 +25,66 @@ export default function VacancyApplicationsPage() {
     const vacancyId = params.id as string;
 
     const [vacancy, setVacancy] = useState<Vacancy | null | undefined>(undefined);
-    const [applications, setApplications] = useState<Application[]>([]);
-    const [candidates, setCandidates] = useState<UserProfile[]>([]);
+    const [applications, setApplications] = useState<TriagedCandidate[]>([]);
     
     useEffect(() => {
         const foundVacancy = getVacancyById(vacancyId);
         setVacancy(foundVacancy); 
         
         if (foundVacancy) {
-            const vacancyApps = allApplications.filter(app => app.jobPostingId === vacancyId);
-            setApplications(vacancyApps);
-            
-            const appUserIds = vacancyApps.map(app => app.userId);
+            // 1. Get existing applications for the vacancy
+            const vacancyApps = allApplications
+                .filter(app => app.jobPostingId === vacancyId)
+                .map(app => {
+                    const candidate = allUsers.find(u => u.id === app.userId);
+                    return { ...app, candidate };
+                })
+                .filter((item): item is TriagedCandidate => !!item.candidate);
 
+            // 2. Check for new candidates from AI analysis in the URL
             const analysisParam = searchParams.get('analysis');
-            if(analysisParam) {
+            let triagedCandidates: TriagedCandidate[] = [];
+
+            if (analysisParam) {
                 try {
-                    const triagedData = JSON.parse(decodeURIComponent(analysisParam));
-                    // The analysis data contains a fake candidate ID like "analyzed-0". We need to find the real candidate profile.
-                    // This is a workaround because the analyzer doesn't have the real candidate ID.
-                    // In a real app, the analyzer would work with existing user profiles.
-                    // Here, we just add ALL student users to the list to ensure the profile can be found.
-                    const allStudentUsers = allUsers.filter(u => u.userType === 'student');
-                    setCandidates(allStudentUsers);
+                    const triagedData = JSON.parse(decodeURIComponent(analysisParam)) as { id: string, name: string, score: number }[];
+                    
+                    triagedData.forEach(triagedItem => {
+                        // Find the real user profile based on the mock name from the file
+                        const candidateProfile = allUsers.find(u => u.firstName.toLowerCase() === triagedItem.name.split('.')[0].toLowerCase());
+                        
+                        if (candidateProfile) {
+                            // Check if this candidate isn't already in the pipeline for this vacancy
+                            const alreadyExists = vacancyApps.some(app => app.userId === candidateProfile.id);
+                            if (!alreadyExists) {
+                                triagedCandidates.push({
+                                    id: `${candidateProfile.id}_${vacancyId}`, // Create a mock application ID
+                                    userId: candidateProfile.id,
+                                    jobPostingId: vacancyId,
+                                    applicationDate: new Date(), // Use current date for triaged candidates
+                                    status: 'Triagem', 
+                                    candidate: candidateProfile,
+                                    score: triagedItem.score,
+                                });
+                            } else {
+                                // If they already exist, just update their score
+                                const existingApp = vacancyApps.find(app => app.userId === candidateProfile.id);
+                                if(existingApp) existingApp.score = triagedItem.score;
+                            }
+                        }
+                    });
                 } catch(e) {
-                     const vacancyCandidates = allUsers.filter(user => appUserIds.includes(user.id));
-                     setCandidates(vacancyCandidates);
+                    console.error("Failed to parse triaged candidates from URL:", e);
                 }
-            } else {
-                const vacancyCandidates = allUsers.filter(user => appUserIds.includes(user.id));
-                setCandidates(vacancyCandidates);
             }
+
+            // 3. Combine existing applications with new triaged candidates
+            setApplications([...vacancyApps, ...triagedCandidates]);
 
         } else if (foundVacancy === null) { 
             notFound();
         }
     }, [vacancyId, searchParams]);
-
-    const candidatesWithApplications = useMemo(() => {
-        let combined: TriagedCandidate[] = applications.map(app => {
-            const candidate = candidates.find(c => c.id === app.userId);
-            return {
-                ...app,
-                candidate: candidate,
-            }
-        }).filter((item): item is Application & { candidate: UserProfile } => !!item.candidate);
-
-        const analysisParam = searchParams.get('analysis');
-        if (analysisParam) {
-             try {
-                const triagedData = JSON.parse(decodeURIComponent(analysisParam)) as { id: string, name: string, score: number }[];
-                 
-                 triagedData.forEach((triaged) => {
-                    // This is a mock: find a candidate by matching the filename from analysis.
-                    // In a real app, you'd have a persistent ID.
-                    const candidateProfile = allUsers.find(u => u.firstName.toLowerCase() === triaged.name.split('.')[0].toLowerCase());
-                    
-                    if (candidateProfile) {
-                        const existing = combined.find(c => c.candidate.id === candidateProfile.id);
-                        if (!existing) {
-                             combined.push({
-                                id: `${candidateProfile.id}_${vacancyId}`,
-                                userId: candidateProfile.id,
-                                jobPostingId: vacancyId,
-                                applicationDate: new Date(),
-                                status: 'Triagem', 
-                                candidate: candidateProfile,
-                                score: triaged.score,
-                            });
-                         }
-                    }
-                 });
-             } catch(e) {
-                 console.error("Failed to parse triaged candidates:", e);
-             }
-        }
-
-
-        return combined;
-    }, [applications, candidates, searchParams, vacancyId]);
 
     const handleStatusChange = (applicationId: string, newStatus: ApplicationStatus) => {
         setApplications(prev => prev.map(app => app.id === applicationId ? { ...app, status: newStatus } : app));
@@ -129,13 +110,13 @@ export default function VacancyApplicationsPage() {
                 <div className="mb-8">
                     <h1 className="font-headline text-3xl font-bold">Pipeline de Recrutamento</h1>
                     <p className="text-muted-foreground mt-1 text-lg">
-                        <span className="font-semibold">{vacancy.title}</span> - {candidatesWithApplications.length} candidatura(s) no total.
+                        <span className="font-semibold">{vacancy.title}</span> - {applications.length} candidatura(s) no total.
                     </p>
                 </div>
             </div>
             
             <RecruitmentPipeline 
-                applications={candidatesWithApplications}
+                applications={applications}
                 onStatusChange={handleStatusChange} 
             />
         </div>
