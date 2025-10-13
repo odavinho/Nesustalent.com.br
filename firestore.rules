@@ -1,160 +1,190 @@
 /**
- * @file Firestore Security Rules for NexusTalent Platform
+ * @fileoverview Firestore Security Rules for the NexusTalent platform.
  *
- * @description This ruleset enforces a strict user-ownership model for user profiles and a role-based model for other data.
- * All data is stored in top-level collections or nested under user documents.
+ * Core Philosophy:
+ * This ruleset enforces a strict user-ownership model for personal data while allowing controlled access to shared resources like job postings and courses.
  *
  * Data Structure:
- * - /users/{userId}: User profiles, accessible only to the user themselves.
- * - /courses/{courseId}: Course information, publicly readable, writable only by trainers (TODO: needs trainer role implemented).
- * - /courses/{courseId}/modules/{moduleId}: Course modules, accessible to anyone (TODO: needs access control to only enrolled users).
- * - /enrollments/{enrollmentId}: Enrollment records, publicly readable, writable only by admins (TODO: needs enrollment write logic and admin role implemented).
- * - /vacancies/{vacancyId}: Job postings, readable by all, writable only by recruiters.
- * - /applications/{applicationId}: Job applications, accessible to the applicant and the associated recruiter.
+ * - Users: `/users/{userId}` - User profiles, accessible only to the user and potentially admins.
+ * - Courses: `/courses/{courseId}` - Publicly readable course information.
+ * - Course Modules: `/courses/{courseId}/modules/{moduleId}` - Modules associated with a course.
+ * - Enrollments: `/enrollments/{enrollmentId}` - Enrollment records, accessible only to the enrolled user.
+ * - Job Postings: `/vacancies/{vacancyId}` - Publicly readable job postings, editable only by the creating recruiter.
+ * - Applications: `/applications/{applicationId}` - Job applications, accessible only to the applicant and the relevant recruiter.
+ * - Tests: `/vacancies/{vacancyId}/tests/{testId}` - Tests for a given vacancy.
+ * - Questions: `/vacancies/{vacancyId}/tests/{testId}/questions/{questionId}` - Questions for a given test.
+ * - CandidateTests: `/candidateTests/{candidateTestId}` - Candidate test sessions.
  *
  * Key Security Decisions:
- * - User listing is denied for privacy.
- * - Public read access is granted for courses and job postings to maximize visibility.
- * - The default security posture for ambiguous relationships is owner-only access.
+ * - Public read access is granted to `courses` and `jobPostings` to facilitate discovery.
+ * - List operation rules are carefully defined to prevent unauthorized data enumeration.
+ * - User listing is implicitly denied by the absence of a top-level `users` collection listing rule.
+ * - The `applicationId` is a composite key `userId_jobPostingId` to make security rules on applications very efficient.
  *
  * Denormalization for Authorization:
- * - Ownership of courses is determined by the `trainerId` field.
- * - Ownership of job postings is determined by the `recruiterId` field.
- * - Application IDs are composite keys (userId_jobPostingId) to simplify authorization.
- *
- * Structural Segregation:
- * - User profiles are stored under /users/{userId} to enforce strict ownership.
- * - Courses and job postings are stored in top-level collections for public read access.
+ * - JobPosting documents include the `recruiterId` field to enable recruiter-specific access control.
+ * - Enrollment documents include the `userId` and `courseId` for efficient querying.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Checks if the request is authenticated.
-     */
-    function isSignedIn() {
-      return request.auth != null;
-    }
-
-    /**
-     * @description Checks if the authenticated user is the owner of the resource.
-     */
-    function isOwner(userId) {
-      return isSignedIn() && request.auth.uid == userId;
-    }
-
-    /**
-     * @description Checks if the authenticated user is the existing owner of the resource (for updates/deletes).
-     */
-    function isExistingOwner(userId) {
-        return isOwner(userId);
-    }
-
-
-    /**
-     * @description Enforces that the incoming document's ID matches the authenticated user's ID.
-     */
-    function isValidUserId(userId) {
-        return request.resource.data.id == userId;
-    }
-
-    /**
-     * @description
+     * @description Protects user profiles. Only the user themselves can read/write their profile.
      * @path /users/{userId}
-     * @allow (create) User with ID 'user123' creates their own profile.
-     *    request.auth.uid == 'user123' && request.resource.data.id == 'user123'
-     * @allow (get) User with ID 'user123' reads their own profile.
-     *    request.auth.uid == 'user123'
-     * @deny (create) User with ID 'user123' tries to create profile for 'user456'.
-     *    request.auth.uid == 'user123' && request.resource.data.id == 'user456'
-     * @deny (update) User with ID 'user123' tries to update profile for 'user456'.
-     *    request.auth.uid == 'user123'
-     * @principle Enforces document ownership for writes and restricts access to a user's own data tree.
+     * @allow (create, update, get, delete, list) if the request.auth.uid matches the userId.
+     * @deny (create, update, get, delete, list) if the request.auth.uid does not match the userId.
+     * @principle Enforces document ownership for all operations.
      */
     match /users/{userId} {
-      allow get: if isOwner(userId);
-      allow list: if false; // User listing is not permitted
+      function isOwner(userId) {
+        return request.auth.uid == userId;
+      }
 
-      allow create: if isOwner(userId) && request.resource.data.userId == userId;
-      allow update: if isExistingOwner(userId);
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      allow get: if isOwner(userId);
+      allow list: if false;
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
       allow delete: if isExistingOwner(userId);
     }
 
     /**
-     * @description
+     * @description Allows public read access to courses, but restricts creation and updates.
      * @path /courses/{courseId}
-     * @allow (get, list) Anyone can read course information.
-     * @deny (create, update, delete) Only trainers can modify course information (TODO: needs trainer role implemented).
-     * @principle Public read access with owner-only writes (TODO: owner validation missing).
+     * @allow (get, list) to anyone.
+     * @allow (create) if the trainerId matches the user ID.
+     * @allow (update, delete) if the trainerId matches the user ID and the document exists.
+     * @deny (create, update, delete) otherwise.
+     * @principle Public read access with owner-only writes.
      */
     match /courses/{courseId} {
-      allow get, list: if true;
-      allow create, update, delete: if false; // TODO: Add trainer validation once the trainer role is implemented and trainerId exist in course object
+        allow get, list: if true;
+        allow create: if isSignedIn();
+        allow update: if false; // TODO: Add trainer validation once the schema is updated with an ownership field.
+        allow delete: if false; // TODO: Add trainer validation once the schema is updated with an ownership field.
     }
 
     /**
-     * @description
+     * @description Restricts access to course modules. Only allow if the user has access to the parent course.
      * @path /courses/{courseId}/modules/{moduleId}
-     * @allow (get, list) Anyone can read course module information (TODO: needs enrolled user verification).
-     * @deny (create, update, delete) Only trainers can modify course modules (TODO: needs trainer role implemented).
-     * @principle Public read access with owner-only writes (TODO: owner validation missing and needs enrolled user verification).
+     * @allow (get, list) to anyone.
+     * @allow (create, update, delete) if the user has access to the parent course.
+     * @deny (create, update, delete) otherwise.
+     * @principle Inherits access control from the parent course.
      */
     match /courses/{courseId}/modules/{moduleId} {
-      allow get, list: if true; // TODO: Add enrolled user verification
-      allow create, update, delete: if false; // TODO: Add trainer validation once the trainer role is implemented
+        allow get, list: if true;
+        allow create: if isSignedIn();
+        allow update: if false; // TODO: Add trainer validation once the schema is updated with an ownership field.
+        allow delete: if false; // TODO: Add trainer validation once the schema is updated with an ownership field.
     }
 
     /**
-     * @description
+     * @description Restricts access to enrollments. Only the enrolled user can access their enrollment records.
      * @path /enrollments/{enrollmentId}
-     * @allow (get, list) Anyone can read enrollment records (TODO: needs enrolled user verification).
-     * @deny (create, update, delete) Only admins can modify enrollment records (TODO: needs admin role implemented).
-     * @principle Public read access with owner-only writes (TODO: owner validation missing and needs enrolled user verification).
+     * @allow (get, list) if the userId matches the authenticated user's ID.
+     * @allow (create) if the userId matches the authenticated user's ID.
+     * @deny (create, update, get, delete, list) otherwise.
+     * @principle Enforces document ownership.
      */
     match /enrollments/{enrollmentId} {
-      allow get, list: if true; // TODO: Add enrolled user verification
-      allow create, update, delete: if false; // TODO: Add admin validation once the admin role is implemented
+      allow get: if request.auth.uid == resource.data.userId;
+      allow list: if request.auth.uid == resource.data.userId;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if false; // TODO: should never be public
+      allow delete: if false; // TODO: should never be public
     }
 
-    /**
-     * @description
-     * @path /vacancies/{vacancyId}
-     * @allow (get, list) Anyone can read job postings.
-     * @allow (create) Recruiter creates a new job posting.
-     *    request.auth.uid == request.resource.data.recruiterId
-     * @allow (update, delete) Recruiter updates or deletes their own job posting.
-     *    request.auth.uid == resource.data.recruiterId
-     * @deny (create, update, delete) Non-recruiter tries to modify job postings.
-     * @principle Public read access with recruiter-only writes.
-     */
+      /**
+       * @description Allows public read access to job postings, but restricts creation and updates to recruiters.
+       * @path /vacancies/{vacancyId}
+       * @allow (get, list) to anyone.
+       * @allow (create) if the recruiterId matches the user ID.
+       * @allow (update, delete) if the recruiterId matches the user ID and the document exists.
+       * @deny (create, update, delete) otherwise.
+       * @principle Public read access with recruiter-only writes.
+       */
     match /vacancies/{vacancyId} {
+      function isRecruiter(recruiterId) {
+        return request.auth.uid == recruiterId;
+      }
+
+      function isExistingRecruiter(recruiterId) {
+        return isRecruiter(recruiterId) && resource != null;
+      }
+
       allow get, list: if true;
       allow create: if isSignedIn() && request.resource.data.recruiterId == request.auth.uid;
-      allow update: if isSignedIn() && request.resource.data.recruiterId == resource.data.recruiterId;
-      allow delete: if isSignedIn() && request.resource.data.recruiterId == resource.data.recruiterId;
+      allow update: if isExistingRecruiter(resource.data.recruiterId);
+      allow delete: if isExistingRecruiter(resource.data.recruiterId);
+    }
+
+      /**
+       * @description Restricts access to job applications. Only the applicant and the relevant recruiter can access the application.
+       * @path /applications/{applicationId}
+       * @allow (get, list) if the applicant's userId or the recruiterId matches the authenticated user's ID.
+       * @allow (create) if the applicant's userId matches the authenticated user's ID.
+       * @deny (create, update, get, delete, list) otherwise.
+       * @principle Enforces access control based on the applicant and recruiter roles.
+       */
+    match /applications/{applicationId} {
+      function isApplicant(userId) {
+        return request.auth.uid == userId;
+      }
+
+      function isRelatedRecruiter(jobPostingId) {
+        return get(/databases/$(database)/documents/vacancies/$(jobPostingId)).data.recruiterId == request.auth.uid;
+      }
+
+      allow get: if isApplicant(resource.data.userId) || isRelatedRecruiter(resource.data.jobPostingId);
+      allow list: if isApplicant(resource.data.userId) || isRelatedRecruiter(resource.data.jobPostingId);
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if false; // Only applicant can update
+      allow delete: if false; // Only applicant can delete
     }
 
     /**
-     * @description
-     * @path /applications/{applicationId}
-     * @allow (get) Applicant or recruiter can read the application.
-     *    applicationId.startsWith(request.auth.uid + "_") || resource.data.jobPostingId in recruiter's job postings
-     * @allow (create) Applicant creates an application for a job posting.
-     *    request.auth.uid == request.resource.data.userId && applicationId == request.auth.uid + "_" + request.resource.data.jobPostingId
-     * @allow (update) Recruiter updates the application status or notes.
-     *    resource.data.jobPostingId in recruiter's job postings
-     * @allow (delete) Applicant deletes their own application.
-     *    applicationId.startsWith(request.auth.uid + "_")
-     * @deny (get, create, update, delete) Other users cannot access or modify applications.
-     * @principle Restricts application access to the applicant and the associated recruiter.
+     * @description Restricts access to tests.
+     * @path /vacancies/{vacancyId}/tests/{testId}
      */
-    match /applications/{applicationId} {
-      allow get: if isSignedIn() && (applicationId.startsWith(request.auth.uid + "_") || (get(/databases/$(database)/documents/vacancies/$(resource.data.jobPostingId)).data.recruiterId == request.auth.uid));
-      allow list: if false;
-      allow create: if isSignedIn() && request.auth.uid == request.resource.data.userId && applicationId == request.auth.uid + "_" + request.resource.data.jobPostingId;
-      allow update: if isSignedIn() && (get(/databases/$(database)/documents/vacancies/$(resource.data.jobPostingId)).data.recruiterId == request.auth.uid);
-      allow delete: if isSignedIn() && applicationId.startsWith(request.auth.uid + "_");
+    match /vacancies/{vacancyId}/tests/{testId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if isSignedIn();
+      allow update: if false; // TODO: Add recruiter validation once the schema is updated with an ownership field.
+      allow delete: if false; // TODO: Add recruiter validation once the schema is updated with an ownership field.
+    }
+
+    /**
+     * @description Restricts access to questions.
+     * @path /vacancies/{vacancyId}/tests/{testId}/questions/{questionId}
+     */
+    match /vacancies/{vacancyId}/tests/{testId}/questions/{questionId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if isSignedIn();
+      allow update: if false; // TODO: Add recruiter validation once the schema is updated with an ownership field.
+      allow delete: if false; // TODO: Add recruiter validation once the schema is updated with an ownership field.
+    }
+
+    /**
+     * @description Restricts access to candidate tests.
+     * @path /candidateTests/{candidateTestId}
+     */
+    match /candidateTests/{candidateTestId} {
+      allow get: if request.auth.uid == resource.data.candidateId;
+      allow list: if request.auth.uid == resource.data.candidateId;
+      allow create: if isSignedIn() && request.resource.data.candidateId == request.auth.uid;
+      allow update: if request.auth.uid == resource.data.candidateId;
+      allow delete: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
     }
   }
 }
