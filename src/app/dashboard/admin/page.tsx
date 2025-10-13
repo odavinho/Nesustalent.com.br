@@ -44,7 +44,7 @@ export default function AdminDashboardPage() {
                         </CardHeader>
                         <CardContent className="flex flex-wrap gap-2">
                             <Button asChild>
-                                <Link href="/dashboard/vacancies/new">Adicionar Vaga</Link>
+                                <Link href="/dashboard/recruiter/vacancies/new">Adicionar Vaga</Link>
                             </Button>
                             <Button asChild variant="outline">
                                 <Link href="/dashboard/admin/vacancies">Gerir Vagas</Link>
