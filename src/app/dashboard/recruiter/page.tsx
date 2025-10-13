@@ -74,7 +74,7 @@ export default function RecruiterDashboardPage() {
                          {user && <VacancyList recruiterId={user.uid} />}
                         <div className="flex flex-wrap gap-2">
                             <Button asChild>
-                                <Link href="/dashboard/recruiter/vacancies/new">
+                                <Link href="/dashboard/vacancies/new">
                                     <PlusCircle className="mr-2 h-4 w-4" />
                                     Publicar Nova Vaga
                                 </Link>
