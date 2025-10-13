@@ -7,7 +7,7 @@ export function CtaSection() {
         <section className="bg-background py-16 sm:py-24">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 <h2 className="font-headline text-3xl sm:text-4xl font-bold text-foreground">
-                    1,2 milhão de talentos e empresas se encontram aqui.
+                    Pronto para transformar sua carreira?
                 </h2>
                 <p className="mt-4 max-w-4xl mx-auto text-lg text-muted-foreground">
                     A plataforma completa de formação, recrutamento e Cedência de mão de obra, que reúne os profissionais do futuro e as carreiras do amanhã.
