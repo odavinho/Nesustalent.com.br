@@ -1,7 +1,7 @@
 'use client';
 
 import { getVacancyById } from "@/lib/vacancy-service";
-import { notFound, useRouter } from "next/navigation";
+import { notFound, useRouter, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Briefcase, Clock, MapPin, Share2, Loader2, HelpCircle } from "lucide-react";
 import Link from "next/link";
@@ -17,18 +17,21 @@ import type { UserProfile, Vacancy, CourseCategory } from "@/lib/types";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-export default function VacancyDetailPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default function VacancyDetailPage() {
+  const params = useParams();
+  const id = Array.isArray(params.id) ? params.id[0] : params.id;
   const [vacancy, setVacancy] = useState<Vacancy | null | undefined>(undefined);
   const [category, setCategory] = useState<CourseCategory | null>(null);
 
 
   useEffect(() => {
-    const foundVacancy = getVacancyById(id);
-    setVacancy(foundVacancy);
-    if(foundVacancy){
-        const categories = getCourseCategories();
-        setCategory(categories.find(c => c.name === foundVacancy.category) || null);
+    if (id) {
+        const foundVacancy = getVacancyById(id);
+        setVacancy(foundVacancy);
+        if(foundVacancy){
+            const categories = getCourseCategories();
+            setCategory(categories.find(c => c.name === foundVacancy.category) || null);
+        }
     }
   }, [id]);
 

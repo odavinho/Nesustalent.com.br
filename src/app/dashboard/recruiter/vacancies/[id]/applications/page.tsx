@@ -25,8 +25,9 @@ declare module 'jspdf' {
   }
 }
 
-export default function VacancyApplicationsPage({ params }: { params: { id: string } }) {
-    const { id: vacancyId } = params;
+export default function VacancyApplicationsPage() {
+    const params = useParams();
+    const vacancyId = Array.isArray(params.id) ? params.id[0] : params.id;
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -34,61 +35,63 @@ export default function VacancyApplicationsPage({ params }: { params: { id: stri
     const [applications, setApplications] = useState<TriagedCandidate[]>([]);
     
     useEffect(() => {
-        const foundVacancy = getVacancyById(vacancyId);
-        setVacancy(foundVacancy); 
-        
-        if (foundVacancy) {
-            const existingApps = allApplications
-                .filter(app => app.jobPostingId === vacancyId)
-                .map(app => {
-                    const candidate = allUsers.find(u => u.id === app.userId);
-                    return { ...app, candidate };
-                })
-                .filter((item): item is TriagedCandidate => !!item.candidate);
+        if (vacancyId) {
+            const foundVacancy = getVacancyById(vacancyId);
+            setVacancy(foundVacancy); 
+            
+            if (foundVacancy) {
+                const existingApps = allApplications
+                    .filter(app => app.jobPostingId === vacancyId)
+                    .map(app => {
+                        const candidate = allUsers.find(u => u.id === app.userId);
+                        return { ...app, candidate };
+                    })
+                    .filter((item): item is TriagedCandidate => !!item.candidate);
 
-            const analysisParam = searchParams.get('analysis');
-            let combinedApps = [...existingApps];
+                const analysisParam = searchParams.get('analysis');
+                let combinedApps = [...existingApps];
 
-            if (analysisParam) {
-                try {
-                    const triagedData = JSON.parse(decodeURIComponent(analysisParam)) as { id: string, name: string, score: number }[];
-                    
-                    triagedData.forEach(triagedItem => {
-                        const candidateProfile = allUsers.find(u => u.firstName.toLowerCase() === triagedItem.name.split('.')[0].toLowerCase());
+                if (analysisParam) {
+                    try {
+                        const triagedData = JSON.parse(decodeURIComponent(analysisParam)) as { id: string, name: string, score: number }[];
                         
-                        if (candidateProfile) {
-                            const existingAppIndex = combinedApps.findIndex(app => app.userId === candidateProfile.id);
+                        triagedData.forEach(triagedItem => {
+                            const candidateProfile = allUsers.find(u => u.firstName.toLowerCase() === triagedItem.name.split('.')[0].toLowerCase());
                             
-                            if (existingAppIndex !== -1) {
-                                // Candidate already applied, just update the score and status if needed
-                                combinedApps[existingAppIndex] = {
-                                    ...combinedApps[existingAppIndex],
-                                    score: triagedItem.score,
-                                    status: 'Triagem' // Move to Triagem if they were just 'Recebida'
-                                };
-                            } else {
-                                // New candidate from analysis, add them
-                                combinedApps.push({
-                                    id: `${candidateProfile.id}_${vacancyId}`,
-                                    userId: candidateProfile.id,
-                                    jobPostingId: vacancyId,
-                                    applicationDate: new Date(), 
-                                    status: 'Triagem', // Set status to 'Triagem'
-                                    candidate: candidateProfile,
-                                    score: triagedItem.score,
-                                });
+                            if (candidateProfile) {
+                                const existingAppIndex = combinedApps.findIndex(app => app.userId === candidateProfile.id);
+                                
+                                if (existingAppIndex !== -1) {
+                                    // Candidate already applied, just update the score and status if needed
+                                    combinedApps[existingAppIndex] = {
+                                        ...combinedApps[existingAppIndex],
+                                        score: triagedItem.score,
+                                        status: 'Triagem' // Move to Triagem if they were just 'Recebida'
+                                    };
+                                } else {
+                                    // New candidate from analysis, add them
+                                    combinedApps.push({
+                                        id: `${candidateProfile.id}_${vacancyId}`,
+                                        userId: candidateProfile.id,
+                                        jobPostingId: vacancyId,
+                                        applicationDate: new Date(), 
+                                        status: 'Triagem', // Set status to 'Triagem'
+                                        candidate: candidateProfile,
+                                        score: triagedItem.score,
+                                    });
+                                }
                             }
-                        }
-                    });
-                } catch(e) {
-                    console.error("Failed to parse triaged candidates from URL:", e);
+                        });
+                    } catch(e) {
+                        console.error("Failed to parse triaged candidates from URL:", e);
+                    }
                 }
+
+                setApplications(combinedApps);
+
+            } else if (foundVacancy === null) { 
+                notFound();
             }
-
-            setApplications(combinedApps);
-
-        } else if (foundVacancy === null) { 
-            notFound();
         }
     }, [vacancyId, searchParams]);
 

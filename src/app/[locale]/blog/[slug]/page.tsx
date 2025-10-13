@@ -1,4 +1,5 @@
-import { notFound } from 'next/navigation';
+'use client';
+import { notFound, useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { blogPosts, type BlogPost } from '@/lib/blog-posts';
@@ -11,13 +12,25 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format, parseISO } from 'date-fns';
 import { pt } from 'date-fns/locale';
 import { BlogPostCard } from '@/components/blog/blog-post-card';
+import { useEffect, useState } from 'react';
 
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
-  const { slug } = params;
-  const post = blogPosts.find((p) => p.id === slug);
+export default function BlogPostPage() {
+  const params = useParams();
+  const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
+  const [post, setPost] = useState<BlogPost | null>(null);
+
+  useEffect(() => {
+    if (slug) {
+        const foundPost = blogPosts.find((p) => p.id === slug);
+        if (!foundPost) {
+            notFound();
+        }
+        setPost(foundPost || null);
+    }
+  }, [slug]);
 
   if (!post) {
-    notFound();
+    return null; // Or a loading indicator
   }
   
   const image = PlaceHolderImages.find(p => p.id === post.imageId);

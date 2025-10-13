@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, User, Briefcase, GraduationCap, Award, FileText, Download, ThumbsUp, ThumbsDown, MessageSquare, Building, MapPin, Cake, Languages, Book, ChevronRight, Phone } from "lucide-react";
 import type { UserProfile } from "@/lib/types";
 import Link from "next/link";
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { format, parseISO } from 'date-fns';
 import { pt } from 'date-fns/locale';
 
@@ -164,12 +164,23 @@ function ProfileView({ profile }: { profile: UserProfile }) {
 }
 
 
-export default function CandidateProfilePage({ params }: { params: { id: string } }) {
-  const { id } = params;
-  const candidate = users.find(u => u.id === id && u.userType === 'student');
+export default function CandidateProfilePage() {
+  const params = useParams();
+  const id = Array.isArray(params.id) ? params.id[0] : params.id;
+  const [candidate, setCandidate] = useState<UserProfile | null>(null);
+
+  useEffect(() => {
+    if (id) {
+        const foundCandidate = users.find(u => u.id === id && u.userType === 'student');
+        if (!foundCandidate) {
+            notFound();
+        }
+        setCandidate(foundCandidate || null);
+    }
+  }, [id]);
 
   if (!candidate) {
-    notFound();
+    return null; // Or a loading skeleton
   }
 
   return <ProfileView profile={candidate} />;

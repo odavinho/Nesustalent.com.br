@@ -1,7 +1,7 @@
 'use client';
 import { getCourseById, getCourseCategories, getCourses } from "@/lib/course-service";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { notFound } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import Image from 'next/image';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,32 +15,37 @@ import React, { useState, useEffect } from "react";
 import type { Course, CourseCategory } from "@/lib/types";
 
 
-export default function CourseDetailPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default function CourseDetailPage() {
+  const params = useParams();
+  const id = Array.isArray(params.id) ? params.id[0] : params.id;
   const [course, setCourse] = useState<Course | null>(null);
   const [category, setCategory] = useState<CourseCategory | null>(null);
   const [relatedCourses, setRelatedCourses] = useState<Course[]>([]);
   const [image, setImage] = useState<any>(null);
 
   useEffect(() => {
-    const foundCourse = getCourseById(id);
-    if (!foundCourse) {
-      notFound();
+    if (id) {
+        const foundCourse = getCourseById(id);
+        if (!foundCourse) {
+          notFound();
+        }
+        setCourse(foundCourse);
+
+        if (foundCourse) {
+            const categories = getCourseCategories();
+            const foundCategory = categories.find(c => c.id === foundCourse.category);
+            setCategory(foundCategory || null);
+
+            const allCourses = getCourses();
+            const related = allCourses
+              .filter(c => c.category === foundCourse.category && c.id !== foundCourse.id)
+              .slice(0, 4);
+            setRelatedCourses(related);
+
+            const foundImage = PlaceHolderImages.find(p => p.id === foundCourse.imageId);
+            setImage(foundImage || null);
+        }
     }
-    setCourse(foundCourse);
-
-    const categories = getCourseCategories();
-    const foundCategory = categories.find(c => c.id === foundCourse.category);
-    setCategory(foundCategory || null);
-
-    const allCourses = getCourses();
-    const related = allCourses
-      .filter(c => c.category === foundCourse.category && c.id !== foundCourse.id)
-      .slice(0, 4);
-    setRelatedCourses(related);
-
-    const foundImage = PlaceHolderImages.find(p => p.id === foundCourse.imageId);
-    setImage(foundImage || null);
   }, [id]);
 
 

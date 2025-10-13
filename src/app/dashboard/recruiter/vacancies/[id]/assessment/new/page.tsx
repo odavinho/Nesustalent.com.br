@@ -22,8 +22,9 @@ import { GenerateAssessmentTestInputSchema } from '@/lib/schemas';
 
 type FormValues = z.infer<typeof GenerateAssessmentTestInputSchema>;
 
-export default function NewAssessmentPage({ params }: { params: { id: string } }) {
-  const { id: vacancyId } = params;
+export default function NewAssessmentPage() {
+  const params = useParams();
+  const vacancyId = Array.isArray(params.id) ? params.id[0] : params.id;
   const [vacancy, setVacancy] = useState<Vacancy | null | undefined>(undefined);
   const [generatedTest, setGeneratedTest] = useState<AssessmentTest | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
