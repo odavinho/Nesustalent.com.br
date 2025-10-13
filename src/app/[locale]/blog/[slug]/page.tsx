@@ -36,7 +36,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
   return (
     <>
       <Header />
-      <main className="bg-card py-12 md:py-16">
+      <main className="bg-background py-12 md:py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <Link href="/blog" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-8">
                 <ArrowLeft size={16} /> Voltar para o blog
@@ -75,7 +75,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
             )}
 
             <div
-              className="prose prose-lg dark:prose-invert max-w-none text-foreground/90 mx-auto"
+              className="prose dark:prose-invert prose-lg max-w-none prose-headings:font-headline prose-headings:text-foreground prose-a:text-primary hover:prose-a:text-primary/80 prose-strong:text-foreground"
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
           </article>
@@ -83,7 +83,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
       </main>
 
        {relatedPosts.length > 0 && (
-          <section className="bg-background py-16 mt-16">
+          <section className="bg-card py-16 mt-16">
               <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                   <h2 className="font-headline text-3xl font-bold text-center mb-10">Artigos Relacionados</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
