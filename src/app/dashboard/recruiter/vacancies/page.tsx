@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Briefcase, FileWarning, PlusCircle, ArrowLeft, ArrowRight, ClipboardCheck, Users, ThumbsUp, Eye, Copy } from 'lucide-react';
+import { Briefcase, FileWarning, PlusCircle, ArrowLeft, ArrowRight, ClipboardCheck, Users, ThumbsUp, Eye, Copy, Sparkles } from 'lucide-react';
 import type { Vacancy, Application } from '@/lib/types';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -194,6 +194,9 @@ export default function RecruiterVacanciesPage() {
                                     </Button>
                                     <Button variant="outline" size="sm" onClick={() => handleDuplicate(vacancy)}>
                                         <Copy className='mr-2 h-4 w-4'/>Duplicar
+                                    </Button>
+                                     <Button variant="outline" size="sm" asChild>
+                                        <Link href={`/dashboard/recruiter/vacancies/${vacancy.id}/triage`}><Sparkles className='mr-2 h-4 w-4'/>Triagem com IA</Link>
                                     </Button>
                                     <Button variant="outline" size="sm" asChild>
                                         <Link href={`/dashboard/recruiter/vacancies/${vacancy.id}/edit`}>Editar</Link>
