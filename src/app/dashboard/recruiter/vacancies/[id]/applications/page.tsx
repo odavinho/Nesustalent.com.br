@@ -32,8 +32,8 @@ export default function VacancyApplicationsPage() {
         setVacancy(foundVacancy); 
         
         if (foundVacancy) {
-            // 1. Get existing applications for the vacancy
-            const vacancyApps = allApplications
+            // 1. Get existing applications for the vacancy from the mock data
+            const existingApps = allApplications
                 .filter(app => app.jobPostingId === vacancyId)
                 .map(app => {
                     const candidate = allUsers.find(u => u.id === app.userId);
@@ -43,33 +43,39 @@ export default function VacancyApplicationsPage() {
 
             // 2. Check for new candidates from AI analysis in the URL
             const analysisParam = searchParams.get('analysis');
-            let triagedCandidates: TriagedCandidate[] = [];
+            let newTriagedCandidates: TriagedCandidate[] = [];
 
             if (analysisParam) {
                 try {
                     const triagedData = JSON.parse(decodeURIComponent(analysisParam)) as { id: string, name: string, score: number }[];
                     
                     triagedData.forEach(triagedItem => {
-                        // Find the real user profile based on the mock name from the file
                         const candidateProfile = allUsers.find(u => u.firstName.toLowerCase() === triagedItem.name.split('.')[0].toLowerCase());
                         
                         if (candidateProfile) {
-                            // Check if this candidate isn't already in the pipeline for this vacancy
-                            const alreadyExists = vacancyApps.some(app => app.userId === candidateProfile.id);
+                            const alreadyExists = existingApps.some(app => app.userId === candidateProfile.id);
+                            
+                            // Always add the triaged candidate to show them in the pipeline,
+                            // even if they have an existing application. We can decide how to merge/display later.
+                            // For now, this ensures they appear.
                             if (!alreadyExists) {
-                                triagedCandidates.push({
+                                newTriagedCandidates.push({
                                     id: `${candidateProfile.id}_${vacancyId}`, // Create a mock application ID
                                     userId: candidateProfile.id,
                                     jobPostingId: vacancyId,
-                                    applicationDate: new Date(), // Use current date for triaged candidates
+                                    applicationDate: new Date(), 
                                     status: 'Triagem', 
                                     candidate: candidateProfile,
                                     score: triagedItem.score,
                                 });
                             } else {
-                                // If they already exist, just update their score
-                                const existingApp = vacancyApps.find(app => app.userId === candidateProfile.id);
-                                if(existingApp) existingApp.score = triagedItem.score;
+                                // If they do exist, we can update their score.
+                                const existingApp = existingApps.find(app => app.userId === candidateProfile.id);
+                                if (existingApp) {
+                                    existingApp.score = triagedItem.score;
+                                    // Optionally move them back to Triagem if desired
+                                    // existingApp.status = 'Triagem';
+                                }
                             }
                         }
                     });
@@ -79,7 +85,7 @@ export default function VacancyApplicationsPage() {
             }
 
             // 3. Combine existing applications with new triaged candidates
-            setApplications([...vacancyApps, ...triagedCandidates]);
+            setApplications([...existingApps, ...newTriagedCandidates]);
 
         } else if (foundVacancy === null) { 
             notFound();
