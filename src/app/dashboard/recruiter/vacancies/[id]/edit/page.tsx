@@ -47,11 +47,12 @@ export default function EditVacancyPage() {
   const router = useRouter();
   const params = useParams();
   const vacancyId = Array.isArray(params.id) ? params.id[0] : params.id;
-  const courseCategories = getCourseCategories();
   
   const [vacancy, setVacancy] = useState<Vacancy | null | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  
+  const courseCategories = getCourseCategories();
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
