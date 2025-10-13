@@ -30,19 +30,12 @@ const formSchema = z.object({
   title: z.string().min(5, { message: 'O título da vaga deve ter pelo menos 5 caracteres.' }),
   category: z.string({ required_error: 'Selecione uma área funcional.' }),
   industry: z.string().min(3, { message: 'A indústria é obrigatória.' }),
-  minExperience: z.string().optional(),
-  demandLevel: z.string().optional(),
   location: z.string().min(3, { message: 'A localização é obrigatória.' }),
   type: z.enum(['Full-time', 'Part-time', 'Remote']),
   numberOfVacancies: z.coerce.number().min(1, 'Deve haver pelo menos uma vaga.'),
   closingDate: z.date().optional(),
   salaryRange: z.string().optional(),
   showSalary: z.boolean().default(true),
-  languages: z.string().optional(),
-  requiredNationality: z.string().optional(),
-  employerName: z.string().min(1, 'O nome do empregador é obrigatório.'),
-  aboutEmployer: z.string().min(10, 'A descrição sobre o empregador é obrigatória.'),
-  hideEmployerData: z.boolean().default(false),
   description: z.string().min(1, 'A descrição é obrigatória.'),
   responsibilities: z.string().min(1, 'As responsabilidades são obrigatórias.'),
   requirements: z.string().min(1, 'Os requisitos são obrigatórios.'),
@@ -65,23 +58,18 @@ export default function EditVacancyPage() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: '',
-      category: undefined,
-      industry: '',
-      location: '',
-      type: 'Full-time',
-      numberOfVacancies: 1,
-      showSalary: true,
-      hideEmployerData: false,
-      description: '',
-      responsibilities: '',
-      requirements: '',
-      screeningQuestions: '',
-      minExperience: '', 
-      demandLevel: '', 
-      languages: '',
-      requiredNationality: '',
-      salaryRange: '',
+        title: '',
+        category: undefined,
+        industry: '',
+        location: '',
+        type: 'Full-time',
+        numberOfVacancies: 1,
+        showSalary: true,
+        description: '',
+        responsibilities: '',
+        requirements: '',
+        screeningQuestions: '',
+        salaryRange: '',
     }
   });
 
@@ -101,13 +89,18 @@ export default function EditVacancyPage() {
         }
 
         form.reset({
-          ...vacancy,
-          minExperience: '', 
-          demandLevel: '', 
+          title: vacancy.title || '',
+          category: vacancy.category || undefined,
+          industry: vacancy.industry || '',
+          location: vacancy.location || '',
+          type: vacancy.type || 'Full-time',
+          numberOfVacancies: vacancy.numberOfVacancies || 1,
           closingDate: closingDateValue,
-          languages: vacancy.languages?.join(', ') || '',
-          responsibilities: vacancy.responsibilities.join('\n'),
-          requirements: vacancy.requirements.join('\n'),
+          salaryRange: vacancy.salaryRange || '',
+          showSalary: vacancy.showSalary === undefined ? true : vacancy.showSalary,
+          description: vacancy.description || '',
+          responsibilities: vacancy.responsibilities?.join('\n') || '',
+          requirements: vacancy.requirements?.join('\n') || '',
           screeningQuestions: vacancy.screeningQuestions?.join('\n') || '',
         });
     }
@@ -124,17 +117,12 @@ export default function EditVacancyPage() {
     }
 
     const vacancyDataToUpdate: Partial<Vacancy> = {
+        ...vacancy,
         ...data,
         responsibilities: data.responsibilities.split('\n').filter(r => r.trim() !== ''),
         requirements: data.requirements.split('\n').filter(q => q.trim() !== ''),
         screeningQuestions: data.screeningQuestions ? data.screeningQuestions.split('\n').filter(q => q.trim() !== '') : [],
-        languages: data.languages ? data.languages.split(',').map(l => l.trim()).filter(l => l) : [],
     };
-
-    if (data.hideEmployerData) {
-        vacancyDataToUpdate.employerName = `Empresa líder no setor de ${vacancy.industry}`;
-        vacancyDataToUpdate.aboutEmployer = `Oportunidade confidencial numa empresa de referência no setor de ${vacancy.industry}.`;
-    }
 
     try {
         updateVacancy(vacancyId, vacancyDataToUpdate);
@@ -166,7 +154,6 @@ export default function EditVacancyPage() {
 
   if (vacancy === null) {
     notFound();
-    return null; // Return null after calling notFound()
   }
   
   return (
@@ -198,6 +185,46 @@ export default function EditVacancyPage() {
                   </FormItem>
                 )}
               />
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <FormField
+                    control={form.control}
+                    name="category"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Área Funcional (Categoria)</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Selecione uma área" />
+                                </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                            {courseCategories.map((category) => (
+                                <SelectItem key={category.id} value={category.name}>
+                                {category.name}
+                                </SelectItem>
+                            ))}
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="industry"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Indústria</FormLabel>
+                        <FormControl>
+                            <Input placeholder="Ex: Tecnologia, Petróleo e Gás, Banca" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+              </div>
 
               <FormField
                   control={form.control}
@@ -254,7 +281,7 @@ export default function EditVacancyPage() {
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <FormField control={form.control} name="location" render={({ field }) => (<FormItem><FormLabel>Localização</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
-                <FormField control={form.control} name="type" render={({ field }) => (<FormItem><FormLabel>Tipo de Contrato</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl><SelectContent><SelectItem value="Full-time">Full-time</SelectItem><SelectItem value="Part-time">Part-time</SelectItem><SelectItem value="Remote">Remoto</SelectItem></SelectContent></Select><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="type" render={({ field }) => (<FormItem><FormLabel>Tipo de Contrato</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl><SelectContent><SelectItem value="Full-time">Full-time</SelectItem><SelectItem value="Part-time">Part-time</SelectItem><SelectItem value="Remote">Remoto</SelectItem></SelectContent></Select><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="numberOfVacancies" render={({ field }) => (<FormItem><FormLabel>Nº de Vagas</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
               </div>
               <div className="grid md:grid-cols-2 gap-6">
