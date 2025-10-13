@@ -1,0 +1,52 @@
+'use client';
+
+import { type Application, type UserProfile, type ApplicationStatus } from "@/lib/types";
+import { PipelineCandidateCard } from "./pipeline-candidate-card";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+
+interface RecruitmentPipelineProps {
+    applications: (Application & { candidate: UserProfile })[];
+    onStatusChange: (applicationId: string, newStatus: ApplicationStatus) => void;
+}
+
+const pipelineStages: { title: string, status: ApplicationStatus, description: string }[] = [
+    { title: 'Triagem', status: 'Triagem', description: 'Candidatos iniciais para análise.' },
+    { title: 'Teste', status: 'Teste', description: 'Candidatos em fase de testes técnicos ou psicotécnicos.' },
+    { title: 'Entrevista', status: 'Entrevista', description: 'Candidatos selecionados para entrevista.' },
+    { title: 'Oferta', status: 'Oferta', description: 'Candidatos que receberam uma oferta de emprego.' },
+    { title: 'Contratado', status: 'Contratado', description: 'Candidatos que aceitaram a oferta.' },
+    { title: 'Rejeitado', status: 'Rejeitada', description: 'Candidatos não selecionados.' },
+];
+
+export function RecruitmentPipeline({ applications, onStatusChange }: RecruitmentPipelineProps) {
+    return (
+        <ScrollArea className="flex-grow w-full">
+            <div className="flex gap-6 p-4 sm:p-6 lg:p-8 pt-0">
+                {pipelineStages.map((stage) => {
+                    const stageApplications = applications.filter(app => app.status === stage.status || (stage.status === 'Triagem' && app.status === 'Recebida'));
+                    return (
+                        <div key={stage.status} className="w-80 flex-shrink-0">
+                            <div className="flex items-baseline gap-2 mb-4">
+                                <h2 className="text-lg font-semibold font-headline">{stage.title}</h2>
+                                <span className="text-sm font-medium text-muted-foreground">({stageApplications.length})</span>
+                            </div>
+                            <div className="bg-secondary/50 rounded-lg p-2 h-full min-h-[500px]">
+                                <div className="space-y-4">
+                                    {stageApplications.map(app => (
+                                        <PipelineCandidateCard 
+                                            key={app.id} 
+                                            application={app} 
+                                            candidate={app.candidate} 
+                                            onStatusChange={onStatusChange}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+            <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+    );
+}

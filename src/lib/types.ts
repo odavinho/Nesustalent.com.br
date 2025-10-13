@@ -61,12 +61,14 @@ export interface Course {
     hideEmployerData?: boolean;
   }
   
+  export type ApplicationStatus = 'Recebida' | 'Triagem' | 'Teste' | 'Entrevista' | 'Oferta' | 'Contratado' | 'Rejeitada';
+
   export interface Application {
     id: string;
     userId: string;
     jobPostingId: string;
     applicationDate: Timestamp | Date; // Allow Date for mock data
-    status: 'Recebida' | 'Em análise' | 'Rejeitada';
+    status: ApplicationStatus;
     notes?: string;
   }
 

@@ -1,6 +1,6 @@
 'use client';
 
-import type { Application, Vacancy, UserProfile } from '@/lib/types';
+import type { Application, Vacancy, UserProfile, ApplicationStatus } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '../ui/skeleton';
 import { Badge } from '../ui/badge';
@@ -15,7 +15,7 @@ import { users } from '@/lib/users'; // Using mock users
 
 interface ApplicationCardProps {
     application: Application;
-    onStatusChange: (applicationId: string, newStatus: 'Em análise' | 'Rejeitada') => void;
+    onStatusChange: (applicationId: string, newStatus: ApplicationStatus) => void;
 }
 
 const UserInfo = ({ userId, onUserLoad }: { userId: string, onUserLoad: (user: UserProfile) => void }) => {
@@ -55,7 +55,7 @@ export function ApplicationCard({ application, onStatusChange }: ApplicationCard
         ? application.applicationDate 
         : new Date(); // Fallback for mock data
 
-    const handleStatusChange = (newStatus: 'Em análise' | 'Rejeitada') => {
+    const handleStatusChange = (newStatus: ApplicationStatus) => {
         onStatusChange(application.id, newStatus);
         toast({
             title: "Status Atualizado!",
@@ -100,7 +100,7 @@ export function ApplicationCard({ application, onStatusChange }: ApplicationCard
                         </Button>
                     )}
                     <div className='flex gap-1'>
-                        <Button variant="ghost" size="icon" onClick={() => handleStatusChange('Em análise')} title="Marcar como interessante">
+                        <Button variant="ghost" size="icon" onClick={() => handleStatusChange('Triagem')} title="Marcar como interessante">
                             <ThumbsUp className="h-5 w-5 text-green-500" />
                         </Button>
                         <Button variant="ghost" size="icon" onClick={() => handleStatusChange('Rejeitada')} title="Rejeitar">

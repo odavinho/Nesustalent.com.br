@@ -4,13 +4,12 @@ import { useMemo, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { FileWarning, Files, ArrowLeft } from 'lucide-react';
-import type { Application } from '@/lib/types';
+import type { Application, ApplicationStatus } from '@/lib/types';
 import { ApplicationCard } from '@/components/admin/application-card';
 import { applications as mockApplications } from '@/lib/applications';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 
-type ApplicationStatus = 'Recebida' | 'Em análise' | 'Rejeitada';
 
 const ApplicationList = ({
   applications,
@@ -93,10 +92,12 @@ export default function ManageApplicationsPage() {
 
   const filteredApplications = (status: ApplicationStatus | 'all') => {
     if (status === 'all') return allApplications;
+    // Special case for 'Triagem' to include 'Recebida'
+    if (status === 'Triagem') return allApplications?.filter(app => app.status === 'Triagem' || app.status === 'Recebida') ?? null;
     return allApplications?.filter(app => app.status === status) ?? null;
   };
 
-  const interestingApplications = useMemo(() => filteredApplications('Em análise'), [allApplications]);
+  const interestingApplications = useMemo(() => filteredApplications('Triagem'), [allApplications]);
   const rejectedApplications = useMemo(() => filteredApplications('Rejeitada'), [allApplications]);
 
   return (
@@ -115,8 +116,8 @@ export default function ManageApplicationsPage() {
       <Tabs defaultValue="all" className="w-full">
         <TabsList className="grid w-full grid-cols-3 max-w-2xl mx-auto h-12 mb-8">
           <TabsTrigger value="all" className="h-10">Todos os Candidatos</TabsTrigger>
-          <TabsTrigger value="interesting" className="h-10">Candidatos Interessantes</TabsTrigger>
-          <TabsTrigger value="rejected" className="h-10">Candidatos Rejeitados</TabsTrigger>
+          <TabsTrigger value="interesting" className="h-10">Em Análise</TabsTrigger>
+          <TabsTrigger value="rejected" className="h-10">Rejeitados</TabsTrigger>
         </TabsList>
 
         <TabsContent value="all">
