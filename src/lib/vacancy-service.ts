@@ -55,3 +55,5 @@ export const updateVacancy = (id: string, updatedData: Partial<Omit<Vacancy, 'id
 export const deleteVacancy = (id: string): void => {
     vacancies = vacancies.filter(v => v.id !== id);
 };
+
+    

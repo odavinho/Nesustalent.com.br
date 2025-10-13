@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -15,7 +15,7 @@ import { Loader2, Wand2, CalendarIcon, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { generateVacancyContentAction } from '@/app/actions';
 import type { GenerateVacancyContentOutput } from '@/ai/flows/generate-vacancy-content';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useUser } from '@/firebase';
 import { Switch } from '@/components/ui/switch';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -24,7 +24,7 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { pt } from 'date-fns/locale';
 import { addVacancy } from '@/lib/vacancy-service';
-import type { Vacancy } from '@/lib/types';
+import type { Vacancy, EducationLevel } from '@/lib/types';
 
 
 const formSchema = z.object({
@@ -44,6 +44,7 @@ const formSchema = z.object({
   employerName: z.string().min(1, 'O nome do empregador é obrigatório.'),
   aboutEmployer: z.string().min(10, 'A descrição sobre o empregador é obrigatória.'),
   hideEmployerData: z.boolean().default(false),
+  minEducationLevel: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -53,6 +54,7 @@ const recruiterProfile = {
     companyName: 'NexusTalent Corp',
     companyDescription: 'A NexusTalent é uma empresa líder em soluções de recrutamento e formação, conectando os melhores talentos às oportunidades mais desafiadoras do mercado.'
 }
+const educationLevels: EducationLevel[] = ['Ensino Primário', 'Ensino Médio', 'Frequência Universitária', 'Licenciatura', 'Mestrado', 'Doutoramento'];
 
 export default function NewVacancyPage() {
   const [generatedContent, setGeneratedContent] = useState<GenerateVacancyContentOutput | null>(null);
@@ -60,6 +62,7 @@ export default function NewVacancyPage() {
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user } = useUser();
   const courseCategories = getCourseCategories();
 
@@ -81,6 +84,39 @@ export default function NewVacancyPage() {
       languages: '',
     },
   });
+
+  useEffect(() => {
+    const vacancyData = searchParams.get('data');
+    if (vacancyData) {
+      try {
+        const decodedData = decodeURIComponent(vacancyData);
+        const parsedVacancy = JSON.parse(decodedData) as Vacancy;
+        
+        form.reset({
+          ...parsedVacancy,
+          minExperience: '', 
+          demandLevel: '',
+          closingDate: parsedVacancy.closingDate ? new Date(parsedVacancy.closingDate as string) : undefined,
+          languages: parsedVacancy.languages?.join(', ') || '',
+        });
+        
+        setGeneratedContent({
+          description: parsedVacancy.description,
+          responsibilities: parsedVacancy.responsibilities,
+          requirements: parsedVacancy.requirements,
+          screeningQuestions: parsedVacancy.screeningQuestions || [],
+        });
+
+      } catch (error) {
+        console.error("Failed to parse vacancy data from URL", error);
+        toast({
+          variant: "destructive",
+          title: "Erro ao carregar dados",
+          description: "Não foi possível carregar os dados da vaga para duplicar.",
+        });
+      }
+    }
+  }, [searchParams, form, toast]);
 
   const handleGenerateContent: SubmitHandler<FormValues> = async (data) => {
     setIsGenerating(true);
@@ -129,6 +165,7 @@ export default function NewVacancyPage() {
 
     const newVacancy: Omit<Vacancy, 'id' | 'postedDate'> = {
         ...formValues,
+        minEducationLevel: formValues.minEducationLevel as EducationLevel | undefined,
         ...generatedContent,
         recruiterId: user.uid,
         languages: formValues.languages?.split(',').map(l => l.trim()).filter(l => l) || [],
@@ -254,8 +291,8 @@ export default function NewVacancyPage() {
                       )}
                   />
               </div>
-
-               <FormField
+              <div className="grid md:grid-cols-2 gap-6">
+                <FormField
                     control={form.control}
                     name="industry"
                     render={({ field }) => (
@@ -268,6 +305,30 @@ export default function NewVacancyPage() {
                         </FormItem>
                     )}
                 />
+                 <FormField
+                    control={form.control}
+                    name="minEducationLevel"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Habilitações Literárias Mínimas</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Selecione o nível de escolaridade" />
+                            </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                                <SelectItem value="">N/A</SelectItem>
+                                {educationLevels.map(level => (
+                                    <SelectItem key={level} value={level}>{level}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+              </div>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <FormField
@@ -519,3 +580,5 @@ const TextareaWithLabel = ({ label, ...props }: React.ComponentProps<typeof Text
       <Textarea {...props} />
     </div>
   );
+
+    

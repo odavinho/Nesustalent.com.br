@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/firebase';
-import { getVacancies, deleteVacancy, addVacancy } from '@/lib/vacancy-service';
+import { getVacancies, deleteVacancy } from '@/lib/vacancy-service';
 import { applications as mockApplications } from '@/lib/applications';
 import { useRouter } from 'next/navigation';
 import { users } from '@/lib/users';
@@ -62,20 +62,10 @@ export default function RecruiterVacanciesPage() {
   };
 
   const handleDuplicate = (vacancy: Vacancy) => {
-    const { id, postedDate, ...rest } = vacancy;
-    const newVacancyData = {
-        ...rest,
-        title: `${vacancy.title} (Cópia)`,
-    };
-    addVacancy(newVacancyData);
-    // Refresh the list
-    const testRecruiter = users.find(u => u.email === 'recruiter@nexustalent.com.br');
-    const updatedVacancies = getVacancies().filter(v => v.recruiterId === testRecruiter?.id);
-    setVacancies(updatedVacancies);
-    toast({
-        title: "Vaga Duplicada!",
-        description: `Uma cópia de "${vacancy.title}" foi criada.`,
-    });
+    // Remove properties that should not be copied directly
+    const { id, postedDate, ...duplicationData } = vacancy;
+    const dataString = encodeURIComponent(JSON.stringify(duplicationData));
+    router.push(`/dashboard/recruiter/vacancies/new?data=${dataString}`);
   }
 
   // Pagination Logic
@@ -265,3 +255,5 @@ export default function RecruiterVacanciesPage() {
     </div>
   );
 }
+
+    
