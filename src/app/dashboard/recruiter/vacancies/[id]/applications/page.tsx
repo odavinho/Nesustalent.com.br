@@ -1,22 +1,29 @@
 'use client';
 
 import { useParams, notFound, useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { getVacancyById } from "@/lib/vacancy-service";
 import { applications as allApplications } from "@/lib/applications";
 import { users as allUsers } from "@/lib/users";
 import { type Vacancy, type Application, type UserProfile, type ApplicationStatus } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Loader2, Users, FileDown } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowLeft, Loader2, FileDown } from "lucide-react";
 import { RecruitmentPipeline } from "@/components/recruitment/recruitment-pipeline";
 import { Timestamp } from "firebase/firestore";
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 interface TriagedCandidate extends Application {
     candidate: UserProfile;
     score?: number;
 }
 
+// Extend jsPDF interface to include autoTable method
+declare module 'jspdf' {
+  interface jsPDF {
+    autoTable: (options: any) => jsPDF;
+  }
+}
 
 export default function VacancyApplicationsPage() {
     const params = useParams();
@@ -32,7 +39,6 @@ export default function VacancyApplicationsPage() {
         setVacancy(foundVacancy); 
         
         if (foundVacancy) {
-            // 1. Get existing applications for the vacancy from the mock data
             const existingApps = allApplications
                 .filter(app => app.jobPostingId === vacancyId)
                 .map(app => {
@@ -41,7 +47,6 @@ export default function VacancyApplicationsPage() {
                 })
                 .filter((item): item is TriagedCandidate => !!item.candidate);
 
-            // 2. Check for new candidates from AI analysis in the URL
             const analysisParam = searchParams.get('analysis');
             let newTriagedCandidates: TriagedCandidate[] = [];
 
@@ -55,12 +60,9 @@ export default function VacancyApplicationsPage() {
                         if (candidateProfile) {
                             const alreadyExists = existingApps.some(app => app.userId === candidateProfile.id);
                             
-                            // Always add the triaged candidate to show them in the pipeline,
-                            // even if they have an existing application. We can decide how to merge/display later.
-                            // For now, this ensures they appear.
                             if (!alreadyExists) {
                                 newTriagedCandidates.push({
-                                    id: `${candidateProfile.id}_${vacancyId}`, // Create a mock application ID
+                                    id: `${candidateProfile.id}_${vacancyId}`,
                                     userId: candidateProfile.id,
                                     jobPostingId: vacancyId,
                                     applicationDate: new Date(), 
@@ -69,12 +71,9 @@ export default function VacancyApplicationsPage() {
                                     score: triagedItem.score,
                                 });
                             } else {
-                                // If they do exist, we can update their score.
                                 const existingApp = existingApps.find(app => app.userId === candidateProfile.id);
                                 if (existingApp) {
                                     existingApp.score = triagedItem.score;
-                                    // Optionally move them back to Triagem if desired
-                                    // existingApp.status = 'Triagem';
                                 }
                             }
                         }
@@ -84,7 +83,6 @@ export default function VacancyApplicationsPage() {
                 }
             }
 
-            // 3. Combine existing applications with new triaged candidates
             setApplications([...existingApps, ...newTriagedCandidates]);
 
         } else if (foundVacancy === null) { 
@@ -94,7 +92,35 @@ export default function VacancyApplicationsPage() {
 
     const handleStatusChange = (applicationId: string, newStatus: ApplicationStatus) => {
         setApplications(prev => prev.map(app => app.id === applicationId ? { ...app, status: newStatus } : app));
-        // In a real app, you would also persist this change to Firestore here.
+    };
+
+    const handleGenerateReport = () => {
+        if (!vacancy) return;
+
+        const doc = new jsPDF();
+        const tableData = applications.map(app => [
+            `${app.candidate.firstName} ${app.candidate.lastName}`,
+            app.status,
+            app.score !== undefined ? `${app.score}%` : 'N/A',
+            app.candidate.academicTitle || 'N/A'
+        ]);
+
+        doc.setFontSize(18);
+        doc.text(`Relatório de Recrutamento: ${vacancy.title}`, 14, 22);
+        doc.setFontSize(11);
+        doc.setTextColor(100);
+        doc.text(`Vaga ID: ${vacancy.id}`, 14, 30);
+        doc.text(`Total de Candidatos: ${applications.length}`, 14, 36);
+
+        doc.autoTable({
+            startY: 45,
+            head: [['Candidato', 'Status', 'Pontuação IA', 'Habilitações']],
+            body: tableData,
+            theme: 'striped',
+            headStyles: { fillColor: [22, 163, 74] },
+        });
+
+        doc.save(`Relatorio_${vacancy.title.replace(/ /g, '_')}.pdf`);
     };
 
     if (vacancy === undefined) {
@@ -113,7 +139,7 @@ export default function VacancyApplicationsPage() {
                         <ArrowLeft className="mr-2 h-4 w-4" />
                         Voltar às Minhas Vagas
                     </Button>
-                     <Button variant="outline" disabled>
+                     <Button variant="outline" onClick={handleGenerateReport}>
                         <FileDown className="mr-2 h-4 w-4" />
                         Gerar Relatório (PDF)
                     </Button>
