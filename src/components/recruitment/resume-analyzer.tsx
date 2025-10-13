@@ -21,6 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { Checkbox } from '../ui/checkbox';
+import { useRouter } from 'next/navigation';
 
 
 const formSchema = z.object({
@@ -39,7 +40,7 @@ const formSchema = z.object({
 
 
 type FormValues = z.infer<typeof formSchema>;
-type AnalysisResult = AIResumeAnalysisOutput & { fileName: string };
+type AnalysisResult = AIResumeAnalysisOutput & { fileName: string; id: string };
 
 const fileToDataUri = (file: File) => new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
@@ -54,6 +55,7 @@ export function ResumeAnalyzer() {
   const [vacancies, setVacancies] = useState<Vacancy[]>([]);
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([]);
   const { toast } = useToast();
+  const router = useRouter();
 
   useEffect(() => {
     setVacancies(getVacancies());
@@ -101,19 +103,20 @@ export function ResumeAnalyzer() {
       const files = Array.from(data.resumes);
       
       const results = await Promise.all(
-        files.map(async (resumeFile) => {
+        files.map(async (resumeFile, index) => {
           try {
             const resumeDataUri = await fileToDataUri(resumeFile);
             const result = await analyzeResumeAction({
               jobDescription: jobDescription!,
               resumeDataUri: resumeDataUri,
             });
-            return { ...result, fileName: resumeFile.name };
+            return { ...result, fileName: resumeFile.name, id: `analyzed-${index}` };
           } catch (error) {
              console.error(`Erro ao analisar ${resumeFile.name}:`, error);
              // Return a result indicating failure for this specific file
              return { 
                 fileName: resumeFile.name, 
+                id: `analyzed-${index}`,
                 candidateRanking: 0, 
                 candidateSummary: "Falha na análise", 
                 keySkillsMatch: "N/A", 
@@ -150,17 +153,29 @@ export function ResumeAnalyzer() {
     setSelectedCandidates(over50);
   };
   
-  const handleBulkAction = (action: 'add' | 'interesting' | 'reject') => {
+  const handleAddToVacancy = () => {
     if (selectedCandidates.length === 0) {
         toast({ variant: 'destructive', title: 'Nenhum candidato selecionado.'});
         return;
     }
-    // Em um app real, aqui você faria a chamada para a API/servidor para executar a ação.
+    if (descriptionType === 'manual' || !selectedVacancyId) {
+        toast({ variant: 'destructive', title: 'Ação Inválida', description: 'Selecione uma vaga da lista para adicionar os candidatos.'});
+        return;
+    }
+    
+    // Simulate adding candidates and prepare data for redirection
+    const triagedCandidates = analysisResults
+        .filter(r => selectedCandidates.includes(r.fileName))
+        .map(r => ({ id: r.id, score: r.candidateRanking, name: r.fileName, summary: r.candidateSummary, skills: r.keySkillsMatch }));
+
+    const analysisParam = encodeURIComponent(JSON.stringify(triagedCandidates));
+
     toast({
-        title: 'Ação Executada (Simulação)',
-        description: `${selectedCandidates.length} candidatos foram processados.`
+        title: 'Candidatos Adicionados (Simulado)',
+        description: `${selectedCandidates.length} candidatos foram associados à vaga. A redirecionar...`
     });
-    setSelectedCandidates([]);
+
+    router.push(`/dashboard/recruiter/vacancies/${selectedVacancyId}/applications?tab=triaged&analysis=${analysisParam}`);
   }
   
   const resumesRef = form.register("resumes");
@@ -294,17 +309,9 @@ export function ResumeAnalyzer() {
                 <h3 className="font-headline text-xl font-bold">Resultado da Análise ({analysisResults.length} CVs)</h3>
                 <div className="flex gap-2">
                     {selectedCandidates.length > 0 ? (
-                        <>
-                           <Button size="sm" onClick={() => handleBulkAction('add')} disabled={descriptionType === 'manual'} title={descriptionType === 'manual' ? 'Selecione uma vaga para usar esta ação' : ''}>
-                                <Check className="mr-2 h-4 w-4" /> Adicionar à Vaga ({selectedCandidates.length})
-                           </Button>
-                           <Button size="sm" variant="outline" onClick={() => handleBulkAction('interesting')}>
-                               <ThumbsUp className="mr-2 h-4 w-4 text-green-500" /> Marcar como Interessante
-                           </Button>
-                           <Button size="sm" variant="destructive" onClick={() => handleBulkAction('reject')}>
-                               <Trash2 className="mr-2 h-4 w-4" /> Rejeitar
-                           </Button>
-                        </>
+                        <Button size="sm" onClick={handleAddToVacancy} disabled={descriptionType === 'manual' || !selectedVacancyId} title={descriptionType === 'manual' ? 'Selecione uma vaga para usar esta ação' : ''}>
+                            <Check className="mr-2 h-4 w-4" /> Adicionar à Vaga ({selectedCandidates.length})
+                       </Button>
                     ) : (
                         <Button size="sm" variant="outline" onClick={handleSelectOver50}>
                             <Check className="mr-2 h-4 w-4" /> Selecionar &gt;50%
@@ -314,7 +321,7 @@ export function ResumeAnalyzer() {
             </div>
             <Accordion type="multiple" className="w-full space-y-4">
                 {analysisResults.map((result, index) => (
-                    <Card key={index} className={selectedCandidates.includes(result.fileName) ? 'border-primary' : ''}>
+                    <Card key={result.id} className={selectedCandidates.includes(result.fileName) ? 'border-primary' : ''}>
                         <div className="flex items-center p-4">
                             <Checkbox 
                                 id={`select-${index}`}
@@ -322,7 +329,7 @@ export function ResumeAnalyzer() {
                                 onCheckedChange={(checked) => handleSelectCandidate(result.fileName, !!checked)}
                                 className="mr-4"
                             />
-                            <AccordionItem value={`item-${index}`} className="border-0 w-full">
+                            <AccordionItem value={result.id} className="border-0 w-full">
                                 <AccordionTrigger className="p-0 hover:no-underline">
                                     <div className='flex items-center gap-4 w-full pr-4'>
                                         <span className="text-lg font-bold text-primary w-12 text-center">{result.candidateRanking}%</span>
