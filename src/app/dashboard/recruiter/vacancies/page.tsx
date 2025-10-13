@@ -4,16 +4,24 @@ import { useState, useEffect, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Briefcase, FileWarning, PlusCircle, ArrowLeft, ArrowRight, ClipboardCheck } from 'lucide-react';
-import type { Vacancy } from '@/lib/types';
+import { Briefcase, FileWarning, PlusCircle, ArrowLeft, ArrowRight, ClipboardCheck, Users, ThumbsUp, Eye, Copy } from 'lucide-react';
+import type { Vacancy, Application } from '@/lib/types';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/firebase';
-import { getVacancies, deleteVacancy } from '@/lib/vacancy-service';
+import { getVacancies, deleteVacancy, addVacancy } from '@/lib/vacancy-service';
+import { applications as mockApplications } from '@/lib/applications';
 import { useRouter } from 'next/navigation';
 import { users } from '@/lib/users';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
 
 const VACANCIES_PER_PAGE = 10;
 
@@ -23,6 +31,7 @@ export default function RecruiterVacanciesPage() {
   const router = useRouter();
 
   const [vacancies, setVacancies] = useState<Vacancy[]>([]);
+  const [applications, setApplications] = useState<Application[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -33,6 +42,7 @@ export default function RecruiterVacanciesPage() {
       const testRecruiter = users.find(u => u.email === 'recruiter@nexustalent.com.br');
       const userVacancies = allVacancies.filter(v => v.recruiterId === testRecruiter?.id);
       setVacancies(userVacancies);
+      setApplications(mockApplications);
     }
     setIsLoading(false);
   }, [user]);
@@ -51,6 +61,23 @@ export default function RecruiterVacanciesPage() {
     });
   };
 
+  const handleDuplicate = (vacancy: Vacancy) => {
+    const { id, postedDate, ...rest } = vacancy;
+    const newVacancyData = {
+        ...rest,
+        title: `${vacancy.title} (Cópia)`,
+    };
+    addVacancy(newVacancyData);
+    // Refresh the list
+    const testRecruiter = users.find(u => u.email === 'recruiter@nexustalent.com.br');
+    const updatedVacancies = getVacancies().filter(v => v.recruiterId === testRecruiter?.id);
+    setVacancies(updatedVacancies);
+    toast({
+        title: "Vaga Duplicada!",
+        description: `Uma cópia de "${vacancy.title}" foi criada.`,
+    });
+  }
+
   // Pagination Logic
   const totalPages = Math.ceil(vacancies.length / VACANCIES_PER_PAGE);
 
@@ -67,6 +94,13 @@ export default function RecruiterVacanciesPage() {
   const handleNextPage = () => {
     setCurrentPage(prev => Math.min(prev + 1, totalPages));
   };
+
+  const getApplicationCounts = (vacancyId: string) => {
+    const relevantApps = applications.filter(app => app.jobPostingId === vacancyId);
+    const total = relevantApps.length;
+    const interesting = relevantApps.filter(app => ['Triagem', 'Teste', 'Entrevista', 'Oferta', 'Contratado'].includes(app.status)).length;
+    return { total, interesting };
+  }
 
 
   const renderContent = () => {
@@ -121,38 +155,75 @@ export default function RecruiterVacanciesPage() {
 
     return (
         <>
+            <TooltipProvider>
             <div className="space-y-6">
-                {paginatedVacancies.map(vacancy => (
-                <Card key={vacancy.id}>
-                    <CardHeader>
-                    <div className="flex justify-between items-start">
-                        <div>
-                        <CardTitle>{vacancy.title}</CardTitle>
-                        <CardDescription>{vacancy.location} &middot; {vacancy.category}</CardDescription>
-                        </div>
-                        <Badge>{vacancy.type}</Badge>
-                    </div>
-                    </CardHeader>
-                    <CardContent>
-                    <p className="text-sm text-muted-foreground line-clamp-2">{vacancy.description}</p>
-                    <div className="mt-4 flex gap-2 flex-wrap">
-                        <Button variant="outline" size="sm" asChild>
-                            <Link href={`/dashboard/recruiter/vacancies/${vacancy.id}/edit`}>Editar Vaga</Link>
-                        </Button>
-                        <Button variant="destructive" size="sm" onClick={() => handleDelete(vacancy.id)}>Excluir Vaga</Button>
-                        <Button variant="secondary" size="sm" asChild>
-                            <Link href={`/dashboard/recruiter/vacancies/${vacancy.id}/applications`}>Ver Candidatos</Link>
-                        </Button>
-                        <Button variant="default" size="sm" asChild>
-                            <Link href={`/dashboard/recruiter/vacancies/${vacancy.id}/assessment/new`}>
-                               <ClipboardCheck className='mr-2 h-4 w-4' /> Criar Teste de Avaliação
-                            </Link>
-                        </Button>
-                    </div>
-                    </CardContent>
-                </Card>
-                ))}
+                {paginatedVacancies.map(vacancy => {
+                    const { total, interesting } = getApplicationCounts(vacancy.id);
+                    return (
+                        <Card key={vacancy.id}>
+                            <CardHeader>
+                            <div className="flex justify-between items-start">
+                                <div>
+                                <CardTitle>{vacancy.title}</CardTitle>
+                                <CardDescription>{vacancy.location} &middot; {vacancy.category}</CardDescription>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                     <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button variant="ghost" size="sm" className="gap-2" asChild>
+                                               <Link href={`/dashboard/recruiter/vacancies/${vacancy.id}/applications`}>
+                                                    <Users /> {total}
+                                               </Link>
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>{total} candidaturas recebidas</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button variant="ghost" size="sm" className="gap-2 text-green-600" asChild>
+                                               <Link href={`/dashboard/recruiter/vacancies/${vacancy.id}/applications`}>
+                                                    <ThumbsUp /> {interesting}
+                                               </Link>
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>{interesting} candidatos interessantes/em processo</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                    <Badge>{vacancy.type}</Badge>
+                                </div>
+                            </div>
+                            </CardHeader>
+                            <CardContent className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                                <p className="text-sm text-muted-foreground line-clamp-2 flex-grow">{vacancy.description}</p>
+                                <div className="flex gap-2 flex-wrap shrink-0">
+                                    <Button variant="outline" size="sm" asChild>
+                                        <Link href={`/recruitment/${vacancy.id}`} target="_blank"><Eye className='mr-2 h-4 w-4'/>Ver Vaga</Link>
+                                    </Button>
+                                    <Button variant="outline" size="sm" onClick={() => handleDuplicate(vacancy)}>
+                                        <Copy className='mr-2 h-4 w-4'/>Duplicar
+                                    </Button>
+                                    <Button variant="outline" size="sm" asChild>
+                                        <Link href={`/dashboard/recruiter/vacancies/${vacancy.id}/edit`}>Editar</Link>
+                                    </Button>
+                                    <Button variant="destructive" size="sm" onClick={() => handleDelete(vacancy.id)}>Excluir</Button>
+                                    <Button variant="secondary" size="sm" asChild>
+                                        <Link href={`/dashboard/recruiter/vacancies/${vacancy.id}/applications`}>Gerir Candidatos</Link>
+                                    </Button>
+                                    <Button variant="default" size="sm" asChild>
+                                        <Link href={`/dashboard/recruiter/vacancies/${vacancy.id}/assessment/new`}>
+                                            <ClipboardCheck className='mr-2 h-4 w-4' /> Criar Teste
+                                        </Link>
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )
+                })}
             </div>
+            </TooltipProvider>
             {totalPages > 1 && (
                 <div className="flex items-center justify-center gap-4 mt-12">
                     <Button onClick={handlePreviousPage} disabled={currentPage === 1} variant="outline">

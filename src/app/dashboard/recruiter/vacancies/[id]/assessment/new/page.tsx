@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Loader2, Wand2, ArrowLeft, Save, ListChecks, HelpCircle, Bot } from 'lucide-react';
+import { Loader2, Wand2, ArrowLeft, Save, Bot } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { generateAssessmentTestAction } from '@/app/actions';
 import type { AssessmentTest, Vacancy } from '@/lib/types';
@@ -53,12 +53,17 @@ export default function NewAssessmentPage() {
     setIsGenerating(true);
     setGeneratedTest(null);
     try {
-      const fullJobDescription = `${vacancy.description}\n\nResponsabilidades:\n${vacancy.responsibilities.join('\n')}\n\nRequisitos:\n${vacancy.requirements.join('\n')}`;
+      const fullJobDescription = `${vacancy.title}\n\n${vacancy.description}\n\nResponsabilidades:\n${vacancy.responsibilities.join('\n')}\n\nRequisitos:\n${vacancy.requirements.join('\n')}`;
 
       const result = await generateAssessmentTestAction({
         jobDescription: fullJobDescription,
         ...data
       });
+      
+      if (!result || !result.questions) {
+        throw new Error("A geração do teste não retornou um resultado válido.");
+      }
+
       setGeneratedTest(result);
       toast({
         title: "Teste Gerado com Sucesso!",
@@ -217,4 +222,3 @@ export default function NewAssessmentPage() {
     </div>
   );
 }
-    
