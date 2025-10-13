@@ -1,6 +1,14 @@
 import type { UserProfile } from './types';
 
 export const users: UserProfile[] = [
+  // Recruiter User
+  {
+    id: '4FkPP1YFiBZh1Sw7ATyXpX0ZtII3',
+    firstName: 'Sinopec',
+    lastName: 'de Angola',
+    email: 'recruiter@nexustalent.com.br',
+    userType: 'recruiter',
+  },
   // Existing users
   {
     id: 'student1',
@@ -104,6 +112,7 @@ export const users: UserProfile[] = [
     yearsOfExperience: 2,
     functionalArea: 'Recursos Minerais e Petróleos',
     skills: ['Engenharia de Reservatórios', 'Análise de Perfis', 'Petrel', 'Simulação de Fluxo'],
+    resumeUrl: '#',
     academicHistory: [
         { institution: 'ISPTEC', degree: 'Engenharia de Petróleo', year: '2022' }
     ],
@@ -151,6 +160,7 @@ export const users: UserProfile[] = [
     yearsOfExperience: 15,
     functionalArea: 'Industrial',
     skills: ['Manutenção Preditiva', 'Soldadura', 'Hidráulica', 'Pneumática', 'PLC'],
+    resumeUrl: '#',
     academicHistory: [
       { institution: 'SENAI', degree: 'Curso Técnico em Mecatrónica', year: '2005' }
     ],
@@ -175,6 +185,7 @@ export const users: UserProfile[] = [
     yearsOfExperience: 5,
     functionalArea: 'Marketing, comunicação e relações públicas',
     skills: ['SEO', 'Google Ads', 'Social Media Marketing', 'Email Marketing', 'Google Analytics'],
+    resumeUrl: '#',
     academicHistory: [
       { institution: 'ESPM', degree: 'Comunicação Social com ênfase em Marketing', year: '2018' }
     ],
@@ -199,6 +210,7 @@ export const users: UserProfile[] = [
     yearsOfExperience: 9,
     functionalArea: 'Recursos Minerais e Petróleos',
     skills: ['Mapeamento Geológico', 'Interpretação Sísmica', 'Avaliação de Jazigos', 'Geofísica', 'ArcGIS'],
+    resumeUrl: '#',
     academicHistory: [
       { institution: 'Universidade de Lisboa', degree: 'Mestrado em Geologia do Petróleo', year: '2014' }
     ],

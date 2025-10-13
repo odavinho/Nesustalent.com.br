@@ -9,6 +9,7 @@ import { getVacancies } from "@/lib/vacancy-service";
 import type { Vacancy } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState, useEffect } from "react";
+import { users } from "@/lib/users";
 
 function VacancyList({ recruiterId }: { recruiterId: string }) {
     const [vacancies, setVacancies] = useState<Vacancy[]>([]);
@@ -17,7 +18,9 @@ function VacancyList({ recruiterId }: { recruiterId: string }) {
     useEffect(() => {
         if (recruiterId) {
             const allVacancies = getVacancies();
-            const userVacancies = allVacancies.filter(v => v.recruiterId === recruiterId);
+            // Use test recruiter UID for mock data
+            const testRecruiter = users.find(u => u.email === 'recruiter@nexustalent.com.br');
+            const userVacancies = allVacancies.filter(v => v.recruiterId === testRecruiter?.id);
             setVacancies(userVacancies);
         }
         setIsLoading(false);
@@ -74,7 +77,7 @@ export default function RecruiterDashboardPage() {
                          {user && <VacancyList recruiterId={user.uid} />}
                         <div className="flex flex-wrap gap-2">
                             <Button asChild>
-                                <Link href="/dashboard/vacancies/new">
+                                <Link href="/dashboard/recruiter/vacancies/new">
                                     <PlusCircle className="mr-2 h-4 w-4" />
                                     Publicar Nova Vaga
                                 </Link>

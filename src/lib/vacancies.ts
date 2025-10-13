@@ -6,7 +6,7 @@ function createTimestamp(dateString: string): Timestamp {
     return new Timestamp(Math.floor(date.getTime() / 1000), 0);
 }
 
-export const vacancies: Vacancy[] = [
+export let vacancies: Vacancy[] = [
     {
         id: 'dev-frontend-sr',
         title: 'Desenvolvedor Frontend Sênior',
@@ -14,7 +14,7 @@ export const vacancies: Vacancy[] = [
         type: 'Full-time',
         category: 'informatica-it',
         description: 'Estamos procurando um Desenvolvedor Frontend Sênior experiente para se juntar à nossa equipe. O candidato ideal tem forte conhecimento em React, Next.js e TypeScript.',
-        recruiterId: 'recruiter1', // Mock recruiter ID
+        recruiterId: 'recruiter-test-uid',
         postedDate: createTimestamp('2024-07-28T10:00:00Z'),
         closingDate: createTimestamp('2024-08-28T23:59:59Z'),
         salaryRange: 'R$ 8.000 - R$ 12.000',
@@ -38,7 +38,7 @@ export const vacancies: Vacancy[] = [
         type: 'Full-time',
         category: 'rh-gestao',
         description: 'Buscamos um Analista de RH com experiência em todo o ciclo de recrutamento e seleção, endomarketing e gestão de benefícios. Forte habilidade de comunicação é essencial.',
-        recruiterId: 'recruiter1', // Mock recruiter ID
+        recruiterId: 'recruiter-test-uid',
         postedDate: createTimestamp('2024-07-27T14:30:00Z'),
         closingDate: createTimestamp('2024-08-20T23:59:59Z'),
         salaryRange: 'A combinar',
@@ -55,6 +55,11 @@ export const vacancies: Vacancy[] = [
             'Conhecimento em legislação laboral angolana.',
             'Excelentes habilidades de comunicação interpessoal.',
         ],
+        screeningQuestions: [
+            'Descreva a sua experiência com o software Primavera.',
+            'Como lida com um processo de recrutamento de alto volume?',
+            'Qual a sua maior conquista profissional na área de RH?'
+        ]
     },
     {
         id: 'gestor-projetos-ti',

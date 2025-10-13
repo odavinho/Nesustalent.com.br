@@ -13,6 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/firebase';
 import { getVacancies, deleteVacancy } from '@/lib/vacancy-service';
 import { useRouter } from 'next/navigation';
+import { users } from '@/lib/users';
 
 const VACANCIES_PER_PAGE = 10;
 
@@ -29,7 +30,8 @@ export default function RecruiterVacanciesPage() {
   useEffect(() => {
     if (user) {
       const allVacancies = getVacancies();
-      const userVacancies = allVacancies.filter(v => v.recruiterId === user.uid);
+      const testRecruiter = users.find(u => u.email === 'recruiter@nexustalent.com.br');
+      const userVacancies = allVacancies.filter(v => v.recruiterId === testRecruiter?.id);
       setVacancies(userVacancies);
     }
     setIsLoading(false);
@@ -39,7 +41,8 @@ export default function RecruiterVacanciesPage() {
     if (!confirm('Tem a certeza que deseja excluir esta vaga? Esta ação não pode ser desfeita.')) return;
 
     deleteVacancy(vacancyId);
-    const updatedVacancies = getVacancies().filter(v => v.recruiterId === user?.uid);
+    const testRecruiter = users.find(u => u.email === 'recruiter@nexustalent.com.br');
+    const updatedVacancies = getVacancies().filter(v => v.recruiterId === testRecruiter?.id);
     setVacancies(updatedVacancies);
     
     toast({
@@ -107,7 +110,7 @@ export default function RecruiterVacanciesPage() {
             Comece por publicar uma nova vaga para atrair talentos.
           </p>
           <Button asChild className="mt-4">
-            <Link href="/dashboard/vacancies/new">
+            <Link href="/dashboard/recruiter/vacancies/new">
               <PlusCircle className="mr-2 h-4 w-4" />
               Publicar Nova Vaga
             </Link>
@@ -181,7 +184,7 @@ export default function RecruiterVacanciesPage() {
           </p>
         </div>
         <Button asChild>
-          <Link href="/dashboard/vacancies/new">
+          <Link href="/dashboard/recruiter/vacancies/new">
             <PlusCircle className="mr-2 h-4 w-4" />
             Publicar Nova Vaga
           </Link>

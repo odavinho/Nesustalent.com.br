@@ -31,6 +31,20 @@ export const applications: Application[] = [
         status: 'Recebida',
     },
     {
+        id: 'student7_analista-rh-pl',
+        userId: 'student7',
+        jobPostingId: 'analista-rh-pl',
+        applicationDate: createTimestamp('2024-07-29T18:00:00Z'),
+        status: 'Recebida',
+    },
+    {
+        id: 'student8_analista-rh-pl',
+        userId: 'student8',
+        jobPostingId: 'analista-rh-pl',
+        applicationDate: createTimestamp('2024-07-30T11:00:00Z'),
+        status: 'Recebida',
+    },
+    {
         id: 'student4_gestor-projetos-ti',
         userId: 'student4',
         jobPostingId: 'gestor-projetos-ti',
