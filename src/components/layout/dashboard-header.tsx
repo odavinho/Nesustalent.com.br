@@ -96,7 +96,7 @@ export function DashboardHeader() {
                     <Link href="/dashboard/student/profile">Meu Perfil</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard/settings">Configurações</Link>
+                    <Link href="/dashboard/student/profile">Configurações</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="text-red-500">
