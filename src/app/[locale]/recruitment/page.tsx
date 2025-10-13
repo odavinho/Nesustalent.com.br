@@ -4,10 +4,20 @@ import { ResumeAnalyzer } from "@/components/recruitment/resume-analyzer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getVacancies } from "@/lib/vacancy-service";
+import { useSearchParams } from "next/navigation";
 
 export default function RecruitmentPage() {
+    const searchParams = useSearchParams();
+    const [activeTab, setActiveTab] = useState("vacancies");
+
+    useEffect(() => {
+        const tab = searchParams.get('tab');
+        if (tab === 'analyzer') {
+            setActiveTab('analyzer');
+        }
+    }, [searchParams]);
 
     // Pre-warm the vacancies data
     useEffect(() => {
@@ -26,7 +36,7 @@ export default function RecruitmentPage() {
             </p>
           </div>
 
-          <Tabs defaultValue="vacancies" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2 max-w-lg mx-auto h-12">
               <TabsTrigger value="vacancies" className="h-10">Vagas Abertas</TabsTrigger>
               <TabsTrigger value="analyzer" className="h-10">Analisador de CV</TabsTrigger>
