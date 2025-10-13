@@ -35,6 +35,12 @@ export default function DashboardRedirectPage() {
             router.replace('/dashboard/admin');
             return;
         }
+        
+        // Special override for recruiter test user
+        if (user.email === 'recruiter@nexustalent.com.br') {
+            router.replace('/dashboard/recruiter');
+            return;
+        }
 
         // Redirect based on the role from the Firestore profile
         const role = userProfile?.userType;
