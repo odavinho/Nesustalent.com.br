@@ -75,7 +75,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
             )}
 
             <div
-              className="prose dark:prose-invert prose-lg max-w-none prose-h3:font-headline prose-h3:text-foreground prose-a:text-primary hover:prose-a:text-primary/80 prose-strong:text-foreground"
+              className="prose dark:prose-invert prose-lg max-w-none prose-h3:font-headline prose-h3:text-foreground prose-a:text-primary hover:prose-a:text-primary/80 prose-strong:text-foreground prose-li:marker:text-primary"
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
           </article>
