@@ -132,7 +132,7 @@ export default function RecruiterDashboardPage() {
                     <CardContent>
                          <p className="text-muted-foreground mb-4">Acelere seu processo de triagem.</p>
                          <Button asChild>
-                            <Link href="/recruitment?tab=analyzer">
+                            <Link href="/dashboard/recruiter/analyzer">
                                 Ir para o Analisador
                             </Link>
                         </Button>
