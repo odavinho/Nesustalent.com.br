@@ -78,7 +78,7 @@ export default function EditVacancyPage() {
       requirements: '',
       screeningQuestions: '',
       minExperience: '', 
-      demandLevel: '',
+      demandLevel: '', 
       languages: '',
       requiredNationality: '',
       salaryRange: '',
@@ -166,7 +166,7 @@ export default function EditVacancyPage() {
 
   if (vacancy === null) {
     notFound();
-    return null;
+    return null; // Return null after calling notFound()
   }
   
   return (
