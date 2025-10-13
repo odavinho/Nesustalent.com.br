@@ -17,17 +17,10 @@ import { addCourse } from "@/lib/course-service";
 
 // AI Actions
 export async function analyzeResumeAction(input: AIResumeAnalysisInput): Promise<AIResumeAnalysisOutput> {
-  try {
+    // The try-catch block is removed from here and moved to the client component
+    // to handle errors on a per-file basis during bulk analysis.
     const output = await aiResumeAnalysis(input);
     return output;
-  } catch (error) {
-    console.error("Error in analyzeResumeAction:", error);
-    // Simulating a more detailed error message for demonstration
-    if (error instanceof Error && error.message.includes('API key not valid')) {
-        throw new Error("A chave de API para o serviço de IA não é válida. Por favor, verifique as configurações.");
-    }
-    throw new Error("Falha ao analisar o currículo. Tente novamente mais tarde.");
-  }
 }
 
 export async function extractProfileFromResumeAction(input: ExtractProfileFromResumeInput): Promise<ExtractProfileFromResumeOutput> {

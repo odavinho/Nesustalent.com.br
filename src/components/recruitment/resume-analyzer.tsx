@@ -95,49 +95,44 @@ export function ResumeAnalyzer() {
         return;
     }
 
-    try {
-      if (!data.resumes || data.resumes.length === 0) {
-        throw new Error("Nenhum currículo foi enviado.");
-      }
-      
-      const files = Array.from(data.resumes);
-      
-      const results = await Promise.all(
-        files.map(async (resumeFile, index) => {
-          try {
-            const resumeDataUri = await fileToDataUri(resumeFile);
-            const result = await analyzeResumeAction({
-              jobDescription: jobDescription!,
-              resumeDataUri: resumeDataUri,
-            });
-            return { ...result, fileName: resumeFile.name, id: `analyzed-${index}` };
-          } catch (error) {
-             console.error(`Erro ao analisar ${resumeFile.name}:`, error);
-             // Return a result indicating failure for this specific file
-             return { 
-                fileName: resumeFile.name, 
-                id: `analyzed-${index}`,
-                candidateRanking: 0, 
-                candidateSummary: "Falha na análise", 
-                keySkillsMatch: "N/A", 
-                areasForImprovement: "N/A" 
-            };
-          }
-        })
-      );
-      
-      setAnalysisResults(results.sort((a, b) => b.candidateRanking - a.candidateRanking));
-
-    } catch (error) {
-      console.error(error);
+    if (!data.resumes || data.resumes.length === 0) {
       toast({
-        variant: "destructive",
-        title: "Erro na Análise",
-        description: error instanceof Error ? error.message : "Ocorreu um erro desconhecido durante o processamento.",
+          variant: "destructive",
+          title: "Nenhum currículo foi enviado.",
+          description: "É necessário enviar pelo menos um currículo.",
       });
-    } finally {
       setIsLoading(false);
+      return;
     }
+    
+    const files = Array.from(data.resumes);
+    
+    const results = await Promise.all(
+      files.map(async (resumeFile, index) => {
+        try {
+          const resumeDataUri = await fileToDataUri(resumeFile);
+          const result = await analyzeResumeAction({
+            jobDescription: jobDescription!,
+            resumeDataUri: resumeDataUri,
+          });
+          return { ...result, fileName: resumeFile.name, id: `analyzed-${index}` };
+        } catch (error) {
+           console.error(`Erro ao analisar ${resumeFile.name}:`, error);
+           // Return a result indicating failure for this specific file
+           return { 
+              fileName: resumeFile.name, 
+              id: `analyzed-${index}`,
+              candidateRanking: 0, 
+              candidateSummary: "Falha na análise. O ficheiro pode estar corrompido ou num formato não suportado.", 
+              keySkillsMatch: "N/A", 
+              areasForImprovement: "N/A" 
+          };
+        }
+      })
+    );
+    
+    setAnalysisResults(results.sort((a, b) => b.candidateRanking - a.candidateRanking));
+    setIsLoading(false);
   };
 
   const handleSelectCandidate = (fileName: string, isSelected: boolean) => {
