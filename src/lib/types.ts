@@ -129,7 +129,7 @@ export interface Course {
   }
   
   export interface AssessmentTest {
-    id: string;
+    id?: string;
     title: string;
     questions: AssessmentQuestion[];
   }

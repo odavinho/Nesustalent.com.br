@@ -23,23 +23,35 @@ const prompt = ai.definePrompt({
   name: 'generateAssessmentTestPrompt',
   input: { schema: GenerateAssessmentTestInputSchema },
   output: { schema: GenerateAssessmentTestOutputSchema },
-  prompt: `You are an expert in creating professional assessments for job candidates. Your task is to generate a test based on the provided job description. Each question must have a unique ID (e.g., 'q1', 'q2').
+  prompt: `You are an expert in creating professional assessments for job candidates. Your task is to generate a test based on the provided job description and requirements.
 
 Job Description:
 {{{jobDescription}}}
 
 Test Requirements:
-- Type: {{{testType}}}
+- Test Type: {{{testType}}}
 - Number of Multiple-Choice Questions: {{{numMultipleChoice}}}
 - Number of Short-Answer Questions: {{{numShortAnswer}}}
 
-Generate a test with a clear title and the specified number of questions.
+Please generate the following:
+1.  A concise and relevant title for the test.
+2.  A unique ID for the test (e.g., 'test-followed-by-random-chars').
+3.  A list of questions, each with its own unique ID (e.g., 'q1', 'q2').
 
-For 'knowledge' tests, create questions that assess the technical skills and knowledge required for the job. Use a mix of multiple-choice and short-answer questions as requested. The questions should require the application of knowledge, not just memorization. For short-answer questions, ask the candidate to explain their reasoning.
+{{#if (eq testType "knowledge")}}
+For this 'knowledge' test, create questions that assess the technical skills and knowledge required for the job.
+- Use a mix of {{{numMultipleChoice}}} multiple-choice and {{{numShortAnswer}}} short-answer questions.
+- The questions should require the application of knowledge, not just memorization.
+- For short-answer questions, ask the candidate to explain their reasoning or provide a code snippet if applicable.
+{{/if}}
 
-For 'psychometric' tests, create questions (all multiple-choice) that evaluate logical reasoning, problem-solving abilities, and behavioral traits relevant to the role. Do not ask for personal opinions or feelings.
+{{#if (eq testType "psychometric")}}
+For this 'psychometric' test, create questions that evaluate logical reasoning, problem-solving abilities, and behavioral traits relevant to the role.
+- All questions should be multiple-choice.
+- The questions should present hypothetical scenarios or logical puzzles. Do not ask for personal opinions or feelings.
+{{/if}}
 
-Ensure all multiple-choice questions have exactly 4 plausible options.`,
+IMPORTANT: Ensure all multiple-choice questions have exactly 4 plausible options.`,
 });
 
 const generateAssessmentTestFlow = ai.defineFlow(
@@ -50,6 +62,9 @@ const generateAssessmentTestFlow = ai.defineFlow(
   },
   async input => {
     const { output } = await prompt(input);
-    return output!;
+    if (!output) {
+      throw new Error('AI failed to generate a valid test structure.');
+    }
+    return output;
   }
 );
