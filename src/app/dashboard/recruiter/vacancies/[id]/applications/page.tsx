@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams, notFound, useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { getVacancyById } from "@/lib/vacancy-service";
 import { applications as allApplications } from "@/lib/applications";
 import { users as allUsers } from "@/lib/users";
@@ -48,7 +48,7 @@ export default function VacancyApplicationsPage() {
                 .filter((item): item is TriagedCandidate => !!item.candidate);
 
             const analysisParam = searchParams.get('analysis');
-            let newTriagedCandidates: TriagedCandidate[] = [];
+            let combinedApps = [...existingApps];
 
             if (analysisParam) {
                 try {
@@ -58,23 +58,26 @@ export default function VacancyApplicationsPage() {
                         const candidateProfile = allUsers.find(u => u.firstName.toLowerCase() === triagedItem.name.split('.')[0].toLowerCase());
                         
                         if (candidateProfile) {
-                            const alreadyExists = existingApps.some(app => app.userId === candidateProfile.id);
+                            const existingAppIndex = combinedApps.findIndex(app => app.userId === candidateProfile.id);
                             
-                            if (!alreadyExists) {
-                                newTriagedCandidates.push({
+                            if (existingAppIndex !== -1) {
+                                // Candidate already applied, just update the score and status if needed
+                                combinedApps[existingAppIndex] = {
+                                    ...combinedApps[existingAppIndex],
+                                    score: triagedItem.score,
+                                    status: 'Triagem' // Move to Triagem if they were just 'Recebida'
+                                };
+                            } else {
+                                // New candidate from analysis, add them
+                                combinedApps.push({
                                     id: `${candidateProfile.id}_${vacancyId}`,
                                     userId: candidateProfile.id,
                                     jobPostingId: vacancyId,
                                     applicationDate: new Date(), 
-                                    status: 'Triagem', 
+                                    status: 'Triagem', // Set status to 'Triagem'
                                     candidate: candidateProfile,
                                     score: triagedItem.score,
                                 });
-                            } else {
-                                const existingApp = existingApps.find(app => app.userId === candidateProfile.id);
-                                if (existingApp) {
-                                    existingApp.score = triagedItem.score;
-                                }
                             }
                         }
                     });
@@ -83,7 +86,7 @@ export default function VacancyApplicationsPage() {
                 }
             }
 
-            setApplications([...existingApps, ...newTriagedCandidates]);
+            setApplications(combinedApps);
 
         } else if (foundVacancy === null) { 
             notFound();

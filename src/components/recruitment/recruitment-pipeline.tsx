@@ -9,14 +9,14 @@ interface RecruitmentPipelineProps {
     onStatusChange: (applicationId: string, newStatus: ApplicationStatus) => void;
 }
 
-const pipelineStages: { title: string, status: ApplicationStatus, description: string }[] = [
-    { title: 'Candidaturas', status: 'Recebida', description: 'Novas candidaturas para triagem inicial.' },
-    { title: 'Triagem', status: 'Triagem', description: 'Candidatos iniciais para análise.' },
-    { title: 'Teste', status: 'Teste', description: 'Candidatos em fase de testes técnicos ou psicotécnicos.' },
-    { title: 'Entrevista', status: 'Entrevista', description: 'Candidatos selecionados para entrevista.' },
-    { title: 'Oferta', status: 'Oferta', description: 'Candidatos que receberam uma oferta de emprego.' },
-    { title: 'Contratado', status: 'Contratado', description: 'Candidatos que aceitaram a oferta.' },
-    { title: 'Rejeitado', status: 'Rejeitada', description: 'Candidatos não selecionados.' },
+const pipelineStages: { title: string, statuses: ApplicationStatus[], description: string }[] = [
+    { title: 'Candidaturas', statuses: ['Recebida'], description: 'Novas candidaturas para triagem inicial.' },
+    { title: 'Triagem', statuses: ['Triagem'], description: 'Candidatos iniciais para análise.' },
+    { title: 'Teste', statuses: ['Teste'], description: 'Candidatos em fase de testes técnicos ou psicotécnicos.' },
+    { title: 'Entrevista', statuses: ['Entrevista'], description: 'Candidatos selecionados para entrevista.' },
+    { title: 'Oferta', statuses: ['Oferta'], description: 'Candidatos que receberam uma oferta de emprego.' },
+    { title: 'Contratado', statuses: ['Contratado'], description: 'Candidatos que aceitaram a oferta.' },
+    { title: 'Rejeitado', statuses: ['Rejeitada'], description: 'Candidatos não selecionados.' },
 ];
 
 export function RecruitmentPipeline({ applications, onStatusChange }: RecruitmentPipelineProps) {
@@ -25,11 +25,11 @@ export function RecruitmentPipeline({ applications, onStatusChange }: Recruitmen
             <div className="flex gap-6 p-4 sm:p-6 lg:p-8 pt-0">
                 {pipelineStages.map((stage) => {
                     const stageApplications = applications.filter(app => {
-                         return app.status === stage.status;
+                         return stage.statuses.includes(app.status);
                     }).sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
                     
                     return (
-                        <div key={stage.status} className="w-80 flex-shrink-0">
+                        <div key={stage.title} className="w-80 flex-shrink-0">
                             <div className="flex items-baseline gap-2 mb-4">
                                 <h2 className="text-lg font-semibold font-headline">{stage.title}</h2>
                                 <span className="text-sm font-medium text-muted-foreground">({stageApplications.length})</span>
