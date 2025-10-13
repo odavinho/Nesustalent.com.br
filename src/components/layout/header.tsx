@@ -57,6 +57,7 @@ const NavLinks = () => {
     const navLinks = [
         { href: '/courses', label: t('courses') },
         { href: '/recruitment', label: t('vacancies') },
+        { href: '/pricing', label: 'Planos' },
         { href: '/about', label: t('about') },
         { href: '/blog', label: t('blog') },
     ];
