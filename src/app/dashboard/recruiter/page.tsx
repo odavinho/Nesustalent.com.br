@@ -4,20 +4,25 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Briefcase, Users, FileText, PlusCircle, MessageSquare, ClipboardCheck } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useUser, useFirestore, useCollection, useMemoFirebase } from "@/firebase";
-import { collection, query, where } from "firebase/firestore";
+import { useUser } from "@/firebase";
+import { getVacancies } from "@/lib/vacancy-service";
 import type { Vacancy } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useState, useEffect } from "react";
 
 function VacancyList({ recruiterId }: { recruiterId: string }) {
-    const firestore = useFirestore();
+    const [vacancies, setVacancies] = useState<Vacancy[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    
+    useEffect(() => {
+        if (recruiterId) {
+            const allVacancies = getVacancies();
+            const userVacancies = allVacancies.filter(v => v.recruiterId === recruiterId);
+            setVacancies(userVacancies);
+        }
+        setIsLoading(false);
+    }, [recruiterId]);
 
-    const vacanciesQuery = useMemoFirebase(() => {
-        if (!firestore) return null;
-        return query(collection(firestore, 'jobPostings'), where('recruiterId', '==', recruiterId));
-    }, [firestore, recruiterId]);
-
-    const { data: vacancies, isLoading } = useCollection<Vacancy>(vacanciesQuery);
 
     if (isLoading) {
         return (
