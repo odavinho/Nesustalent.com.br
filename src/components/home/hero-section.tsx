@@ -24,14 +24,8 @@ export function HeroSection() {
         <h1 className="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter">
           Conectando <span className="text-primary">Talentos</span> ao Futuro
         </h1>
-        <p className="mt-4 text-xl md:text-2xl font-semibold text-neutral-100">
-          1,2 milhão de talentos e empresas se encontram aqui.
-        </p>
-        <p className="mt-2 max-w-3xl mx-auto text-base md:text-lg text-neutral-200">
-            A plataforma completa de formação, recrutamento e Cedencia de mão de obra, que reúne os profissionais do futuro e as carreiras do amanhã.
-        </p>
-        <p className="mt-6 max-w-3xl mx-auto text-sm md:text-base text-neutral-300">
-            Capacite-se, Divulgue suas vagas, busque ativamente no maior Banco de Talentos da Transformação Digital ou contrate o serviço de headhunting que nós conduziremos o seu processo de ponta a ponta.
+        <p className="mt-4 max-w-3xl mx-auto text-xl md:text-2xl text-neutral-200">
+          Sua jornada para o sucesso começa aqui. Explore cursos de ponta e encontre a vaga dos seus sonhos com a NexusTalent.
         </p>
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground w-full sm:w-auto" asChild>
