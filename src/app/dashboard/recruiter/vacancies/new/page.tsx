@@ -162,10 +162,16 @@ export default function NewVacancyPage() {
 
     setIsSaving(true);
     const formValues = form.getValues();
+    
+    let minEducationLevelValue: EducationLevel | undefined = formValues.minEducationLevel as EducationLevel;
+    if (formValues.minEducationLevel === 'none') {
+        minEducationLevelValue = undefined;
+    }
+
 
     const newVacancy: Omit<Vacancy, 'id' | 'postedDate'> = {
         ...formValues,
-        minEducationLevel: formValues.minEducationLevel as EducationLevel | undefined,
+        minEducationLevel: minEducationLevelValue,
         ...generatedContent,
         recruiterId: user.uid,
         languages: formValues.languages?.split(',').map(l => l.trim()).filter(l => l) || [],
@@ -318,7 +324,7 @@ export default function NewVacancyPage() {
                             </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                                <SelectItem value="">N/A</SelectItem>
+                                <SelectItem value="none">N/A</SelectItem>
                                 {educationLevels.map(level => (
                                     <SelectItem key={level} value={level}>{level}</SelectItem>
                                 ))}
@@ -580,5 +586,3 @@ const TextareaWithLabel = ({ label, ...props }: React.ComponentProps<typeof Text
       <Textarea {...props} />
     </div>
   );
-
-    
