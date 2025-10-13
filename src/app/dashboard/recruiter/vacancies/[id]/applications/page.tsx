@@ -7,7 +7,7 @@ import { applications as allApplications } from "@/lib/applications";
 import { users as allUsers } from "@/lib/users";
 import { type Vacancy, type Application, type UserProfile, type ApplicationStatus } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Loader2, Users } from "lucide-react";
+import { ArrowLeft, Loader2, Users, FileDown } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { RecruitmentPipeline } from "@/components/recruitment/recruitment-pipeline";
 import { Timestamp } from "firebase/firestore";
@@ -108,10 +108,16 @@ export default function VacancyApplicationsPage() {
     return (
         <div className="flex flex-col h-full">
             <div className="p-4 sm:p-6 lg:p-8">
-                <Button variant="outline" onClick={() => router.back()} className="mb-6">
-                    <ArrowLeft className="mr-2 h-4 w-4" />
-                    Voltar às Minhas Vagas
-                </Button>
+                <div className="flex flex-wrap justify-between items-center gap-4 mb-8">
+                    <Button variant="outline" onClick={() => router.back()}>
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Voltar às Minhas Vagas
+                    </Button>
+                     <Button variant="outline" disabled>
+                        <FileDown className="mr-2 h-4 w-4" />
+                        Gerar Relatório (PDF)
+                    </Button>
+                </div>
                 
                 <div className="mb-8">
                     <h1 className="font-headline text-3xl font-bold">Pipeline de Recrutamento</h1>

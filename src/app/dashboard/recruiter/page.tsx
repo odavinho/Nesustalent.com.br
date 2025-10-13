@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Briefcase, Users, FileText, PlusCircle, MessageSquare, ClipboardCheck } from "lucide-react";
+import { Briefcase, Users, FileText, PlusCircle, MessageSquare, ClipboardCheck, BarChart, TrendingUp, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/firebase";
@@ -10,6 +10,29 @@ import type { Vacancy } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState, useEffect } from "react";
 import { users } from "@/lib/users";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { Bar, BarChart as RechartsBarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
+
+const chartData = [
+  { month: "Jan", applications: 186, hired: 80 },
+  { month: "Feb", applications: 305, hired: 200 },
+  { month: "Mar", applications: 237, hired: 120 },
+  { month: "Apr", applications: 73, hired: 190 },
+  { month: "May", applications: 209, hired: 130 },
+  { month: "Jun", applications: 214, hired: 140 },
+]
+
+const chartConfig = {
+  applications: {
+    label: "Candidaturas",
+    color: "hsl(var(--chart-1))",
+  },
+  hired: {
+    label: "Contratados",
+    color: "hsl(var(--chart-2))",
+  },
+}
+
 
 function VacancyList({ recruiterId }: { recruiterId: string }) {
     const [vacancies, setVacancies] = useState<Vacancy[]>([]);
@@ -62,6 +85,71 @@ export default function RecruiterDashboardPage() {
             <div className="mb-8">
                 <h1 className="font-headline text-4xl font-bold">Painel do Recrutador</h1>
                 <p className="text-muted-foreground">Encontre os melhores talentos para a sua empresa.</p>
+            </div>
+
+             <div className="mb-8">
+                <h2 className="font-headline text-2xl font-bold mb-4">Dashboard</h2>
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Vagas Ativas</CardTitle>
+                            <Briefcase className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">3</div>
+                            <p className="text-xs text-muted-foreground">+2 que no mês passado</p>
+                        </CardContent>
+                    </Card>
+                     <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Novas Candidaturas</CardTitle>
+                            <Users className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">+52</div>
+                            <p className="text-xs text-muted-foreground">nos últimos 7 dias</p>
+                        </CardContent>
+                    </Card>
+                     <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Contratações</CardTitle>
+                            <CheckCircle className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">+5</div>
+                            <p className="text-xs text-muted-foreground">neste trimestre</p>
+                        </CardContent>
+                    </Card>
+                     <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Taxa de Contratação</CardTitle>
+                            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">12%</div>
+                             <p className="text-xs text-muted-foreground">+3% que no trimestre passado</p>
+                        </CardContent>
+                    </Card>
+                </div>
+                <div className="mt-4">
+                     <Card>
+                        <CardHeader>
+                            <CardTitle>Candidaturas vs. Contratações</CardTitle>
+                             <CardDescription>Janeiro - Junho 2024</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                             <ChartContainer config={chartConfig} className="h-64">
+                                <RechartsBarChart accessibilityLayer data={chartData}>
+                                    <XAxis dataKey="month" tickLine={false} tickMargin={10} axisLine={false} tickFormatter={(value) => value.slice(0, 3)} />
+                                    <YAxis />
+                                    <ChartTooltip content={<ChartTooltipContent />} />
+                                    <Bar dataKey="applications" fill="var(--color-applications)" radius={4} />
+                                    <Bar dataKey="hired" fill="var(--color-hired)" radius={4} />
+                                </RechartsBarChart>
+                            </ChartContainer>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
 
             <div className="grid lg:grid-cols-3 gap-8">

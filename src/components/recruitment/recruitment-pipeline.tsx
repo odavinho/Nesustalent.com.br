@@ -10,6 +10,7 @@ interface RecruitmentPipelineProps {
 }
 
 const pipelineStages: { title: string, status: ApplicationStatus, description: string }[] = [
+    { title: 'Candidaturas', status: 'Recebida', description: 'Novas candidaturas para triagem inicial.' },
     { title: 'Triagem', status: 'Triagem', description: 'Candidatos iniciais para análise.' },
     { title: 'Teste', status: 'Teste', description: 'Candidatos em fase de testes técnicos ou psicotécnicos.' },
     { title: 'Entrevista', status: 'Entrevista', description: 'Candidatos selecionados para entrevista.' },
@@ -24,10 +25,6 @@ export function RecruitmentPipeline({ applications, onStatusChange }: Recruitmen
             <div className="flex gap-6 p-4 sm:p-6 lg:p-8 pt-0">
                 {pipelineStages.map((stage) => {
                     const stageApplications = applications.filter(app => {
-                         // A fase de Triagem inclui tanto 'Triagem' como 'Recebida'
-                         if (stage.status === 'Triagem') {
-                            return app.status === 'Triagem' || app.status === 'Recebida';
-                         }
                          return app.status === stage.status;
                     }).sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
                     

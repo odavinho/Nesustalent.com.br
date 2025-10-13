@@ -21,7 +21,7 @@ interface PipelineCandidateCardProps {
 
 const getInitials = (name: string) => name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
 
-const statusOptions: ApplicationStatus[] = ['Triagem', 'Teste', 'Entrevista', 'Oferta', 'Contratado', 'Rejeitada'];
+const statusOptions: ApplicationStatus[] = ['Recebida', 'Triagem', 'Teste', 'Entrevista', 'Oferta', 'Contratado', 'Rejeitada'];
 
 export function PipelineCandidateCard({ application, candidate, onStatusChange }: PipelineCandidateCardProps) {
     const handleStatusChange = (newStatus: ApplicationStatus) => {
@@ -31,6 +31,10 @@ export function PipelineCandidateCard({ application, candidate, onStatusChange }
             description: `${candidate.firstName} foi movido para a fase de "${newStatus}".`,
         });
     };
+    
+    const applicationDate = application.applicationDate instanceof Date 
+        ? application.applicationDate 
+        : new Date();
     
     return (
         <Card className="hover:shadow-md transition-shadow">
@@ -76,7 +80,7 @@ export function PipelineCandidateCard({ application, candidate, onStatusChange }
                 <div className="text-xs text-muted-foreground flex items-center gap-2">
                     <Calendar size={14}/>
                     <span>
-                         Candidatou-se {formatDistanceToNow(application.applicationDate instanceof Date ? application.applicationDate : application.applicationDate.toDate(), { addSuffix: true, locale: pt })}
+                         Candidatou-se {formatDistanceToNow(applicationDate, { addSuffix: true, locale: pt })}
                     </span>
                 </div>
             </CardContent>
