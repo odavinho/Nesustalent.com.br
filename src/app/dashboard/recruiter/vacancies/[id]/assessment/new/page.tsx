@@ -57,7 +57,7 @@ export default function NewAssessmentPage() {
 
       const result = await generateAssessmentTestAction({
         jobDescription: fullJobDescription,
-        ...data
+        ...data,
       });
       
       if (!result || !result.questions) {

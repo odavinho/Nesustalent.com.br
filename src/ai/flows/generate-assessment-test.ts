@@ -23,7 +23,7 @@ const prompt = ai.definePrompt({
   name: 'generateAssessmentTestPrompt',
   input: { schema: GenerateAssessmentTestInputSchema },
   output: { schema: GenerateAssessmentTestOutputSchema },
-  prompt: `You are an expert in creating professional assessments for job candidates. Your task is to generate a test based on the provided job description.
+  prompt: `You are an expert in creating professional assessments for job candidates. Your task is to generate a test based on the provided job description. Each question must have a unique ID (e.g., 'q1', 'q2').
 
 Job Description:
 {{{jobDescription}}}
