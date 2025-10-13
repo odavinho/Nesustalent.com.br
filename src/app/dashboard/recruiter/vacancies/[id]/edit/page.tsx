@@ -25,7 +25,6 @@ import type { Vacancy } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Timestamp } from 'firebase/firestore';
 
-
 const formSchema = z.object({
   title: z.string().min(5, { message: 'O título da vaga deve ter pelo menos 5 caracteres.' }),
   category: z.string({ required_error: 'Selecione uma área funcional.' }),
@@ -43,7 +42,6 @@ const formSchema = z.object({
 });
 
 type FormValues = z.infer<typeof formSchema>;
-
 
 export default function EditVacancyPage() {
   const router = useRouter();
@@ -75,7 +73,7 @@ export default function EditVacancyPage() {
 
   useEffect(() => {
     if (vacancyId) {
-      const foundVacancy = getVacancyById(vacancyId);
+      const foundVacancy = getVacancyById(vacancyId as string);
       setVacancy(foundVacancy); 
     }
   }, [vacancyId]);
@@ -125,7 +123,7 @@ export default function EditVacancyPage() {
     };
 
     try {
-        updateVacancy(vacancyId, vacancyDataToUpdate);
+        updateVacancy(vacancyId as string, vacancyDataToUpdate);
         toast({
           title: "Vaga Atualizada!",
           description: "As alterações na vaga foram guardadas com sucesso.",
