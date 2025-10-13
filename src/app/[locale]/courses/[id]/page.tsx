@@ -16,13 +16,14 @@ import type { Course, CourseCategory } from "@/lib/types";
 
 
 export default function CourseDetailPage({ params }: { params: { id: string } }) {
+  const { id } = params;
   const [course, setCourse] = useState<Course | null>(null);
   const [category, setCategory] = useState<CourseCategory | null>(null);
   const [relatedCourses, setRelatedCourses] = useState<Course[]>([]);
   const [image, setImage] = useState<any>(null);
 
   useEffect(() => {
-    const foundCourse = getCourseById(params.id);
+    const foundCourse = getCourseById(id);
     if (!foundCourse) {
       notFound();
     }
@@ -40,7 +41,7 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
 
     const foundImage = PlaceHolderImages.find(p => p.id === foundCourse.imageId);
     setImage(foundImage || null);
-  }, [params.id]);
+  }, [id]);
 
 
   if (!course) {

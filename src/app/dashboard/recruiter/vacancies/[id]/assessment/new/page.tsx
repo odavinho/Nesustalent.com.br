@@ -22,15 +22,14 @@ import { GenerateAssessmentTestInputSchema } from '@/lib/schemas';
 
 type FormValues = z.infer<typeof GenerateAssessmentTestInputSchema>;
 
-export default function NewAssessmentPage() {
+export default function NewAssessmentPage({ params }: { params: { id: string } }) {
+  const { id: vacancyId } = params;
   const [vacancy, setVacancy] = useState<Vacancy | null | undefined>(undefined);
   const [generatedTest, setGeneratedTest] = useState<AssessmentTest | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
-  const params = useParams();
-  const vacancyId = params.id as string;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(GenerateAssessmentTestInputSchema),

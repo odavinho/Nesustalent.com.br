@@ -25,11 +25,10 @@ declare module 'jspdf' {
   }
 }
 
-export default function VacancyApplicationsPage() {
-    const params = useParams();
+export default function VacancyApplicationsPage({ params }: { params: { id: string } }) {
+    const { id: vacancyId } = params;
     const router = useRouter();
     const searchParams = useSearchParams();
-    const vacancyId = params.id as string;
 
     const [vacancy, setVacancy] = useState<Vacancy | null | undefined>(undefined);
     const [applications, setApplications] = useState<TriagedCandidate[]>([]);

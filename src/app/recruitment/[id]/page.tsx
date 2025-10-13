@@ -18,18 +18,19 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
 export default function VacancyDetailPage({ params }: { params: { id: string } }) {
+  const { id } = params;
   const [vacancy, setVacancy] = useState<Vacancy | null | undefined>(undefined);
   const [category, setCategory] = useState<CourseCategory | null>(null);
 
 
   useEffect(() => {
-    const foundVacancy = getVacancyById(params.id);
+    const foundVacancy = getVacancyById(id);
     setVacancy(foundVacancy);
     if(foundVacancy){
         const categories = getCourseCategories();
         setCategory(categories.find(c => c.name === foundVacancy.category) || null);
     }
-  }, [params.id]);
+  }, [id]);
 
 
   const { user, isUserLoading } = useUser();

@@ -164,9 +164,8 @@ function ProfileView({ profile }: { profile: UserProfile }) {
 }
 
 
-export default function CandidateProfilePage() {
-  const params = useParams();
-  const id = params.id as string;
+export default function CandidateProfilePage({ params }: { params: { id: string } }) {
+  const { id } = params;
   const candidate = users.find(u => u.id === id && u.userType === 'student');
 
   if (!candidate) {

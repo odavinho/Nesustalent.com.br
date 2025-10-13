@@ -52,10 +52,9 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 
-export default function EditVacancyPage() {
+export default function EditVacancyPage({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const params = useParams();
-  const vacancyId = params.id as string;
+  const { id: vacancyId } = params;
   const courseCategories = getCourseCategories();
   
   const [vacancy, setVacancy] = useState<Vacancy | null | undefined>(undefined);

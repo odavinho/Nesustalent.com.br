@@ -13,7 +13,8 @@ import { pt } from 'date-fns/locale';
 import { BlogPostCard } from '@/components/blog/blog-post-card';
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = blogPosts.find((p) => p.id === params.slug);
+  const { slug } = params;
+  const post = blogPosts.find((p) => p.id === slug);
 
   if (!post) {
     notFound();
