@@ -14,12 +14,13 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Loader2, Sparkles, FileUp, Trophy, ListChecks, Target } from "lucide-react";
+import { Loader2, Sparkles, FileUp, ListChecks, Target, Check, Trash2, ThumbsUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Progress } from '@/components/ui/progress';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
+import { Checkbox } from '../ui/checkbox';
 
 
 const formSchema = z.object({
@@ -51,6 +52,7 @@ export function ResumeAnalyzer() {
   const [analysisResults, setAnalysisResults] = useState<AnalysisResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [vacancies, setVacancies] = useState<Vacancy[]>([]);
+  const [selectedCandidates, setSelectedCandidates] = useState<string[]>([]);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -71,6 +73,7 @@ export function ResumeAnalyzer() {
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setIsLoading(true);
     setAnalysisResults([]);
+    setSelectedCandidates([]);
 
     let jobDescription = data.manualDescription;
     if (data.descriptionType === 'select' && data.selectedVacancyId) {
@@ -133,6 +136,32 @@ export function ResumeAnalyzer() {
       setIsLoading(false);
     }
   };
+
+  const handleSelectCandidate = (fileName: string, isSelected: boolean) => {
+    setSelectedCandidates(prev => 
+        isSelected ? [...prev, fileName] : prev.filter(name => name !== fileName)
+    );
+  };
+
+  const handleSelectOver50 = () => {
+    const over50 = analysisResults
+        .filter(result => result.candidateRanking > 50)
+        .map(result => result.fileName);
+    setSelectedCandidates(over50);
+  };
+  
+  const handleBulkAction = (action: 'add' | 'interesting' | 'reject') => {
+    if (selectedCandidates.length === 0) {
+        toast({ variant: 'destructive', title: 'Nenhum candidato selecionado.'});
+        return;
+    }
+    // Em um app real, aqui você faria a chamada para a API/servidor para executar a ação.
+    toast({
+        title: 'Ação Executada (Simulação)',
+        description: `${selectedCandidates.length} candidatos foram processados.`
+    });
+    setSelectedCandidates([]);
+  }
   
   const resumesRef = form.register("resumes");
 
@@ -261,47 +290,76 @@ export function ResumeAnalyzer() {
 
         {analysisResults.length > 0 && (
           <div className="mt-8 pt-6 border-t">
-            <h3 className="font-headline text-xl font-bold mb-4">Resultado da Análise ({analysisResults.length} CVs)</h3>
+            <div className="flex justify-between items-center mb-4">
+                <h3 className="font-headline text-xl font-bold">Resultado da Análise ({analysisResults.length} CVs)</h3>
+                <div className="flex gap-2">
+                    {selectedCandidates.length > 0 ? (
+                        <>
+                           <Button size="sm" onClick={() => handleBulkAction('add')} disabled={descriptionType === 'manual'} title={descriptionType === 'manual' ? 'Selecione uma vaga para usar esta ação' : ''}>
+                                <Check className="mr-2 h-4 w-4" /> Adicionar à Vaga ({selectedCandidates.length})
+                           </Button>
+                           <Button size="sm" variant="outline" onClick={() => handleBulkAction('interesting')}>
+                               <ThumbsUp className="mr-2 h-4 w-4 text-green-500" /> Marcar como Interessante
+                           </Button>
+                           <Button size="sm" variant="destructive" onClick={() => handleBulkAction('reject')}>
+                               <Trash2 className="mr-2 h-4 w-4" /> Rejeitar
+                           </Button>
+                        </>
+                    ) : (
+                        <Button size="sm" variant="outline" onClick={handleSelectOver50}>
+                            <Check className="mr-2 h-4 w-4" /> Selecionar &gt;50%
+                        </Button>
+                    )}
+                </div>
+            </div>
             <Accordion type="multiple" className="w-full space-y-4">
                 {analysisResults.map((result, index) => (
-                    <Card key={index}>
-                        <AccordionItem value={`item-${index}`} className="border-0">
-                             <AccordionTrigger className="p-4 hover:no-underline">
-                                <div className='flex items-center gap-4 w-full pr-4'>
-                                    <span className="text-lg font-bold text-primary w-12 text-center">{result.candidateRanking}%</span>
-                                    <div className='flex-grow text-left'>
-                                        <p className="font-semibold">{result.fileName}</p>
-                                        <p className="text-sm text-muted-foreground line-clamp-1">{result.candidateSummary}</p>
+                    <Card key={index} className={selectedCandidates.includes(result.fileName) ? 'border-primary' : ''}>
+                        <div className="flex items-center p-4">
+                            <Checkbox 
+                                id={`select-${index}`}
+                                checked={selectedCandidates.includes(result.fileName)}
+                                onCheckedChange={(checked) => handleSelectCandidate(result.fileName, !!checked)}
+                                className="mr-4"
+                            />
+                            <AccordionItem value={`item-${index}`} className="border-0 w-full">
+                                <AccordionTrigger className="p-0 hover:no-underline">
+                                    <div className='flex items-center gap-4 w-full pr-4'>
+                                        <span className="text-lg font-bold text-primary w-12 text-center">{result.candidateRanking}%</span>
+                                        <div className='flex-grow text-left'>
+                                            <p className="font-semibold">{result.fileName}</p>
+                                            <p className="text-sm text-muted-foreground line-clamp-1">{result.candidateSummary}</p>
+                                        </div>
+                                        <Progress value={result.candidateRanking} className="w-32 h-2" />
                                     </div>
-                                    <Progress value={result.candidateRanking} className="w-32 h-2" />
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent className="p-6 pt-0">
-                               <div className="space-y-4">
-                                     <div className='border-t pt-4'>
-                                        <h4 className="text-base font-medium flex items-center gap-2 mb-2">
-                                            <ListChecks size={18} /> Resumo do Candidato
-                                        </h4>
-                                        <p className="text-sm">{result.candidateSummary}</p>
-                                    </div>
+                                </AccordionTrigger>
+                                <AccordionContent className="p-6 pt-4">
+                                   <div className="space-y-4">
+                                         <div className='border-t pt-4'>
+                                            <h4 className="text-base font-medium flex items-center gap-2 mb-2">
+                                                <ListChecks size={18} /> Resumo do Candidato
+                                            </h4>
+                                            <p className="text-sm">{result.candidateSummary}</p>
+                                        </div>
 
-                                    <div className="grid md:grid-cols-2 gap-6">
-                                        <div>
-                                            <h4 className="text-base font-medium flex items-center gap-2 mb-2">
-                                                <Sparkles size={18}/> Habilidades Chave
-                                            </h4>
-                                            <p className="text-sm">{result.keySkillsMatch}</p>
+                                        <div className="grid md:grid-cols-2 gap-6">
+                                            <div>
+                                                <h4 className="text-base font-medium flex items-center gap-2 mb-2">
+                                                    <Sparkles size={18}/> Habilidades Chave
+                                                </h4>
+                                                <p className="text-sm">{result.keySkillsMatch}</p>
+                                            </div>
+                                            <div>
+                                                <h4 className="text-base font-medium flex items-center gap-2 mb-2">
+                                                    <Target size={18} /> Áreas para Melhoria
+                                                </h4>
+                                                <p className="text-sm">{result.areasForImprovement}</p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <h4 className="text-base font-medium flex items-center gap-2 mb-2">
-                                                <Target size={18} /> Áreas para Melhoria
-                                            </h4>
-                                            <p className="text-sm">{result.areasForImprovement}</p>
-                                        </div>
-                                    </div>
-                               </div>
-                            </AccordionContent>
-                        </AccordionItem>
+                                   </div>
+                                </AccordionContent>
+                            </AccordionItem>
+                        </div>
                     </Card>
                 ))}
             </Accordion>

@@ -1,15 +1,14 @@
 'use client';
 
-import { useParams, notFound, useRouter } from "next/navigation";
+import { useParams, notFound, useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, useMemo } from "react";
 import { getVacancyById } from "@/lib/vacancy-service";
 import { applications as allApplications } from "@/lib/applications";
 import { users } from "@/lib/users";
 import { type Vacancy, type Application, type UserProfile } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Loader2, Sparkles, User, Users, Check, Wand2 } from "lucide-react";
+import { ArrowLeft, Loader2, Wand2, Users, Check, Trash2, ThumbsUp } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { analyzeResumeAction } from "@/app/actions";
 import { toast } from "@/hooks/use-toast";
 import { RecruiterApplicationCard } from "@/components/recruitment/recruiter-application-card";
@@ -25,6 +24,7 @@ const fileToDataUri = (fileUrl: string) => {
 export default function VacancyApplicationsPage() {
     const params = useParams();
     const router = useRouter();
+    const searchParams = useSearchParams();
     const vacancyId = params.id as string;
 
     const [vacancy, setVacancy] = useState<Vacancy | null | undefined>(undefined);
@@ -45,11 +45,23 @@ export default function VacancyApplicationsPage() {
             const appUserIds = vacancyApps.map(app => app.userId);
             const vacancyCandidates = users.filter(user => appUserIds.includes(user.id));
             setCandidates(vacancyCandidates);
+            
+            // Pre-fill analysis from previous page if available
+            const analysisParam = searchParams.get('analysis');
+            if(analysisParam) {
+                try {
+                    const decodedResults = JSON.parse(decodeURIComponent(analysisParam));
+                    setAnalysisResults(decodedResults);
+                } catch (e) {
+                    console.error("Failed to parse analysis results from URL", e);
+                }
+            }
+
         } else if (foundVacancy === null) { 
             // Explicitly not found after search
             notFound();
         }
-    }, [vacancyId]);
+    }, [vacancyId, searchParams]);
 
     const candidatesWithScores = useMemo(() => {
         return candidates.map(c => ({
@@ -68,6 +80,7 @@ export default function VacancyApplicationsPage() {
 
     const handleAnalyze = async () => {
         setIsAnalyzing(true);
+        setSelectedCandidates([]);
         const results: Record<string, number> = {};
         
         // Use Promise.all to run analyses in parallel for better performance
@@ -111,6 +124,18 @@ export default function VacancyApplicationsPage() {
         setSelectedCandidates(over50);
     };
 
+     const handleBulkAction = (action: 'interesting' | 'reject') => {
+        if (selectedCandidates.length === 0) {
+            toast({ variant: 'destructive', title: 'Nenhum candidato selecionado.'});
+            return;
+        }
+        // Em um app real, aqui você faria a chamada para a API/servidor para executar a ação.
+        toast({
+            title: 'Ação Executada (Simulação)',
+            description: `${selectedCandidates.length} candidatos foram processados.`
+        });
+    }
+
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <Button variant="outline" onClick={() => router.back()} className="mb-6">
@@ -120,18 +145,28 @@ export default function VacancyApplicationsPage() {
             
             <Card>
                 <CardHeader>
-                    <div className="flex justify-between items-start">
+                    <div className="flex flex-col md:flex-row justify-between items-start gap-4">
                         <div>
                             <CardTitle className="font-headline text-3xl">Candidatos para: {vacancy.title}</CardTitle>
                             <CardDescription className="flex items-center gap-2 mt-2"><Users /> {applications.length} candidatura(s) recebida(s)</CardDescription>
                         </div>
-                         <div className="flex gap-2">
-                             {Object.keys(analysisResults).length > 0 && (
+                         <div className="flex gap-2 w-full md:w-auto">
+                             {Object.keys(analysisResults).length > 0 && selectedCandidates.length === 0 && (
                                 <Button onClick={handleSelectOver50} variant="outline">
                                     <Check className="mr-2 h-4 w-4"/>
                                     Selecionar &gt;50%
                                 </Button>
                              )}
+                              {selectedCandidates.length > 0 && (
+                                <>
+                                   <Button size="sm" variant="outline" onClick={() => handleBulkAction('interesting')}>
+                                       <ThumbsUp className="mr-2 h-4 w-4 text-green-500" /> Marcar como Interessante ({selectedCandidates.length})
+                                   </Button>
+                                   <Button size="sm" variant="destructive" onClick={() => handleBulkAction('reject')}>
+                                       <Trash2 className="mr-2 h-4 w-4" /> Rejeitar Selecionados
+                                   </Button>
+                                </>
+                            )}
                             <Button onClick={handleAnalyze} disabled={isAnalyzing}>
                                 {isAnalyzing ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Wand2 className="mr-2 h-4 w-4"/>}
                                 {Object.keys(analysisResults).length > 0 ? 'Reanalisar' : 'Analisar Candidaturas com IA'}
