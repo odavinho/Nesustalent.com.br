@@ -56,7 +56,6 @@ export default function ProfilePage() {
     const { toast } = useToast();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [cvFile, setCvFile] = useState<File | null>(null);
 
     // Use local state for profile data instead of Firestore
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -135,7 +134,7 @@ export default function ProfilePage() {
         return <ProfileView profile={userProfile} onEdit={() => setIsEditing(true)} />;
     }
 
-    return <ProfileForm form={form} onSubmit={onSubmit} isSubmitting={isSubmitting} onCancel={() => setIsEditing(false)} setCvFile={setCvFile} />;
+    return <ProfileForm form={form} onSubmit={onSubmit} isSubmitting={isSubmitting} onCancel={() => setIsEditing(false)} />;
 }
 
 function ProfileView({ profile, onEdit }: { profile: UserProfile; onEdit: () => void }) {
@@ -223,9 +222,10 @@ function ProfileView({ profile, onEdit }: { profile: UserProfile; onEdit: () => 
     );
 }
 
-function ProfileForm({ form, onSubmit, isSubmitting, onCancel, setCvFile }: { form: any; onSubmit: SubmitHandler<ProfileFormValues>, isSubmitting: boolean, onCancel: () => void, setCvFile: (file: File | null) => void }) {
+function ProfileForm({ form, onSubmit, isSubmitting, onCancel }: { form: any; onSubmit: SubmitHandler<ProfileFormValues>, isSubmitting: boolean, onCancel: () => void }) {
     const { toast } = useToast();
     const [isAnalyzing, setIsAnalyzing] = useState(false);
+    const [cvFile, setCvFile] = useState<File | null>(null);
     
     const { fields: academicFields, append: appendAcademic, remove: removeAcademic } = useFieldArray({
         control: form.control, name: "academicHistory"
