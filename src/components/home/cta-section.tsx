@@ -13,7 +13,7 @@ export function CtaSection() {
                     A plataforma completa de formação, recrutamento e Cedência de mão de obra, que reúne os profissionais do futuro e as carreiras do amanhã.
                 </p>
                 <p className="mt-4 max-w-4xl mx-auto text-base text-muted-foreground">
-                    Capacite-se, Divulgue suas vagas, busque ativamente no maior Banco de Talentos, ou contrate os nossos serviços de formação, recrutamento e Cedência de mão de obra, que nós conduziremos o seu processo de ponta a ponta.
+                    Possuímos o maior Banco de Talentos, contrate os nossos serviços de formação, recrutamento e Cedência de mão de obra, que nós conduziremos o seu processo de ponta a ponta.
                 </p>
                 <div className="mt-8">
                     <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground" asChild>
