@@ -27,7 +27,8 @@ export function VacancyList() {
   const [selectedLocation, setSelectedLocation] = useState('all');
 
   useEffect(() => {
-    setAllVacancies(getVacancies());
+    // Public list should not show expired vacancies
+    setAllVacancies(getVacancies(false)); 
     setCourseCategories(getCourseCategories());
   }, []);
 

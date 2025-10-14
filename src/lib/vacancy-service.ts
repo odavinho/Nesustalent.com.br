@@ -5,17 +5,33 @@ import { Timestamp } from 'firebase/firestore';
 // In-memory store for vacancies
 let vacancies: Vacancy[] = [...initialVacancies];
 
-const toDate = (date: Timestamp | Date): Date => {
+const toDate = (date: Timestamp | Date | undefined): Date | null => {
+    if (!date) return null;
     if (date instanceof Timestamp) {
         return date.toDate();
     }
     return date;
 }
 
-// Function to get all vacancies
-export const getVacancies = (): Vacancy[] => {
-    // Return a copy to prevent direct modification of the in-memory array
-    return [...vacancies].sort((a, b) => toDate(b.postedDate).getTime() - toDate(a.postedDate).getTime());
+// Function to get all vacancies, with an option to include expired ones
+export const getVacancies = (includeExpired: boolean = false): Vacancy[] => {
+    const now = new Date();
+    
+    const allVacancies = [...vacancies].sort((a, b) => {
+        const dateA = toDate(a.postedDate);
+        const dateB = toDate(b.postedDate);
+        if (!dateA || !dateB) return 0;
+        return dateB.getTime() - dateA.getTime();
+    });
+
+    if (includeExpired) {
+        return allVacancies;
+    }
+
+    return allVacancies.filter(v => {
+        const closingDate = toDate(v.closingDate);
+        return !closingDate || closingDate >= now;
+    });
 };
 
 // Function to find a single vacancy by ID
@@ -27,15 +43,21 @@ export const getVacancyById = (id: string): Vacancy | undefined => {
 export const addVacancy = (vacancyData: Omit<Vacancy, 'id' | 'postedDate'>): Vacancy => {
     const newVacancy: Vacancy = {
         ...vacancyData,
-        id: `vacancy-${new Date().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: `vaga-${new Date().getTime()}`,
         postedDate: new Date(),
     };
-    
-    // Add the new vacancy to the start of the array
-    vacancies.unshift(newVacancy);
+
+    const existingIndex = vacancies.findIndex(v => v.id === newVacancy.id);
+    if (existingIndex !== -1) {
+        // This case should be rare with timestamp-based IDs, but as a safeguard
+        vacancies[existingIndex] = newVacancy;
+    } else {
+        vacancies.unshift(newVacancy);
+    }
     
     return newVacancy;
 };
+
 
 // Function to update an existing vacancy
 export const updateVacancy = (id: string, updatedData: Partial<Omit<Vacancy, 'id' | 'postedDate'>>): Vacancy | null => {

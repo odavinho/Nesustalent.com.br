@@ -38,7 +38,8 @@ export default function RecruiterVacanciesPage() {
 
   useEffect(() => {
     if (user) {
-      const allVacancies = getVacancies();
+      // For recruiter dashboard, we want to see all vacancies, including expired ones.
+      const allVacancies = getVacancies(true); 
       const testRecruiter = users.find(u => u.email === 'recruiter@nexustalent.com.br');
       const userVacancies = allVacancies.filter(v => v.recruiterId === testRecruiter?.id);
       setVacancies(userVacancies);
@@ -52,7 +53,8 @@ export default function RecruiterVacanciesPage() {
 
     deleteVacancy(vacancyId);
     const testRecruiter = users.find(u => u.email === 'recruiter@nexustalent.com.br');
-    const updatedVacancies = getVacancies().filter(v => v.recruiterId === testRecruiter?.id);
+    // Fetch all vacancies again (including expired) to update the state
+    const updatedVacancies = getVacancies(true).filter(v => v.recruiterId === testRecruiter?.id);
     setVacancies(updatedVacancies);
     
     toast({
