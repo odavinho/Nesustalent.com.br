@@ -17,7 +17,16 @@ import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import Link from 'next/link';
 import type { Vacancy, CourseCategory } from '@/lib/types';
+import { Timestamp } from 'firebase/firestore';
 
+
+const toDate = (date: Timestamp | Date | undefined): Date | null => {
+    if (!date) return null;
+    if (date instanceof Timestamp) {
+        return date.toDate();
+    }
+    return date;
+}
 
 export function VacancyList() {
   const [allVacancies, setAllVacancies] = useState<Vacancy[]>([]);
@@ -27,8 +36,8 @@ export function VacancyList() {
   const [selectedLocation, setSelectedLocation] = useState('all');
 
   useEffect(() => {
-    // Public list should not show expired vacancies
-    setAllVacancies(getVacancies(false)); 
+    // Fetch all vacancies, including expired ones, to display them with a badge.
+    setAllVacancies(getVacancies(true)); 
     setCourseCategories(getCourseCategories());
   }, []);
 
@@ -91,17 +100,23 @@ export function VacancyList() {
         <div className="space-y-6">
           {filteredVacancies.map(vacancy => {
               const category = courseCategories.find(c => c.name === vacancy.category);
+              const closingDate = toDate(vacancy.closingDate);
+              const isExpired = closingDate ? closingDate < new Date() : false;
+
               return (
-                <Card key={vacancy.id} className="transition-shadow hover:shadow-md">
+                <Card key={vacancy.id} className={cn("transition-shadow hover:shadow-md", isExpired && "bg-muted/50")}>
                     <CardHeader>
-                        <div className='flex justify-between items-start'>
+                        <div className='flex justify-between items-start gap-4'>
                             <div>
                                 {category && <Badge variant="secondary" className='mb-2'>{category.name}</Badge>}
                                 <CardTitle className="font-headline text-xl">{vacancy.title}</CardTitle>
                             </div>
-                             <Button asChild>
-                                <Link href={`/recruitment/${vacancy.id}`}>Ver Detalhes</Link>
-                            </Button>
+                            <div className="flex items-center gap-2">
+                                {isExpired && <Badge variant="destructive">Expirado</Badge>}
+                                <Button asChild disabled={isExpired}>
+                                    <Link href={`/recruitment/${vacancy.id}`}>Ver Detalhes</Link>
+                                </Button>
+                             </div>
                         </div>
                         <CardDescription className='flex flex-wrap items-center gap-x-4 gap-y-2 pt-2'>
                             <span className='flex items-center gap-2'><MapPin size={14}/> {vacancy.location}</span>

@@ -28,8 +28,10 @@ export const getVacancies = (includeExpired: boolean = false): Vacancy[] => {
         return allVacancies;
     }
 
+    // Default behavior for public view: return only active vacancies
     return allVacancies.filter(v => {
         const closingDate = toDate(v.closingDate);
+        // If no closing date, it's considered active
         return !closingDate || closingDate >= now;
     });
 };
