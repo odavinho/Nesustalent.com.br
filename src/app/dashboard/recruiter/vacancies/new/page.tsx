@@ -90,7 +90,7 @@ export default function NewVacancyPage() {
     if (vacancyData) {
       try {
         const decodedData = decodeURIComponent(vacancyData);
-        const parsedVacancy = JSON.parse(decodedData) as any;
+        const parsedVacancy = JSON.parse(decodedData) as Partial<Vacancy> & {minExperience?: string; demandLevel?: string;};
         
         form.reset({
           title: parsedVacancy.title || '',
@@ -101,7 +101,7 @@ export default function NewVacancyPage() {
           location: parsedVacancy.location || 'Luanda, Angola',
           type: parsedVacancy.type || 'Full-time',
           numberOfVacancies: parsedVacancy.numberOfVacancies || 1,
-          closingDate: parsedVacancy.closingDate ? new Date(parsedVacancy.closingDate as string) : undefined,
+          closingDate: parsedVacancy.closingDate ? new Date(parsedVacancy.closingDate as string | Date) : undefined,
           salaryRange: parsedVacancy.salaryRange || '',
           showSalary: parsedVacancy.showSalary === undefined ? true : parsedVacancy.showSalary,
           languages: Array.isArray(parsedVacancy.languages) ? parsedVacancy.languages.join(', ') : '',
@@ -189,7 +189,7 @@ export default function NewVacancyPage() {
     // Use a test recruiter ID for mock purposes
     const testRecruiter = { uid: '4FkPP1YFiBZh1Sw7ATyXpX0ZtII3' };
 
-    const newVacancy: Omit<Vacancy, 'id' | 'postedDate'> = {
+    const newVacancyData: Omit<Vacancy, 'id' | 'postedDate'> = {
         ...formValues,
         minEducationLevel: minEducationLevelValue,
         ...generatedContent,
@@ -198,12 +198,12 @@ export default function NewVacancyPage() {
     };
 
     if (formValues.hideEmployerData) {
-        newVacancy.employerName = `Empresa líder no setor de ${formValues.industry}`;
-        newVacancy.aboutEmployer = `Oportunidade confidencial numa empresa de referência no setor de ${formValues.industry}.`;
+        newVacancyData.employerName = `Empresa líder no setor de ${formValues.industry}`;
+        newVacancyData.aboutEmployer = `Oportunidade confidencial numa empresa de referência no setor de ${formValues.industry}.`;
     }
 
     try {
-        addVacancy(newVacancy);
+        addVacancy(newVacancyData);
         toast({
           title: "Vaga publicada!",
           description: "A sua vaga foi publicada e já está visível para os candidatos.",

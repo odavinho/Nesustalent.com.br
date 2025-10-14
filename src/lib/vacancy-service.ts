@@ -25,21 +25,15 @@ export const getVacancyById = (id: string): Vacancy | undefined => {
 
 // Function to add a new vacancy
 export const addVacancy = (vacancyData: Omit<Vacancy, 'id' | 'postedDate'>): Vacancy => {
-    const existingIndex = vacancies.findIndex(v => v.id === (vacancyData as Vacancy).id);
-
     const newVacancy: Vacancy = {
         ...vacancyData,
-        id: (vacancyData as Vacancy).id || `vacancy-${new Date().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
+        // Always generate a new unique ID for any new entry (including duplicates)
+        id: `vacancy-${new Date().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
         postedDate: new Date(),
     };
     
-    if (existingIndex !== -1) {
-        // If it exists (e.g., from a duplication scenario that retains an ID), update it
-        vacancies[existingIndex] = { ...vacancies[existingIndex], ...newVacancy };
-    } else {
-        // Otherwise, add as new
-        vacancies.unshift(newVacancy);
-    }
+    // Add the new vacancy to the start of the array
+    vacancies.unshift(newVacancy);
     
     return newVacancy;
 };
