@@ -27,7 +27,6 @@ export const getVacancyById = (id: string): Vacancy | undefined => {
 export const addVacancy = (vacancyData: Omit<Vacancy, 'id' | 'postedDate'>): Vacancy => {
     const newVacancy: Vacancy = {
         ...vacancyData,
-        // Always generate a new unique ID for any new entry (including duplicates)
         id: `vacancy-${new Date().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
         postedDate: new Date(),
     };

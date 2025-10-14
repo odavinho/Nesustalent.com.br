@@ -3,7 +3,7 @@
 import { getVacancyById } from "@/lib/vacancy-service";
 import { notFound, useRouter, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Briefcase, Clock, MapPin, Share2, Loader2, HelpCircle } from "lucide-react";
+import { ArrowLeft, Briefcase, Clock, MapPin, Share2, Loader2, HelpCircle, GraduationCap, Calendar, Award } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { getCourseCategories } from "@/lib/course-service";
@@ -16,6 +16,9 @@ import React, { useState, useEffect } from "react";
 import type { UserProfile, Vacancy, CourseCategory } from "@/lib/types";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { format } from "date-fns";
+import { pt } from "date-fns/locale";
+import { Timestamp } from "firebase/firestore";
 
 export default function VacancyDetailPage() {
   const params = useParams();
@@ -73,6 +76,17 @@ export default function VacancyDetailPage() {
 
   };
 
+  const toDate = (date: Timestamp | Date | undefined): Date | null => {
+    if (!date) return null;
+    if (date instanceof Timestamp) {
+      return date.toDate();
+    }
+    return date;
+  }
+
+  const closingDate = toDate(vacancy.closingDate);
+
+
   return (
     <>
       <Header />
@@ -124,6 +138,24 @@ export default function VacancyDetailPage() {
                                   <Briefcase className="w-5 h-5 text-muted-foreground" />
                                   <span><strong>Tipo:</strong> {vacancy.type}</span>
                               </div>
+                               {vacancy.minExperience && (
+                                <div className="flex items-center gap-3">
+                                    <Award className="w-5 h-5 text-muted-foreground" />
+                                    <span><strong>Experiência:</strong> {vacancy.minExperience}</span>
+                                </div>
+                              )}
+                              {vacancy.minEducationLevel && (
+                                <div className="flex items-center gap-3">
+                                    <GraduationCap className="w-5 h-5 text-muted-foreground" />
+                                    <span><strong>Habilitações:</strong> {vacancy.minEducationLevel}</span>
+                                </div>
+                              )}
+                              {closingDate && (
+                                <div className="flex items-center gap-3">
+                                    <Calendar className="w-5 h-5 text-muted-foreground" />
+                                    <span><strong>Prazo:</strong> {format(closingDate, "d 'de' MMMM, yyyy", { locale: pt })}</span>
+                                </div>
+                              )}
                           </div>
                           
                           {vacancy.screeningQuestions && vacancy.screeningQuestions.length > 0 && (

@@ -51,6 +51,7 @@ export interface Course {
     requirements: string[];
     screeningQuestions?: string[];
     industry?: string;
+    minExperience?: string;
     numberOfVacancies?: number;
     requiredNationality?: string;
     languages?: string[];

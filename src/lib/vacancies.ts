@@ -20,6 +20,8 @@ export let vacancies: Vacancy[] = [
         salaryRange: 'R$ 8.000 - R$ 12.000',
         showSalary: true,
         languages: ['Português', 'Inglês'],
+        minExperience: '5+ anos',
+        minEducationLevel: 'Licenciatura',
         responsibilities: [
             'Desenvolver e manter aplicações web de alta qualidade.',
             'Colaborar com equipes multifuncionais para definir, projetar e enviar novos recursos.',
@@ -45,6 +47,7 @@ export let vacancies: Vacancy[] = [
         showSalary: false,
         languages: ['Português'],
         requiredNationality: 'Angolana',
+        minExperience: '3-5 anos',
         responsibilities: [
             'Conduzir processos de recrutamento e seleção de ponta a ponta.',
             'Desenvolver ações de endomarketing e clima organizacional.',
@@ -74,6 +77,8 @@ export let vacancies: Vacancy[] = [
         salaryRange: '€40.000 - €55.000 anuais',
         showSalary: true,
         languages: ['Português', 'Inglês (fluente)'],
+        minExperience: '5+ anos',
+        minEducationLevel: 'Licenciatura',
         responsibilities: [
             'Planear, executar e finalizar projetos de acordo com prazos e orçamentos.',
             'Gerir a equipe do projeto e as partes interessadas.',
@@ -94,6 +99,8 @@ export let vacancies: Vacancy[] = [
         description: 'Oportunidade para recém-formados em Engenharia de Petróleo para atuar em projetos de exploração e produção. Requer disponibilidade para viagens.',
         recruiterId: 'recruiter2', // Mock recruiter ID
         postedDate: createTimestamp('2024-07-25T18:00:00Z'),
+        minExperience: '0-1 ano',
+        minEducationLevel: 'Licenciatura',
         responsibilities: [
             'Analisar dados de reservatórios.',
             'Auxiliar no planeamento da perfuração de poços.',
@@ -116,6 +123,7 @@ export let vacancies: Vacancy[] = [
         postedDate: createTimestamp('2024-07-24T12:00:00Z'),
         salaryRange: 'A combinar',
         showSalary: false,
+        minExperience: '3-5 anos',
         responsibilities: [
             'Gerir campanhas de Google Ads e Facebook Ads.',
             'Otimizar o conteúdo do site para SEO.',
@@ -136,6 +144,7 @@ export let vacancies: Vacancy[] = [
         description: 'Vaga para Auditor Financeiro Sênior com sólida experiência em auditoria externa, IFRS e análise de riscos financeiros. Certificação ACCA ou similar desejável.',
         recruiterId: 'recruiter2', // Mock recruiter ID
         postedDate: createTimestamp('2024-07-23T11:00:00Z'),
+        minExperience: '5+ anos',
         responsibilities: [
             'Planear e executar auditorias financeiras.',
             'Avaliar o sistema de controlo interno dos clientes.',
