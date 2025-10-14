@@ -25,12 +25,22 @@ export const getVacancyById = (id: string): Vacancy | undefined => {
 
 // Function to add a new vacancy
 export const addVacancy = (vacancyData: Omit<Vacancy, 'id' | 'postedDate'>): Vacancy => {
+    const existingIndex = vacancies.findIndex(v => v.id === (vacancyData as Vacancy).id);
+
     const newVacancy: Vacancy = {
         ...vacancyData,
-        id: `vacancy-${new Date().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: (vacancyData as Vacancy).id || `vacancy-${new Date().getTime()}-${Math.random().toString(36).substr(2, 9)}`,
         postedDate: new Date(),
     };
-    vacancies.unshift(newVacancy); // Add to the beginning of the array
+    
+    if (existingIndex !== -1) {
+        // If it exists (e.g., from a duplication scenario that retains an ID), update it
+        vacancies[existingIndex] = { ...vacancies[existingIndex], ...newVacancy };
+    } else {
+        // Otherwise, add as new
+        vacancies.unshift(newVacancy);
+    }
+    
     return newVacancy;
 };
 
@@ -55,5 +65,3 @@ export const updateVacancy = (id: string, updatedData: Partial<Omit<Vacancy, 'id
 export const deleteVacancy = (id: string): void => {
     vacancies = vacancies.filter(v => v.id !== id);
 };
-
-    

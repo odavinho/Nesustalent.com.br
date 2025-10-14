@@ -90,9 +90,8 @@ export default function NewVacancyPage() {
     if (vacancyData) {
       try {
         const decodedData = decodeURIComponent(vacancyData);
-        const parsedVacancy = JSON.parse(decodedData) as any; // Use 'any' to handle flexible data
+        const parsedVacancy = JSON.parse(decodedData) as any;
         
-        // Map old data to new form schema, including potentially missing fields
         form.reset({
           title: parsedVacancy.title || '',
           category: parsedVacancy.category || '',
@@ -113,7 +112,6 @@ export default function NewVacancyPage() {
           minEducationLevel: parsedVacancy.minEducationLevel || undefined,
         });
         
-        // Also pre-fill the generated content section
         if (parsedVacancy.description && parsedVacancy.responsibilities && parsedVacancy.requirements) {
             setGeneratedContent({
               description: parsedVacancy.description,
@@ -188,12 +186,14 @@ export default function NewVacancyPage() {
         minEducationLevelValue = undefined;
     }
 
+    // Use a test recruiter ID for mock purposes
+    const testRecruiter = { uid: '4FkPP1YFiBZh1Sw7ATyXpX0ZtII3' };
 
     const newVacancy: Omit<Vacancy, 'id' | 'postedDate'> = {
         ...formValues,
         minEducationLevel: minEducationLevelValue,
         ...generatedContent,
-        recruiterId: user.uid,
+        recruiterId: testRecruiter.uid,
         languages: formValues.languages?.split(',').map(l => l.trim()).filter(l => l) || [],
     };
 
@@ -606,5 +606,3 @@ const TextareaWithLabel = ({ label, ...props }: React.ComponentProps<typeof Text
       <Textarea {...props} />
     </div>
   );
-
-    
